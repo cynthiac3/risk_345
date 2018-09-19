@@ -35,7 +35,7 @@ class graph{
 
 class subgraph: public graph{
 	public:
-		subgraph(graph* mainGraph, vector<vertex*> sub_vertex, vector<edges*> sub_edges);
+		subgraph(graph* mainGraph, vector<vertex*> sub_vertices, vector<edges*> sub_edges);
 	private:
 		string name;
 		graph sub_G;
