@@ -106,23 +106,23 @@ void Map_loader::parser(string file_name){
 	int x = 0;
 	while ( getline (file,line) ){
 		if(!line.empty()){
-		field = false;
-		if((!line.substr(0,1).compare("[")) && (!line.substr(line.length()-1).compare("]"))){
-			field = true;
+			field = false;
+			if((!line.substr(0,1).compare("[")) && (!line.substr(line.length()-1).compare("]"))){
+				field = true;
+				}else{
+					field = false;
+				}
+			if(field == true){
+				field_type = line.substr(1, line.length()-2);
 			}else{
-				field = false;
+				if(!field_type.compare("Map")){
+					if(5>x++)map_var[i++] = line;
+				}else if(!field_type.compare("Continents")){
+					loadContinent(line);
+				}else if(!field_type.compare("Territories")){
+					loadTerritory(line);
+				}
 			}
-		if(field == true){
-			field_type = line.substr(1, line.length()-2);
-		}else{
-			if(!field_type.compare("Map")){
-				if(5>x++)map_var[i++] = line;
-			}else if(!field_type.compare("Continents")){
-				loadContinent(line);
-			}else if(!field_type.compare("Territories")){
-				loadTerritory(line);
-			}
-		}
 		}
 	}
 	loadInfo(map_var);
