@@ -109,8 +109,6 @@ void Map_loader::parser(string file_name){
 			field = false;
 			if((!line.substr(0,1).compare("[")) && (!line.substr(line.length()-1).compare("]"))){
 				field = true;
-				}else{
-					field = false;
 				}
 			if(field == true){
 				field_type = line.substr(1, line.length()-2);
