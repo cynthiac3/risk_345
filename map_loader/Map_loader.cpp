@@ -95,7 +95,7 @@ void Map_loader::parser(string file_name){
 	if (file.is_open()){
 		cout << "\nThe map file was succesfully open" << endl;
 	}else{
-		cout << "\nAn error occured will oppening the file, program will terminat" << endl;
+		cout << "\nAn error occured while oppening the file, program will terminat" << endl;
 		exit(0);
  	}
 	
