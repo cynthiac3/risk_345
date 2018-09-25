@@ -1,7 +1,7 @@
 /*
 	file: Map_loader.h
 */
-#include <ifstream>
+#include <fstream>
 #include <iostream>
 #include <stdlib.h>
 #include <string>
@@ -11,21 +11,19 @@
 using namespace std;
 
 class Map_loader{
+	public:
 	//prompt user for file name/path
 	string choose_file();
 	
 	// open the file_stream
-	ifstream read_file(string file_name);
 	//close the file_stream
-	void close_file(ifstream file);	
-
 	// parse the the file
-	parser(ifstream file);
+	void parser(string file_name);
 	//load the diffirent map component
-	Info loadInfo(string var[5]);
-	Territory* loadTerritory(string line);
-	Contitnent* loadContinent(string line);
+	void loadInfo(string var[5]);
+	void loadTerritory(string line);
+	void loadContinent(string line);
 	
 	  
-}
+};
 
