@@ -2,21 +2,11 @@
 
 class Player {
 
-	/* ATTRIBUTES:
-		-collection of countries that the player owns
-		-hand of risk cards
-		-dice rolling facility
-	 */
-
+public:
 	void reinforce();
 
 	void attack();
 
 	void fortify();
-
-	// Driver
-	int main() {
-		return 0;
-	}
 
 };
