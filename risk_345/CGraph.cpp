@@ -12,13 +12,13 @@
 
 using namespace std;
 	
-//Constructor 
+//Constructor, takes the vector of territories genereted by the map loader
 Graph::Graph(vector<Territory> myT){
-	string name;
+	//iterate trough the vector of terrytory constructed by the map_load and generates a graph
 	for (vector<Territory>::iterator i = myT.begin() ; i != myT.end(); ++i){
-		nodes.push_back(new vertex());
-		nodes.back()->name = i->getName();
-		nodes.back()->nbr.list_nbr = i->getNbr();
+		nodes.push_back(new vertex());// creats a new vertex
+		nodes.back()->name = i->getName(); // set the name
+		nodes.back()->nbr.list_nbr = i->getNbr();// set its neighbours
         }
 }
 
@@ -28,33 +28,42 @@ bool Graph::isConnected(){
 		This algorithm work taking the first stored node and its edges and adding them 
 		to the 'visited' list. Then for every other node, if the node it self 
 		or any of it edges are containe in the visited list the node and its edges also
-		added to the visited list.
+		added to the visited list. This verification of the tail need to happen n*n times
+		to make sure every path possible are loaded.
 	*/
 
-	vector<string> visited;
-	vector<string> list_nbr;	
-	
+	vector<string> visited; // list of visited nodes
+	vector<string> edges; // list of currently check edges  
+		
+	//adding the first node and it edges to the visited list
 	visited.push_back((*nodes.begin())->name);
 	visited.insert(visited.end(), nodes[0]->nbr.list_nbr.begin(), nodes[0]->nbr.list_nbr.end());	
 
-	for (vector<vertex*>::iterator z = nodes.begin() ; z != nodes.end(); ++z){
-		for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
-			list_nbr = (*i)->nbr.list_nbr;
+	//nested loop of every node for every node since the algorithm need to be run N*N times
+	for (vector<vertex*>::iterator z = nodes.begin() ; z != nodes.end(); ++z){ // for every node
+		for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){ // for every node
+			
+			edges = (*i)->nbr.list_nbr;//set the current list of edges in function of the current node being check
+			
+			//If the node it self as been visited, then it its push as well as its egdes to the visited list
 			if(find(visited.begin(), visited.end(), (*i)->name) != visited.end()){
-				visited.push_back((*i)->name);
-				visited.insert(visited.end(), (*i)->nbr.list_nbr.begin(), (*i) ->nbr.list_nbr.end());
+				visited.push_back((*i)->name); // push the name of the node to the visited list 
+				visited.insert(visited.end(), (*i)->nbr.list_nbr.begin(), (*i)->nbr.list_nbr.end()); //append the edges of the node to the visited list
 			}else{
-				for (vector<string>::iterator k = list_nbr.begin() ; k != list_nbr.end(); ++k){
+			// check if one of its edges are in the visited list
+				for (vector<string>::iterator k = edges.begin() ; k != edges.end(); ++k){
 					if(find(visited.begin(), visited.end(), (*k))!= visited.end()){
-						visited.push_back((*i)->name);
-        	                		visited.insert(visited.end(), (*i)->nbr.list_nbr.begin(), (*i) ->nbr.list_nbr.end());
+						visited.push_back((*i)->name);// push the name of the node to the visited list
+        	                		visited.insert(visited.end(), (*i)->nbr.list_nbr.begin(), (*i)->nbr.list_nbr.end());//append the edges of the node to the visited list
 					}
 				}
 			}
-			sort( visited.begin(), visited.end() );
-			visited.erase( unique( visited.begin(), visited.end() ), visited.end() );
+			sort( visited.begin(), visited.end() ); // sort the visited list
+			visited.erase( unique( visited.begin(), visited.end() ), visited.end() ); // deleted duplicate that have form
 		}
 	}
+	//check result of the algorithm 
+	//if the Graph is indeed a connected graph, the visited list will be of the same size of the actual number of nodes in the graph
 	if(visited.size() == nodes.size()){
 		return true;
 	}else{
@@ -62,25 +71,33 @@ bool Graph::isConnected(){
 	}	
 }
 
+//simple function to print the Connected graph
 void Graph::printGraph(){
+	cout << "MAP CONNECTED GRAPH: \n\n" << endl;//Print the header 
+
 	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
-		cout << "Territory: " << (*i)->name << " Nbr:" << endl;
+		cout << "\tTERITORY: " << (*i)->name << " NEIGHBOURS:" << endl; // print the country
+		//print its neighbours
 		for (vector<string>::iterator k = (*i)->nbr.list_nbr.begin() ; k != (*i)->nbr.list_nbr.end(); ++k){
-			cout << "\t" << *k << endl;
+			cout << "\t\t" << *k << endl;
         	}
         }	
 }
 
+//creates a sub graph. takes in the vector of territory and the continent for which the subgraph is being created 
 Subgraph::Subgraph(vector<Territory> myT, Continent myC){
-	vector<Territory> tmp_T;
-	vector<string>	tmp_nbg;
-	vector<string> it_nbg;
+	vector<Territory> tmp_T;//temporal vector for a the territories
+	vector<string>	tmp_nbg;//temporal vector for the neighbour
+	vector<string> it_nbg; //vector for the neighbour being iterate
 	
+	//iterat throught the territory
 	for (vector<Territory>::iterator i = myT.begin() ; i != myT.end(); ++i){
-		if(i->getM().compare(myC.getName()) == 0 ){
+		if(i->getM().compare(myC.getName()) == 0 ){ //check if the territory being check belongs to the continent
+			//if it does belong to the continent it the node is added to the graph
 			tmp_T.push_back(Territory());
 			tmp_T.back().setName(i->getName());
 			it_nbg = i->getNbr();
+			//then is neighbours are check and only does that also bolongs to the continent are added as neighbours
 			for (vector<string>::iterator k = it_nbg.begin(); k != it_nbg.end(); ++k){
 				for (vector<Territory>::iterator j = myT.begin() ; j != myT.end(); ++j){	
 					if(((*k).compare(j->getName()) == 0) && (j->getM().compare(myC.getName()) == 0)){
@@ -93,6 +110,7 @@ Subgraph::Subgraph(vector<Territory> myT, Continent myC){
 			tmp_nbg.clear(); 
 		}
 	}
+	// a graph is created (being a subgraph of the original set)
 	Graph G(tmp_T);
 	subG = G;
 }
