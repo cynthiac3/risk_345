@@ -22,8 +22,8 @@ Player::Player() {
 	t2 = NULL;
 
 	// Initialize a deck and a hand of cards
-	Deck playerDeck;
-	hand = Hand(playerDeck);
+	//Deck playerDeck;
+	//hand = Hand(playerDeck);
 
 	cout << "A player was created." << endl;
 } 
@@ -44,6 +44,10 @@ Dice Player::getDice(){
 	return dice;
 }
 
+Hand Player::getHand() {
+	return hand;
+}
+
 void Player::getCountries() {
 	if (myTerritories.size() == 0) {
 		cout << "Player doesn't own any countries.";
@@ -58,7 +62,13 @@ void Player::getCountries() {
 int main() {
 	int ans; // option number the player chooses from the menu
 
+	// Create a deck for the game and 1 player 
+	Deck gameDeck;
 	Player player;
+
+	// Set the deck the player is gonna use
+	player.getHand().setDeck(gameDeck);
+
 	while (true) {
 		cout << endl << "------------------------------------" << endl
 			<< "Select an action to perform: " << endl << "1. Reinforce" << endl << "2. Attack" << endl << "3. Fortify" << endl
@@ -92,3 +102,4 @@ int main() {
 	}
 	return 0;
 }
+
