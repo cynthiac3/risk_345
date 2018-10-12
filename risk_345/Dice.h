@@ -14,7 +14,7 @@ private:
 
 public:
 	int decideHowManyDiceToRoll();
-	void rollDice(int howManyDice);
+	void rollDice(int howManyDiceP); // parameter is "howManyDiceP" to distinguish it from the "howManyDice" variable 
 	void calculatePercentageDiceRolls(int player);
 
 };
