@@ -1,0 +1,20 @@
+#pragma once
+
+
+class Dice {
+
+private:
+	// Number of dice player will roll on their turn
+	int howManyDice=0; 
+	// Array stores how many times each dice value has appeared (each player has their own copy of this array to store their own values)
+	int howManyTimesEachValueHasOccurred [6] = { 0,0,0,0,0,0 }; 
+	// User can roll 1-3 dice per turn. These 1-3 rolls must be kept in a "container" so we will keep them in an array.
+	int containerOfDiceRolls [3] = { 0, 0, 0 }; 
+	int totalTimesPlayerHasRolledDice = 0;
+
+public:
+	int decideHowManyDiceToRoll();
+	void rollDice(int howManyDice);
+	void calculatePercentageDiceRolls(int player);
+
+};
