@@ -11,14 +11,15 @@ class Player {
 	Hand hand; // a hand of risk cards
 
 public: 
-	Player(); // the default constructor 
+	Player();
 	Dice getDice(); // returns the dice facility the player owns
 	void getCountries(); // returns a string that list the countries info 
-	void getHand(); // returns the hand of cards of the player
+	Hand getHand(); // returns the hand of cards of the player
 	// Methods to implement in later assignments:
 	void reinforce();
 	void attack();
 	void fortify();
 
 };
+
 
