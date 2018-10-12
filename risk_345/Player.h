@@ -6,12 +6,12 @@
 
 class Player {
 	// Attributes
-	vector<Territorie*> myTerritories;
-	Dice dice;
-	Hand hand;
+	vector<Territory*> myTerritories; // a collection of countries the player owns
+	Dice dice; // a dice rolling facility
+	Hand hand; // a hand of risk cards
 
 public: 
-	Player();
+	Player(); // the default constructor 
 	Dice getDice(); // returns the dice facility the player owns
 	void getCountries(); // returns a string that list the countries info 
 	void getHand(); // returns the hand of cards of the player
@@ -21,3 +21,4 @@ public:
 	void fortify();
 
 };
+
