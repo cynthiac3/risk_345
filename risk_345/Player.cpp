@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "player.h"
 
 
@@ -7,14 +8,16 @@ using namespace std;
 
 Player::Player() {
 	// Initialize a collection of countries that the player owns
-	int coord[] = { 10, 20};
-	int coord2[] = { 20, 30 };
-	Territorie* t1 = new Territorie("Canada", coord, 3, "North America");
-	Territorie* t2 = new Territorie("France", coord2, 5, "Europe");
+	string coord1[] = { "10", "20" };
+	string coord2[] = { "20", "30" };
+	vector<string> nbr1{ "USA" };
+	vector<string> nbr2{ "Sweden", "Finland" };
+	Territory* t1 = new Territory("Canada", coord1, "North America", nbr1);
+	Territory* t2 = new Territory("Norway", coord2, "Europe", nbr2);
 	myTerritories.push_back(t1);
 	myTerritories.push_back(t2);
 
-	delete t1, t2;
+	//delete t1, t2;
 	t1 = NULL;
 	t2 = NULL;
 
@@ -46,11 +49,8 @@ void Player::getCountries() {
 		cout << "Player doesn't own any countries.";
 	}
 	else {
-		/*
 		for (int i =0; i < myTerritories.size(); i++)
-				cout << myTerritories.at(i)->getName();
-				*/
-		cout << "List of countries...";
+			cout << "Territory #" << i+1 << ": " << myTerritories.at(i)->getName() << endl;
 	}
 }
 
@@ -60,12 +60,13 @@ int main() {
 
 	Player player;
 	while (true) {
-		cout << "------------------------------------" << endl
+		cout << endl << "------------------------------------" << endl
 			<< "Select an action to perform: " << endl << "1. Reinforce" << endl << "2. Attack" << endl << "3. Fortify" << endl
 			<< "----------------" << endl << "4. Roll one Dice" << endl << "5. Draw a card" << endl << "6. See list of countries owned" << endl
 			<< "------------------------------------" << endl;
 		// Player enters a choice from the menu
 		cin >> ans;
+		cout << endl;
 
 		// Type checking the input
 		if (cin.fail())
@@ -76,12 +77,14 @@ int main() {
 			std::getline(cin, ignoreLine); //read the line till next space
 		}
 		else {
+			// Perform the action the player chose 
 			switch (ans) {
 				case 1: player.reinforce(); break;
 				case 2: player.attack(); break;
 				case 3: player.fortify(); break;
 				case 4: player.getDice().rollDice(1); break;
 				case 5: player.getCountries(); break;
+				case 6: player.getCountries(); break;
 				default: cout << "Invalid answer." << endl;
 			}
 		}
