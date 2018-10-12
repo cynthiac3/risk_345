@@ -1,0 +1,73 @@
+[Map]
+author=Mike Crush
+warn=yes
+image=_07_ Eternal Blue.bmp
+wrap=yes
+scroll=none
+
+
+
+[Continents]
+
+Michaelangelos Turn=3
+Edisons Shine=2
+Hemingways Passage=10
+Beatles Rock=2
+Ceasars Grounds=5
+test=1
+
+
+[Territories]
+xxx,142,85,test Turn,ttt
+
+a1,142,85,Michaelangelos Turn,a2,a4,a5
+a2,308,79,Michaelangelos Turn,a1,a3,a5,a6,a7
+a3,285,130,Michaelangelos Turn,a2,a5,a6,c6,d3,b4
+a4,100,205,Michaelangelos Turn,a1,a5,c1
+a5,199,161,Michaelangelos Turn,a1,a2,a3,a4,a6,c2
+a6,326,188,Michaelangelos Turn,a2,a3,a5,a7,c4
+a7,397,192,Michaelangelos Turn,a2,a6,c5
+
+b1,590,113,Edisons Shine,b2
+b2,768,114,Edisons Shine,b1,b3,b4,b5,b6
+b3,718,160,Edisons Shine,b2
+b4,875,128,Edisons Shine,b2,b6,b7,a3,d3,c6
+b5,649,211,Edisons Shine,b2,c6
+b6,819,204,Edisons Shine,b2,b4,b7,c8
+b7,895,231,Edisons Shine,b4,b6,c9
+
+c1,59,357,Hemingways Passage,a4,d1
+c2,182,334,Hemingways Passage,a5,d2
+c3,306,343,Hemingways Passage,c4,d6
+c4,348,341,Hemingways Passage,a6,e1,c3
+c5,486,331,Hemingways Passage,a7,e2
+c6,593,321,Hemingways Passage,c7,b5,e3,a3,d3,b4
+c7,678,314,Hemingways Passage,c6
+c8,789,332,Hemingways Passage,b6,e4,e5
+c9,878,335,Hemingways Passage,b7,e6
+
+d1,61,470,Beatles Rock,d2,d3,d4,c1
+d2,152,466,Beatles Rock,d1,d3,d6,c2
+d3,92,515,Beatles Rock,d1,d2,d4,d5,d6,a3,c6,b4
+d4,31,556,Beatles Rock,d1,d3,d5
+d5,93,573,Beatles Rock,d3,d4,d6
+d6,197,538,Beatles Rock,d2,d3,d5,c3
+
+e1,377,476,Ceasars Grounds,e2,e7,c4
+e2,479,438,Ceasars Grounds,e1,e3,e7,c5
+e3,590,467,Ceasars Grounds,e2,e4,e7,e8,c6
+e4,714,444,Ceasars Grounds,e3,e5,e8,e9,c8
+e5,807,460,Ceasars Grounds,e4,e6,e9,e10,c8
+e6,882,434,Ceasars Grounds,e5,e10,c9
+e7,484,545,Ceasars Grounds,e1,e2,e3
+e8,645,530,Ceasars Grounds,e3,e4,e9,e11
+e9,743,554,Ceasars Grounds,e4,e5,e8,e10
+e10,875,533,Ceasars Grounds,e5,e6,e9
+e11,597,558,Ceasars Grounds,e8,e12
+e12,571,591,Ceasars Grounds,e11
+
+
+
+
+
+
