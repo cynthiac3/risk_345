@@ -11,6 +11,10 @@ int cavalary = 0;
 int artillery = 0;
 int numberOfExchanges = 1;
 
+Hand::Hand()
+{
+	handOfCards.resize(5);
+}
 
 Hand::Hand(Deck deck)
 {
@@ -18,6 +22,10 @@ Hand::Hand(Deck deck)
 	handOfCards.resize(5);
 }
 
+void Hand::setDeck(Deck deck) 
+{
+	this->deck = deck;
+}
 
 void Hand::fillHand(Deck &playingDeck)
 {	
@@ -105,9 +113,6 @@ string convertCardsToString(Deck::Cards card)
 }
 
 
-
-
-
 int main() {
 
 	Deck playerDeck;
@@ -134,15 +139,12 @@ int main() {
 	cout << "There is " << numberOfCavalaryCards << " cavalary cards" << endl;
 	cout << "There is " << numberOfArtilleryCards << " artillery cards" << endl;
 
-
-
+	// FILL HAND FIRST TIME
 	hand.fillHand(playerDeck);
 	hand.fillHand(playerDeck);
 	hand.fillHand(playerDeck);
 	hand.fillHand(playerDeck);
 	hand.fillHand(playerDeck);
-
-
 
 	string one   = convertCardsToString(hand.handOfCards[0]);
 	string two   = convertCardsToString(hand.handOfCards[1]);
@@ -150,12 +152,7 @@ int main() {
 	string four  = convertCardsToString(hand.handOfCards[3]);
 	string five  = convertCardsToString(hand.handOfCards[4]);
 
-	cout << "You now have a hand of 5 cards.  They are as follows: " << one << endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << two << endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << three <<endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << four << endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << five << endl;
-
+	cout << "You now have a hand of 5 cards.  They are as follows: " << one << ", " << two << ", " << three << ", " << four << ", " << five << endl;
 
 	int first = 0;
 	int second = 0;
@@ -169,38 +166,29 @@ int main() {
 	hand.exchange(hand.handOfCards[first-1], hand.handOfCards[second-1], hand.handOfCards[third-1]);
 
 
-
-
-
-
-	//FILLING HAND SECOND TIME
+	// FILLING HAND SECOND TIME
 	hand.fillHand(playerDeck);
 	hand.fillHand(playerDeck);
 	hand.fillHand(playerDeck);
 
 	one = convertCardsToString(hand.handOfCards[0]);
-    two = convertCardsToString(hand.handOfCards[1]);
-    three = convertCardsToString(hand.handOfCards[2]);
-    four = convertCardsToString(hand.handOfCards[3]);
+        two = convertCardsToString(hand.handOfCards[1]);
+        three = convertCardsToString(hand.handOfCards[2]);
+        four = convertCardsToString(hand.handOfCards[3]);
 	five = convertCardsToString(hand.handOfCards[4]);
 
-	cout << "You now have a hand of 5 cards.  They are as follows: " << one << endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << two << endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << three << endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << four << endl;
-	cout << "You now have a hand of 5 cards.  They are as follows: " << five << endl;
-
+	cout << "You now have a hand of 5 cards.  They are as follows: " << one << ", " << two << ", " << three << ", " << four << ", " << five << endl;
 
 	cout << "Which cards would you like to exchange: (select 3 from 1 to 5 hitting enter after each selection)" << endl;
 	cin >> first;
 	cin >> second;
 	cin >> third;
 
-
 	hand.exchange(hand.handOfCards[first - 1], hand.handOfCards[second - 1], hand.handOfCards[third - 1]);
 
 	cout << "You have " << infantry << " infantry units" << endl;
 	cout << "You have " << cavalary << " cavalary units" << endl;
 	cout << "You have " << artillery << " artillery units" << endl;
- return 0;
+	
+ 	return 0;
 }
