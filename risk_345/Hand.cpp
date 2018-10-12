@@ -1,7 +1,7 @@
 #include "Hand.h"
 #include <iostream>
 #include <stdlib.h>
-#include <String>
+#include <string>
 
 Deck playingDeck;
 vector<Deck::Cards> handOfCards(0);
@@ -98,7 +98,7 @@ string convertCardsToString(Deck::Cards card)
 	{
 	case Deck::Cards::Infantry : return "Infantry";
 
-	case Deck::Cards::Cavalry: return "Cavalary";
+	case Deck::Cards::Cavalry: return "Cavalry";
 
 	case Deck::Cards::Artillery: return "Artillery";
 	}
@@ -125,7 +125,7 @@ int main() {
 		if (playerDeck.deck[i] == Deck::Cards::Infantry)
 			numberOfInfantryCards += 1;
 		else if (playerDeck.deck[i] == Deck::Cards::Cavalry)
-			numberOfCavalaryCards += 1;
+			numberOfCavalryCards += 1;
 		else
 			numberOfArtilleryCards += 1;
 	}
