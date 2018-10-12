@@ -4,7 +4,6 @@
 #include "Hand.h"
 
 
-
 class Player {
 	// Attributes
 	vector<Territorie*> myTerritories;
