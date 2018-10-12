@@ -1,10 +1,27 @@
 #include <iostream>
 #include "player.h"
 
+
 using namespace std;
 	
 
 Player::Player() {
+	// Initialize a collection of countries that the player owns
+	int coord[] = { 10, 20};
+	int coord2[] = { 20, 30 };
+	Territorie* t1 = new Territorie("Canada", coord, 3, "North America");
+	Territorie* t2 = new Territorie("France", coord2, 5, "Europe");
+	myTerritories.push_back(t1);
+	myTerritories.push_back(t2);
+
+	delete t1, t2;
+	t1 = NULL;
+	t2 = NULL;
+
+	// Initialize a deck and a hand of cards
+	Deck playerDeck;
+	hand = Hand(playerDeck);
+
 	cout << "A player was created." << endl;
 } 
 
@@ -22,6 +39,19 @@ void Player::fortify() {
 
 Dice Player::getDice(){
 	return dice;
+}
+
+void Player::getCountries() {
+	if (myTerritories.size() == 0) {
+		cout << "Player doesn't own any countries.";
+	}
+	else {
+		/*
+		for (int i =0; i < myTerritories.size(); i++)
+				cout << myTerritories.at(i)->getName();
+				*/
+		cout << "List of countries...";
+	}
 }
 
 /*** Driver ***/
@@ -51,6 +81,7 @@ int main() {
 				case 2: player.attack(); break;
 				case 3: player.fortify(); break;
 				case 4: player.getDice().rollDice(1); break;
+				case 5: player.getCountries(); break;
 				default: cout << "Invalid answer." << endl;
 			}
 		}
