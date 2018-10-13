@@ -8,7 +8,7 @@ using namespace std;
 	
 
 Player::Player() {
-	// Initialize a collection of countries that the player owns
+	// Initialize a collection of countries that the player owns (hardcoded for assignment #1 only)
 	string coord1[] = { "10", "20" };
 	string coord2[] = { "20", "30" };
 	vector<string> nbr1{ "USA" };
@@ -24,26 +24,41 @@ Player::Player() {
 	cout << "A player was created." << endl;
 } 
 
+// To be implemented in later assignments
 void Player::reinforce() {
 	cout << "The player is reinforcing itself." << endl;
 }
 
+// To be implemented in later assignments
 void Player::attack() {
 	cout << "The player is attacking." << endl;
 }
 
+// To be implemented in later assignments
 void Player::fortify() {
 	cout << "The player is fortifying itself." << endl;
 }
 
+// Returns the dice facility of the player
 Dice Player::getDice(){
 	return dice;
 }
 
-Hand Player::getHand() {
-	return hand;
+// Returns the vector holding the player's cards
+vector<Deck::Cards> Player::getHand() {
+	return handOfCards;
 }
 
+// Set 5 cards in the hand of the player, picked from the deck passed as a parameter
+void Player::setHand(Deck theDeck) {
+	handOfCards.push_back(theDeck.draw(theDeck.deck));
+	handOfCards.push_back(theDeck.draw(theDeck.deck));
+	handOfCards.push_back(theDeck.draw(theDeck.deck));
+	handOfCards.push_back(theDeck.draw(theDeck.deck));
+	handOfCards.push_back(theDeck.draw(theDeck.deck));
+}
+
+// Prints the names of the country that the player owns
 void Player::getCountries() {
 	if (myTerritories.size() == 0) {
 		cout << "Player doesn't own any countries.";
@@ -54,10 +69,11 @@ void Player::getCountries() {
 	}
 }
 
+// Print the cards that the player owns 
 void printPlayersCards(Player p) {
-	for (int i = 0; i < p.getHand().handOfCards.size(); i++) 
+	for (int i = 0; i < p.getHand().size(); i++)
 	{
-			switch (p.getHand().handOfCards[i])
+			switch (p.getHand()[i])
 			{
 				case Deck::Cards::Infantry: cout << "Card #" << i + 1 << ": Infantry" << endl; break;
 				case Deck::Cards::Cavalry: cout << "Card #" << i + 1 << ": Cavalry" << endl; break;
@@ -70,21 +86,13 @@ void printPlayersCards(Player p) {
 int main() {
 	int ans; // option number the player chooses from the menu
 
-	// Create a deck for the game and 1 player 
+	// Create a deck for the game 
 	Deck gameDeck;
 	gameDeck.fillDeck(42);
-	Player player;
-
-	// Set the deck the player is gonna use
-	player.getHand().setDeck(gameDeck);
-	// Fill player hand with 5 cards (hardcoded only for this assignment)
-	player.getHand().handOfCards[0] = Deck::Cards::Artillery;
-	player.getHand().handOfCards[1] = Deck::Cards::Cavalry;
-	player.getHand().handOfCards[2] = Deck::Cards::Cavalry;
-	player.getHand().handOfCards[3] = Deck::Cards::Infantry;
-	player.getHand().handOfCards[4] = Deck::Cards::Artillery;
-
 	
+	// Create one player and set the player's hand of cards from the deck created
+	Player player;
+	player.setHand(gameDeck);
 
 	while (true) {
 		cout << endl << "------------------------------------" << endl
@@ -119,5 +127,3 @@ int main() {
 	}
 	return 0;
 }
-
-
