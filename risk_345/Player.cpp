@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "player.h"
+#include "Deck.h"
 
 
 using namespace std;
@@ -17,13 +18,8 @@ Player::Player() {
 	myTerritories.push_back(t1);
 	myTerritories.push_back(t2);
 
-	//delete t1, t2;
 	t1 = NULL;
 	t2 = NULL;
-
-	// Initialize a deck and a hand of cards
-	//Deck playerDeck;
-	//hand = Hand(playerDeck);
 
 	cout << "A player was created." << endl;
 } 
@@ -58,21 +54,42 @@ void Player::getCountries() {
 	}
 }
 
+void printPlayersCards(Player p) {
+	for (int i = 0; i < p.getHand().handOfCards.size(); i++) 
+	{
+			switch (p.getHand().handOfCards[i])
+			{
+				case Deck::Cards::Infantry: cout << "Card #" << i + 1 << ": Infantry" << endl; break;
+				case Deck::Cards::Cavalry: cout << "Card #" << i + 1 << ": Cavalry" << endl; break;
+				case Deck::Cards::Artillery: cout << "Card #" << i + 1 << ": Artillery" << endl; break;
+			}
+	}
+}
+
 /*** Driver ***/
 int main() {
 	int ans; // option number the player chooses from the menu
 
 	// Create a deck for the game and 1 player 
 	Deck gameDeck;
+	gameDeck.fillDeck(42);
 	Player player;
 
 	// Set the deck the player is gonna use
 	player.getHand().setDeck(gameDeck);
+	// Fill player hand with 5 cards (hardcoded only for this assignment)
+	player.getHand().handOfCards[0] = Deck::Cards::Artillery;
+	player.getHand().handOfCards[1] = Deck::Cards::Cavalry;
+	player.getHand().handOfCards[2] = Deck::Cards::Cavalry;
+	player.getHand().handOfCards[3] = Deck::Cards::Infantry;
+	player.getHand().handOfCards[4] = Deck::Cards::Artillery;
+
+	
 
 	while (true) {
 		cout << endl << "------------------------------------" << endl
 			<< "Select an action to perform: " << endl << "1. Reinforce" << endl << "2. Attack" << endl << "3. Fortify" << endl
-			<< "----------------" << endl << "4. Roll one Dice" << endl << "5. Draw a card" << endl << "6. See list of countries owned" << endl
+			<< "----------------" << endl << "4. Roll one Dice" << endl << "5. Show hand of cards" << endl << "6. See list of countries owned" << endl
 			<< "------------------------------------" << endl;
 		// Player enters a choice from the menu
 		cin >> ans;
@@ -93,7 +110,7 @@ int main() {
 				case 2: player.attack(); break;
 				case 3: player.fortify(); break;
 				case 4: player.getDice().rollDice(1); break;
-				case 5: player.getCountries(); break;
+				case 5: printPlayersCards(player); break;
 				case 6: player.getCountries(); break;
 				default: cout << "Invalid answer." << endl;
 			}
@@ -102,4 +119,5 @@ int main() {
 	}
 	return 0;
 }
+
 
