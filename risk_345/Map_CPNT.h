@@ -8,11 +8,12 @@ using namespace std;
 #ifndef MAP_CPNT_H
 #define MAP_CPNT_H
 
+//Info
 class Info{
 	public:
-		Info();
-		void setAll(string Cauthor, string Cwarn, string Cwrap, string Cimage, string Cscroll);
-		void printInfo();
+		Info();//constructor
+		void setAll(string Cauthor, string Cwarn, string Cwrap, string Cimage, string Cscroll);//setter
+		void printInfo();//print Info
 	private:
 		string author; 
 		string warn;
@@ -22,34 +23,41 @@ class Info{
 };
 
 
+//Territory
 class Territory{
 	public:
+		// constructor
 		Territory(){};
 		Territory(string Cname, string Ccoord[2], string Cmotherland, vector<string> Cnbr_name);
+
+		//getter
 		string getName(){return name;};
-		void setName(string str){name = str; };
+		string getM(){return motherland;};
 		vector<string> getNbr(){return nbr_name;};
+
+		//setter
+		void setName(string str){name = str; };
 		void setNbr(vector<string> n){nbr_name = n;};
-		void printTerritory();
-		string getM(){return motherland;};	
+		
 	private:
-		string name;
+		string name;	//name of territory
 		string coord[2]; // (x,y) coordinate of pixel on the image of the map
 		string motherland; //continent
-		vector<string> nbr_name;
+		vector<string> nbr_name; // neighbours
 };
 
+//Continent
 class Continent{
 	public:
-		void printContinent();
+		//constructor	
 		Continent(string str, string B);
+		
+		//getter
 		string getName(){return name;};
 		string getBonus(){return bonus;};	
-				
-
 	private:
-		string name;
-		string bonus;
+		string name;// name of continent
+		string bonus;// continent bonus
 };
 	
 

@@ -4,6 +4,7 @@
 #include <iostream>
 using namespace std;
 
+//Info constructor 
 Info::Info(){
 	author = "unkown";
 	warn = "false";
@@ -12,6 +13,7 @@ Info::Info(){
 	scroll = "unkown";	
 }
 
+//set Info
 void Info::setAll(string Cauthor, string Cwarn, string Cwrap, string Cimage, string Cscroll){
 	author = Cauthor;
 	warn = Cwarn;
@@ -20,6 +22,7 @@ void Info::setAll(string Cauthor, string Cwarn, string Cwrap, string Cimage, str
 	scroll = Cscroll; 
 }
 
+//print info
 void Info::printInfo(){
 	cout << "INFO:"<< endl;
 	cout << "\tAuthor: " << author << endl;
@@ -29,23 +32,7 @@ void Info::printInfo(){
 	cout << "\tscroll: "<< scroll <<endl; 
 }
 
-void Territory::printTerritory(){
-	cout << "TERRITORY:" << endl;
-	cout << "\tname: " << name << endl;
-	cout << "\tcoord x,y : "<< coord[0] << "," << coord[1] << endl;
-	cout << "\tmotherland: "<< motherland << endl;
-	cout << "\tneighbours: " << endl;
-	for (vector<string>::iterator i = nbr_name.begin() ; i != nbr_name.end(); ++i){
-		cout << "\t\t" << *i << endl;
-	}
-}
-
-void Continent::printContinent(){
-	cout << "CONTINENT" << endl;
-	cout << "\tname: " << name  << endl;
-	cout << "\tbonus: " << bonus << endl;
-}
-
+//Territory constructor
 Territory::Territory(string Cname, string Ccoord[2], string Cmotherland, vector<string> Cnbr_name){
 	name = Cname;
 	coord[0] = Ccoord[0];
@@ -54,6 +41,7 @@ Territory::Territory(string Cname, string Ccoord[2], string Cmotherland, vector<
 	nbr_name = Cnbr_name;
 }
 
+//Continent constructor
 Continent::Continent(string str, string B){
 	name = str;
 	bonus = B;

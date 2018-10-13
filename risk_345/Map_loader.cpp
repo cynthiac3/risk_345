@@ -21,76 +21,110 @@ string Map_loader::choose_file(){
 	return str;	
 }
 
-
-void Map_loader::loadInfo(string var[5]){
-	string author;
+//load information of the map
+void Map_loader::loadInfo(string lines[5]){
+	//variable of the Info class  
+	string author; 
 	string warn;
 	string wrap;
 	string image;
 	string scroll;
+	
+	
+	try{
 
-	for(int i = 0; i<5; i++){
-
-		if(!var[i].substr(0,var[i].find("=")).compare("author")){
-			author = var[i].substr(var[i].find("=")+1,var[i].length()-1);
-
-		}else if(!var[i].substr(0,var[i].find("=")).compare("warn")){
-                        warn = var[i].substr(var[i].find("=")+1,var[i].length()-1);
-
-		}else if(!var[i].substr(0,var[i].find("=")).compare("wrap")){
-                        wrap = var[i].substr(var[i].find("=")+1,var[i].length()-1);
-
-		}else if(!var[i].substr(0,var[i].find("=")).compare("image")){
-                        image = var[i].substr(var[i].find("=")+1,var[i].length()-1);
-
-		}else if(!var[i].substr(0,var[i].find("=")).compare("scroll")){
-                        scroll = var[i].substr(var[i].find("=")+1,var[i].length()-1);
+		//parser to retrieve the imformation from the txt line
+		for(int i = 0; i<5; i++){
+			//retrive author
+			if(!lines[i].substr(0,lines[i].find("=")).compare("author")){
+				author = lines[i].substr(lines[i].find("=")+1,lines[i].length()-1);
+			//retrive warn value
+			}else if(!lines[i].substr(0,lines[i].find("=")).compare("warn")){
+        	                warn = lines[i].substr(lines[i].find("=")+1,lines[i].length()-1);
+			//retrive wrap value
+			}else if(!lines[i].substr(0,lines[i].find("=")).compare("wrap")){
+        	                wrap = lines[i].substr(lines[i].find("=")+1,lines[i].length()-1);
+			//retrive image path
+			}else if(!lines[i].substr(0,lines[i].find("=")).compare("image")){
+        	                image = lines[i].substr(lines[i].find("=")+1,lines[i].length()-1);
+			//retrive scroll value
+			}else if(!lines[i].substr(0,lines[i].find("=")).compare("scroll")){
+        	                scroll = lines[i].substr(lines[i].find("=")+1,lines[i].length()-1);
+			}
 		}
-	};
+	}catch (...){
+                cout<< "invalid Map declaration, program will terminat" << endl;
+                exit(0);
+        }
+	//set the map info variables
 	myInfo.setAll(author, warn, wrap, image, scroll);
 }
 
+//load a territory in the map_load vector of teritories
 void Map_loader::loadTerritory(string line){
-	string name;
-	string coord[2];
-	string motherland;	
-	vector<string> nbr_name;
+	string name; // name of territory
+	string coord[2];	// pixel coord (of the  map image)  of the country 
+	string motherland;//Continent which the belongs too 	
+	vector<string> nbr_name;//list of the territory neighbours
 	
-	int i =0;
-	name = line.substr(i, line.find(",",i));
-	i =  line.find(",",i)+1;
-	
-	coord[0] = line.substr(i, line.find(",",i+1)-i);
-	i =  line.find(",",i)+1;
-	
-	coord[1] = line.substr(i, line.find(",",i+1)-i);
-        i =  line.find(",",i)+1;	
 
-	motherland = line.substr(i, line.find(",",i+1)-i);
-        i =  line.find(",",i)+1;
+	try{
 	
-	while ((line.find(",",i-1) != string::npos)){ 
-		nbr_name.push_back(line.substr(i, line.find(",",i+1)-i));
+		int i =0;// variable to store index in a string
+		// retrive name
+		name = line.substr(i, line.find(",",i));
 		i =  line.find(",",i)+1;
-	}
-
+		//retrive x coord
+		coord[0] = line.substr(i, line.find(",",i+1)-i);
+		i =  line.find(",",i)+1;
+		//retrive y coord
+		coord[1] = line.substr(i, line.find(",",i+1)-i);
+	        i =  line.find(",",i)+1;	
+		//retrive continent
+		motherland = line.substr(i, line.find(",",i+1)-i);
+	        i =  line.find(",",i)+1;
+		//retrive neighbours
+		if ((line.find(",",i-1) == string::npos)){throw 1;}
+		while ((line.find(",",i-1) != string::npos)){ 
+			nbr_name.push_back(line.substr(i, line.find(",",i+1)-i));
+			i =  line.find(",",i)+1;
+		}
+	}catch (...){
+		cout<< "invalid Territory declaration, program will terminat" << endl;
+                exit(0);
+  	}
+	
+	//push a new territory to the vector of territories
 	myTerritories.push_back(Territory(name, coord, motherland, nbr_name));
 }
 
+//load a continent in the vector of Continents
 void Map_loader::loadContinent(string line){
-	string name;
-	string bonus;
+	string name;//name of the continent
+	string bonus;//bonus of the contient
+	
+	if(line.find("=")==string::npos){
+                cout<< "invalid Continent declaration, program will terminat" << endl;
+                exit(0);
+        }
 
+	//retrieve the name
 	name = line.substr(0, line.find("="));
+	//retrieve the bonus
 	bonus = line.substr(line.find("=")+1);
 	
+	//push the continent to the vector of Continents
 	myContinents.push_back(Continent(name, bonus));
 }
 
+//parse the map file line by line, take a file name frome the current directory
 void Map_loader::parser(string file_name){
-	string line;
-	ifstream file;
+	string line;//current line being read 
+	ifstream file; //ifstream object for file reading
+	
+	//opening the file
 	file.open(file_name);
+	//checkingif file is open 
 	if (file.is_open()){
 		cout << "\nThe map file was succesfully open" << endl;
 	}else{
@@ -98,54 +132,67 @@ void Map_loader::parser(string file_name){
 		exit(0);
  	}
 	
-	string field_type;
-	bool field = false;
-	string map_var[5];
-	int i = 0;
-	int x = 0;
+
+	string field_type; //string to store the filed_type (info, contient and territory)
+	bool field = false; //bool use when checking if a line is a field header
+	string map_info[5];// string to store the line when the info field is strigger
+	int i = 0;// integer use in line counting 
+	int x = 0;// integer use in line counting
+
+	bool info_loaded = false; // boolean to check if map map info are loaded 
+	bool continent_loaded = false; // boolean to check if continent are loaded
+	bool territory_loaded = false; // boolean to check ig the territory are loaded  
+
 	while ( getline (file,line) ){
-		if(!line.empty()){
+		if(!line.empty()){//skip empty line
 		field = false;
+		//field detector
 		if((!line.substr(0,1).compare("[")) && (!line.substr(line.length()-1).compare("]"))){
 			field = true;
 			}else{
 				field = false;
 			}
-		if(field == true){
+		//if field was found set the field type
+		if(field == true){	
 			field_type = line.substr(1, line.length()-2);
 		}else{
-			if(!field_type.compare("Map")){
-				if(5>x++)map_var[i++] = line;
-			}else if(!field_type.compare("Continents")){
-				loadContinent(line);
-			}else if(!field_type.compare("Territories")){
-				loadTerritory(line);
+			//check the filed type
+			if(!field_type.compare("Map")){	// get the lines with the map info
+				if(5>x++)map_info[i++] = line;
+				info_loaded = true;
+			}else if(!field_type.compare("Continents")){ // get a continent info 
+				loadContinent(line);// send the line to the continent loader
+				continent_loaded = true;
+			}else if(!field_type.compare("Territories")){// get a territory info
+				loadTerritory(line);// send the line to the territory loader
+				territory_loaded = true;
 			}
 		}
 		}
 	}
-	loadInfo(map_var);
-	file.close();
+	
+	//check if all the field where loaded
+	if(!(territory_loaded && continent_loaded && info_loaded)){
+		cout << "\nInvalid map missing field, program will terminat" << endl;
+                exit(0);	
+	}
+
+				
+	loadInfo(map_info);//loads information
+	file.close();// close the file
+	map_loaded = Graph(myTerritories);
 }
 
 
 int main(){
+	//make a new map loader
 	Map_loader Ml;
-	Ml.parser(Ml.choose_file());
-	Ml.myInfo.printInfo();
-	//for (vector<Continent>::iterator i = myContinents.begin() ; i != myContinents.end(); ++i){
-	//	i->printContinent();
-        //}
-	//for (vector<Territory>::iterator i = myTerritories.begin() ; i != myTerritories.end(); ++i){
-        //        i->printTerritory();
-        //}	
 	
-	cout<< "MAP:" <<endl;
-	Graph myGraph(Ml.myTerritories);
-	myGraph.printGraph();
-	cout << "SUB" << endl;
-	Subgraph sub(Ml.myTerritories, Ml.myContinents[0]);
-	sub.printSubG();
-
-	cout << myGraph.isConnected() << endl;
+	//load the map
+	Ml.parser(Ml.choose_file());
+	//print map infor
+	Ml.myInfo.printInfo();
+	//print map graph	
+	Ml.map_loaded.printGraph();
+	
 }

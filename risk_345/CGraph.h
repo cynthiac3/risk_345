@@ -12,32 +12,40 @@ using namespace std;
 
 class Graph{
 	public:
+		//constructor
 		Graph(){};
 		Graph(vector<Territory> myT);
+		
+		//print
 		void printGraph();
+		//check if the nodes(vertex) are all connected
 		bool isConnected();
-		// more will the added when the .cpp class is implimented
-	private:
-		struct edges{
-                        vector<string> list_nbr;
-                };		
 
+
+	private:
+		//edges of vertex
+		struct edges{
+                        vector<string> list_nbr; // list of neighbours
+                };		
+		//vertex of the graph
 		struct vertex {
-        		string name; 
-			edges nbr;
+        		string name; // name of country 
+			edges nbr; // edges of country
 		};
 
-		vector<vertex*> nodes;
-		void pushEdges(edges *head, vertex *nbr);
+		vector<vertex*> nodes; // list of vertex in the graph (does might not be connected)
 		
 };
 
+//Subgraph of a graph
 class Subgraph{
 	public:
+		//constructor
 		Subgraph(vector<Territory> myT, Continent myC);
+		//print Subgraph
 		void printSubG(){subG.printGraph();};
 	private:
-		Graph subG;	
+		Graph subG;//graph (being a sub graph of a other)	
 };
 
 
