@@ -3,6 +3,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include "Dice.h"
+#include <algorithm>  /* sort */
 
 using namespace std;
 
@@ -51,13 +52,15 @@ void Dice::rollDice(int howManyDiceP)  // Use "howManyDiceP" to distinguish it a
 					howManyTimesEachValueHasOccurred[k]++;	
 			}
 	}
+	// Sort the array
+	sort(begin(containerOfDiceRolls), end(containerOfDiceRolls));
 	//Display Roll Results
 	if(howManyDiceP == 1)
-		cout << "You rolled a "<< containerOfDiceRolls[0] << endl;
+		cout << "You rolled "<< containerOfDiceRolls[2] << endl;
 	if (howManyDiceP == 2)
-		cout << "You rolled a " << containerOfDiceRolls[0] << ", " << containerOfDiceRolls[1] << endl;
+		cout << "You rolled " << containerOfDiceRolls[1] << ", " << containerOfDiceRolls[2] << endl;
 	if (howManyDiceP == 3)
-		cout << "You rolled a " << containerOfDiceRolls[0] << ", " << containerOfDiceRolls[1] << ", " << containerOfDiceRolls[2] << endl;
+		cout << "You rolled " << containerOfDiceRolls[0] << ", " << containerOfDiceRolls[1] << ", " << containerOfDiceRolls[2] << endl;
 }
 
 
