@@ -9,12 +9,16 @@ using namespace std;
 
 Player::Player() {
 	// Initialize a collection of countries that the player owns (hardcoded for assignment #1 only)
+	// The coordinates of each country
 	string coord1[] = { "10", "20" };
 	string coord2[] = { "20", "30" };
+	// The list of neighbors of each country
 	vector<string> nbr1{ "USA" };
 	vector<string> nbr2{ "Sweden", "Finland" };
+	// Initializing the pointers to new territories objects
 	Territory* t1 = new Territory("Canada", coord1, "North America", nbr1);
 	Territory* t2 = new Territory("Norway", coord2, "Europe", nbr2);
+	// Adding the territories to the list
 	myTerritories.push_back(t1);
 	myTerritories.push_back(t2);
 
@@ -86,15 +90,16 @@ void printPlayersCards(Player p) {
 int main() {
 	int ans; // option number the player chooses from the menu
 
-	// Create a deck for the game 
+	// Create a deck for the game (would be the same for all players) 
 	Deck gameDeck;
 	gameDeck.fillDeck(42);
 	
-	// Create one player and set the player's hand of cards from the deck created
+	// Create one player and set the player's hand of cards with 5 cards from the deck created
 	Player player;
 	player.setHand(gameDeck);
 
 	while (true) {
+		// MENU
 		cout << endl << "------------------------------------" << endl
 			<< "Select an action to perform: " << endl << "1. Reinforce" << endl << "2. Attack" << endl << "3. Fortify" << endl
 			<< "----------------" << endl << "4. Roll one Dice" << endl << "5. Show hand of cards" << endl << "6. See list of countries owned" << endl
