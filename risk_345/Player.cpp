@@ -1,7 +1,5 @@
 #include <iostream>
-#include <string>
 #include "player.h"
-#include "Deck.h"
 
 
 using namespace std;
