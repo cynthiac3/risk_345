@@ -13,7 +13,7 @@ class Player {
 public: 
 	Player(); // default constructor
 	Dice getDice(); // returns the dice facility the player owns
-	void getCountries(); // returns a string that list the countries info 
+	void getCountries(); // prints the names of the countries owned 
 	vector<Deck::Cards> getHand(); // returns the hand of cards of the player
 	void setHand(Deck deck); // method to add cards to the vector handOfCards
 
