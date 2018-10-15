@@ -4,8 +4,6 @@
 #include <string>
 
 
-
-
 Deck *playingDeck;
 vector<Deck::Cards> handOfCards(0);
 
@@ -27,10 +25,6 @@ void Hand::setDeck(Deck deck)
 	this->deck = deck;
 }
 
-#include "Hand.h"
-#include <iostream>
-#include <stdlib.h>
-#include <String>
 
 //Constructor that takes Deck object that will be used by all players playing the same game and sets handOfCards to size 5
 Hand::Hand(Deck *deck) 
