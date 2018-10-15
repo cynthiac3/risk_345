@@ -103,7 +103,7 @@ void Map_loader::loadContinent(string line){
 	string name;//name of the continent
 	string bonus;//bonus of the contient
 	
-	if(line.find("=")==string::npos){
+	if(line.find("=")==string::npos ){
                 cout<< "invalid Continent declaration, program will terminat" << endl;
                 exit(0);
         }
@@ -181,18 +181,8 @@ void Map_loader::parser(string file_name){
 	loadInfo(map_info);//loads information
 	file.close();// close the file
 	map_loaded = Graph(myTerritories);
+	
+	
 }
 
 
-int main(){
-	//make a new map loader
-	Map_loader Ml;
-	
-	//load the map
-	Ml.parser(Ml.choose_file());
-	//print map infor
-	Ml.myInfo.printInfo();
-	//print map graph	
-	Ml.map_loaded.printGraph();
-	
-}

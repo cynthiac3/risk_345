@@ -71,9 +71,10 @@ bool Graph::isConnected(){
 	}	
 }
 
+
 //simple function to print the Connected graph
 void Graph::printGraph(){
-	cout << "MAP CONNECTED GRAPH: \n\n" << endl;//Print the header 
+	cout << "GRAPH: \n\n" << endl;//Print the header 
 
 	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
 		cout << "\tTERITORY: " << (*i)->name << " NEIGHBOURS:" << endl; // print the country

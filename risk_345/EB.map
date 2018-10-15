@@ -14,11 +14,10 @@ Edisons Shine=2
 Hemingways Passage=10
 Beatles Rock=2
 Ceasars Grounds=5
-test=1
+
 
 
 [Territories]
-xxx,142,85,test Turn,ttt
 
 a1,142,85,Michaelangelos Turn,a2,a4,a5
 a2,308,79,Michaelangelos Turn,a1,a3,a5,a6,a7
@@ -35,6 +34,7 @@ b4,875,128,Edisons Shine,b2,b6,b7,a3,d3,c6
 b5,649,211,Edisons Shine,b2,c6
 b6,819,204,Edisons Shine,b2,b4,b7,c8
 b7,895,231,Edisons Shine,b4,b6,c9
+
 
 c1,59,357,Hemingways Passage,a4,d1
 c2,182,334,Hemingways Passage,a5,d2

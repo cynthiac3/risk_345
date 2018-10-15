@@ -21,12 +21,16 @@ class Graph{
 		//check if the nodes(vertex) are all connected
 		bool isConnected();
 
+		//getter
+		//vector<vertex*> getGraph(){return }
+		friend class Map;
 
 	private:
 		//edges of vertex
 		struct edges{
                         vector<string> list_nbr; // list of neighbours
                 };		
+		
 		//vertex of the graph
 		struct vertex {
         		string name; // name of country 
@@ -43,7 +47,8 @@ class Subgraph{
 		//constructor
 		Subgraph(vector<Territory> myT, Continent myC);
 		//print Subgraph
-		void printSubG(){subG.printGraph();};
+		void printSubG(){cout << "\n\nSUB "; subG.printGraph();};
+		bool isConnected(){return subG.isConnected();}
 	private:
 		Graph subG;//graph (being a sub graph of a other)	
 };
