@@ -1,23 +1,26 @@
 #pragma once
 #include "Deck.h"
 
-class Hand {
+
+class Hand 
+{
+
 
 public:
-	Deck deck; //deck object for all players to play from
-	enum Army { Infantry, Cavalry, Artillery };  //Possible type of Army
-	vector <Deck::Cards> handOfCards;
 
-	Hand(); // default constructor
+	Deck *playingDeck; //deck object for all players to play from
+	vector <Deck::Cards> handOfCards; //Cards in Players possesion
+	enum Army { Infantry, Cavalry, Artillery };  //Possible types of Army
 
-	Hand(Deck deck); //Constructor that passes reference of Deck so all players share same deck
-
-	void setDeck(Deck deck); // Add deck to hand after it was initialized with a default constructor
-
+	Hand(Deck *deck); //Constructor that passes reference of Deck so all players share same deck
 	void fillHand(Deck &playingDeck);
-
-	void exchange(Deck::Cards first, Deck::Cards second, Deck::Cards third);
-
+	void exchange(int cardOne, int cardTwo, int cardThree, vector<Deck::Cards> &playingDeck);
 	string convertCardsToString(Deck::Cards card);
 
-};
+
+	void setDeck(Deck deck); // Add deck to hand after it was initialized with a default constructor
+}
+
+
+
+
