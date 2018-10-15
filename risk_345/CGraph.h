@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include ".\Map_CPNT.h"
+#include ".\Player.h"
  
 using namespace std;
 
@@ -20,10 +21,7 @@ class Graph{
 		void printGraph();
 		//check if the nodes(vertex) are all connected
 		bool isConnected();
-
-		//getter
-		//vector<vertex*> getGraph(){return }
-		friend class Map;
+		
 
 	private:
 		//edges of vertex
@@ -35,6 +33,7 @@ class Graph{
 		struct vertex {
         		string name; // name of country 
 			edges nbr; // edges of country
+			Player *owner;
 		};
 
 		vector<vertex*> nodes; // list of vertex in the graph (does might not be connected)
