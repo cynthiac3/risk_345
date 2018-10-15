@@ -19,7 +19,7 @@ public:
 
 
 	void setDeck(Deck deck); // Add deck to hand after it was initialized with a default constructor
-}
+};
 
 
 
