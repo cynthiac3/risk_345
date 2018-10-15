@@ -22,7 +22,7 @@ Hand::Hand()
 
 void Hand::setDeck(Deck deck) 
 {
-	this->deck = deck;
+	this->playingDeck = deck;
 }
 
 
