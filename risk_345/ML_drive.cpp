@@ -5,7 +5,10 @@
 #include ".\Map_loader.h"
 #include "Player.h"
 
+
 int main() {
+
+	/***********************************************   ASSIGNMENT #2 - PART 1 **********************************************/
 	//make a new map loader
 	Map_loader Ml;
 
@@ -15,6 +18,9 @@ int main() {
 	Ml.myInfo.printInfo();
 	//print map graph	
 	Ml.map_loaded.printGraph();
+
+	// ^^^ Put what is above in comments if you want to test the main game loop only
+	
 
 	// Input the number of players
 	vector<Player*> players;
@@ -44,6 +50,7 @@ int main() {
 			}
 		}
 	}
+	cin.clear();
 	// Create a deck for the game
 	Deck gameDeck;
 	gameDeck.fillDeck(42);
@@ -51,10 +58,17 @@ int main() {
 	// Create new players in a vector
 	for (int i = 0; i < NbPlayers; i++) {
 		players.push_back(new Player()); // create player object
-		players.at(i)->setHand(gameDeck); // assign a hand of cards
+		players.at(i)->setHand(&gameDeck); // assign a hand of cards
 	}
 
-	// MAIN GAME LOOP
+	/***********************************************   ASSIGNMENT #2 - PART 2 **********************************************/
+	// Calculate the number of armies for each players (depends on nb of players)
+	// Assign their armies to countries so that the player own these countries
+	// etc.
+
+
+	/***********************************************   ASSIGNMENT #2 - PART 3 **********************************************/
+	// MAIN GAME LOOP 
 	bool gameOver = false;
 	while (!gameOver){
 	
@@ -63,20 +77,30 @@ int main() {
 			cout << "---------------------------------------------------------------------- \n"
 				"/////////////////////////// PLAYER " << j + 1 << " TURN ///////////////////////////  \n"
 				"----------------------------------------------------------------------" << endl;
+			
+			/***********************************************   ASSIGNMENT #2 - PART 4 **********************************************/
 			// PHASE 1: REINFORCE
 			players.at(j)->reinforce();
+
+			/***********************************************   ASSIGNMENT #2 - PART 5 **********************************************/
 			// PHASE 2: ATTACK
 			players.at(j)->attack();
+
+			/***********************************************   ASSIGNMENT #2 - PART 6 **********************************************/
 			// PHASE 3: FORTIFY
 			players.at(j)->fortify();
+
+			cout << endl;
+			system("PAUSE");
 		}
 
-		// TODO: if all the countries belong to one player, the game is over
+		// TODO: if all the countries belong to one player, the game is over (Part 3 of assignment)
 	}
 
-	system("PAUSE");
+	
 
 	return 0;
 
 }
+
 
