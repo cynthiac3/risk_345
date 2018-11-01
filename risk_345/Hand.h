@@ -5,10 +5,6 @@
 class Hand 
 {
 
-
-
-
-
 public:
 
 	Deck *playingDeck; //deck object for all players to play from
@@ -16,6 +12,7 @@ public:
 	enum Army { Infantry, Cavalry, Artillery };  //Possible types of Army
 
 	Hand(Deck *deck); //Constructor that passes reference of Deck so all players share same deck
+	Hand (); //Default constructor
 	void fillHand(Deck &playingDeck);
 	void exchange(int cardOne, int cardTwo, int cardThree, vector<Deck::Cards> &playingDeck);
 	string convertCardsToString(Deck::Cards card);
