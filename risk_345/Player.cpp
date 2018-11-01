@@ -1,12 +1,13 @@
 #include <iostream>
 #include "player.h"
+#include <cmath>
 
 
 using namespace std;
 	
 
 Player::Player() {
-	// Initialize a collection of countries that the player owns (hardcoded for assignment #1 only)
+	// Initialize a collection of countries that the player owns (HARDCODED FOR ASSIGNMENT#1 ONLY)
 	// The coordinates of each country
 	string coord1[] = { "10", "20" };
 	string coord2[] = { "20", "30" };
@@ -29,6 +30,20 @@ Player::Player() {
 // To be implemented in later assignments
 void Player::reinforce() {
 	cout << "The player is reinforcing itself." << endl;
+
+	// Player received nb of countries owned divided by 3 rounded down
+	int nbArmiesToPlace = floor(myTerritories.size() / 3);
+	if (nbArmiesToPlace < 3) // min is 3
+		nbArmiesToPlace = 3;
+
+	cout << "Based on the number of countries you own, you get " << nbArmiesToPlace << " armies." << endl;
+
+	// TODO: If the player owns an entire continent, add the bonus armies
+	cout << "You don't own any continent, no bonus armies." << endl;
+
+	// TODO: Exchange cards 
+	//etc.
+
 }
 
 // To be implemented in later assignments
@@ -46,18 +61,17 @@ Dice Player::getDice(){
 	return dice;
 }
 
-// Returns the vector holding the player's cards
-vector<Deck::Cards> Player::getHand() {
-	return handOfCards;
+
+// Returns the Hand object holding the player's cards
+Hand* Player::getHand() {
+	return &hand;
 }
 
+
 // Set 5 cards in the hand of the player, picked from the deck passed as a parameter
-void Player::setHand(Deck theDeck) {
-	handOfCards.push_back(theDeck.draw(theDeck.deck));
-	handOfCards.push_back(theDeck.draw(theDeck.deck));
-	handOfCards.push_back(theDeck.draw(theDeck.deck));
-	handOfCards.push_back(theDeck.draw(theDeck.deck));
-	handOfCards.push_back(theDeck.draw(theDeck.deck));
+void Player::setHand(Deck *theDeck) {
+	hand.playingDeck = theDeck;
+	hand.handOfCards.resize(5);
 }
 
 // Prints the names of the country that the player owns
@@ -73,15 +87,18 @@ void Player::getCountries() {
 
 // Print the cards that the player owns 
 void printPlayersCards(Player p) {
-	for (int i = 0; i < p.getHand().size(); i++)
+
+	
+	for (int i = 0; i < p.getHand()->handOfCards.size(); i++)
 	{
-			switch (p.getHand()[i])
+			switch (p.getHand()->handOfCards.at(i))
 			{
 				case Deck::Cards::Infantry: cout << "Card #" << i + 1 << ": Infantry" << endl; break;
 				case Deck::Cards::Cavalry: cout << "Card #" << i + 1 << ": Cavalry" << endl; break;
 				case Deck::Cards::Artillery: cout << "Card #" << i + 1 << ": Artillery" << endl; break;
 			}
 	}
+	
 }
 
 /*** Driver ***/
@@ -94,7 +111,8 @@ int main() {
 	
 	// Create one player and set the player's hand of cards with 5 cards from the deck created
 	Player player;
-	player.setHand(gameDeck);
+	player.setHand(&gameDeck);
+	player.getHand()->fillHand(gameDeck);
 
 	while (true) {
 		// MENU
