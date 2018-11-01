@@ -4,9 +4,7 @@
 #include <String>
 
 
-
 Deck *playingDeck;
-
 
 
 //to show number of armies users has that are untraded as well as how many army units they have traded for
@@ -24,7 +22,10 @@ Hand::Hand(Deck *deck)
 	handOfCards.resize(5);
 }
 
-
+// Default constructor
+Hand::Hand() {
+	
+}
 
 //Takes address of deck object, finds empty spot in hand and fills with card.  If no empty spots no card is accepted
 void Hand::fillHand(Deck &playingDeck)
@@ -35,11 +36,9 @@ void Hand::fillHand(Deck &playingDeck)
 		if (handOfCards[x]== Deck::Cards::Null)
 		{
 			handOfCards.at(x) = playingDeck.draw(playingDeck.deck);
-			break;
 		}
 	}
 }
-
 
 
 void  Hand::exchange(int cardOne, int cardTwo, int cardThree, vector<Deck::Cards> &playersHand)
@@ -137,8 +136,6 @@ string convertCardsToString(Deck::Cards card)
 
 
 
-
-
 int main() {
 
 	Deck playerDeck; //Create Deck object
@@ -200,9 +197,6 @@ int main() {
 
 
 
-
-
-
 	//FILLING HAND SECOND TIME
 	hand.fillHand(playerDeck);
 	hand.fillHand(playerDeck);
@@ -227,9 +221,6 @@ int main() {
 	cout << "You have " << infantry << " infantry units" << endl;
 	cout << "You have " << cavalry << " cavalary units" << endl;
 	cout << "You have " << artillery << " artillery units" << endl;
-
-
-
 
 
 
