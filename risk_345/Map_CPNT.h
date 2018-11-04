@@ -34,6 +34,7 @@ class Territory{
 		string getName(){return name;};
 		string getM(){return motherland;};
 		vector<string> getNbr(){return nbr_name;};
+		int getArmies() {return nbArmies;};
 
 		//setter
 		void setName(string str){name = str; };
@@ -44,6 +45,7 @@ class Territory{
 		string coord[2]; // (x,y) coordinate of pixel on the image of the map
 		string motherland; //continent
 		vector<string> nbr_name; // neighbours
+		int nbArmies;
 };
 
 //Continent
@@ -62,5 +64,3 @@ class Continent{
 	
 
 #endif
-
-
