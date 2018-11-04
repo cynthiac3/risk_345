@@ -4,26 +4,12 @@
 
 
 using namespace std;
+
+// Declare method to use it in main()
+void setUpGameDemo(Player* mark, Player* bob);
 	
 
 Player::Player() {
-	// Initialize a collection of countries that the player owns (HARDCODED FOR ASSIGNMENT#1 ONLY)
-	// The coordinates of each country
-	string coord1[] = { "10", "20" };
-	string coord2[] = { "20", "30" };
-	// The list of neighbors of each country
-	vector<string> nbr1{ "USA" };
-	vector<string> nbr2{ "Sweden", "Finland" };
-	// Initializing the pointers to new territories objects
-	Territory* t1 = new Territory("Canada", coord1, "North America", nbr1);
-	Territory* t2 = new Territory("Norway", coord2, "Europe", nbr2);
-	// Adding the territories to the list
-	myTerritories.push_back(t1);
-	myTerritories.push_back(t2);
-
-	t1 = NULL;
-	t2 = NULL;
-
 	cout << "A player was created." << endl;
 } 
 
@@ -52,10 +38,11 @@ void Player::attack() {
 	int countryNB;
 	int nbrNB;
 	bool validCountry = false;
+	bool validDice = false;
+	int dicesAttack, dicesDefend;
 
 	// Player chooses if they want to attack or not
-	cout << "The player is attacking." << endl;
-	cout << "Do you want to attack? (y/n)" << endl;
+	cout << "Do you want to attack a country? (y/n)" << endl;
 	cin >> ans;
 	cout << endl;
 
@@ -66,8 +53,7 @@ void Player::attack() {
 		while (!validCountry) {
 			cout << endl << "Select a country to attack from: ";
 			cin >> countryNB;
-			countryNB--; // bc indexes in vector starts at 0
-			if (myTerritories.at(countryNB)->getArmies() >= 2) {
+			if (myTerritories.at(countryNB)->nbArmies >= 2) {
 				validCountry = true;
 			}
 			else {
@@ -76,12 +62,90 @@ void Player::attack() {
 		}
 
 		// Player chooses on of the country's neighbor to attack
-		for (int i = 0; i < myTerritories.at(countryNB)->getNbr().size(); i++) {
-			cout << "Neighbor #" << i+1 << " : " << myTerritories.at(countryNB)->getNbr().at(i) << endl;
+		for (int i = 0; i < myTerritories.at(countryNB)->nbr.size(); i++) {
+			cout << "Neighbor #" << i << " : " << myTerritories.at(countryNB)->nbr.at(i)->name 
+				<< ". Armies: " << myTerritories.at(countryNB)->nbr.at(i)->nbArmies << endl;
 		}
 		cout << "Select the neighbor of this country to attack: ";
 		cin >> nbrNB;
 
+		// Store neighbor country in a new variable to access to owner easily
+		Country* defenderCountry = myTerritories.at(countryNB)->nbr.at(nbrNB);
+		cout << "This country belongs to: " << defenderCountry->owner->name << endl;
+
+
+		/*The attacker and defender players choose the number of dice to roll for their attack/defense. The attacker
+		is allowed 1 to 3 dice, with the maximum number of dice being the number of armies on the attacking
+		country, minus one. The defender is allowed 1 to 2 dice, with the maximum number of dice being the
+		number of armies on the defending country.
+		*/
+		while (!validDice) {
+			cout << "Attacker must choose number of dices to roll (1, 2 or 3): ";
+			cin >> dicesAttack;
+
+			if (dicesAttack <= myTerritories.at(countryNB)->nbArmies - 1) {
+				validDice = true;
+			}
+			else
+			{
+				cout <<  "Number of dices must be smaller or equal to number of armies -1 on the attacking country." << endl;
+			}
+		}
+		validDice = false;
+
+		
+		while (!validDice) {
+			cout << endl << "Defender chooses number of dices to roll (1 or 2): ";
+			cin >> dicesDefend;
+
+			if (dicesAttack <= defenderCountry->nbArmies) {
+				validDice = true;
+			}
+			else
+			{
+				cout << "Number of dices must be smaller or equal to number of armies -1 on the attacking country." << endl;
+			}
+		}
+
+		/*The dice are rolled for each player and sorted, then compared pair-wise. For each pair starting with the
+		highest, the player with the lowest roll loses one army. If the pair is equal, the attacker loses an army. */
+		dice.rollDice(dicesAttack);
+		//defenderCountry->owner->getDice()->rollDice(dicesDefend);
+		defenderCountry->owner->getDice()->rollDice(dicesDefend);
+
+		// HIGHEST ROLL - Attacker wins
+		if (dice.containerOfDiceRolls[2] > defenderCountry->owner->getDice()->containerOfDiceRolls[2]){
+			defenderCountry->nbArmies--;
+		}
+		else { // Attacker looses
+			myTerritories.at(countryNB)->nbArmies--;
+		}
+		// MID ROLL - Attacker wins
+		if (dice.containerOfDiceRolls[1] > defenderCountry->owner->getDice()->containerOfDiceRolls[1]) {
+			defenderCountry->nbArmies--;
+		}
+		else { // Attacker looses
+			myTerritories.at(countryNB)->nbArmies--;
+		}
+		// LOWEST ROLL - Attacker wins
+		if (dice.containerOfDiceRolls[0] > defenderCountry->owner->getDice()->containerOfDiceRolls[0]) {
+			defenderCountry->nbArmies--;
+		}
+		else { // Attacker looses
+			myTerritories.at(countryNB)->nbArmies--;
+		}
+
+		/*If the attacked country runs out of armies, it has been defeated. The defending country now belongs to
+		the attacking player. The attacker is allowed to move a number of armies from the attacking country to the
+		attacked country, in the range [1 to (number of armies on attacking country -1)]*/
+		if (defenderCountry->nbArmies == 0) {
+			cout << "Defender country has been defeated. This country now belong to the attacking player."
+				<< endl << "Attacking player now needs to move at least 1 army from the attacking country to their new country." << endl
+				<< endl << "Please enter the number of armies you want to move: " << endl;
+
+		}
+
+		/*The player is allowed to initiate any number of attacks per turn, including 0.*/
 	}
 }
 
@@ -91,8 +155,8 @@ void Player::fortify() {
 }
 
 // Returns the dice facility of the player
-Dice Player::getDice(){
-	return dice;
+Dice* Player::getDice(){
+	return &dice;
 }
 
 
@@ -101,11 +165,24 @@ Hand* Player::getHand() {
 	return &hand;
 }
 
+// Returns the Hand object holding the player's cards
+string Player::getName() {
+	return name;
+}
+
+// Set 5 cards in the hand of the player, picked from the deck passed as a parameter
+void Player::setName(string theName) {
+	name = theName;
+}
 
 // Set 5 cards in the hand of the player, picked from the deck passed as a parameter
 void Player::setHand(Deck *theDeck) {
 	hand.playingDeck = theDeck;
 	hand.handOfCards.resize(5);
+}
+
+void Player::addCountry(Country* country) {
+	myTerritories.push_back(country);
 }
 
 // Prints the names of the country that the player owns
@@ -115,71 +192,140 @@ void Player::getCountries() {
 	}
 	else {
 		for (int i = 0; i < myTerritories.size(); i++)
-			cout << "Territory #" << i + 1 << ": " << myTerritories.at(i)->getName()
-			<< ". Armies: " << myTerritories.at(i)->getArmies() << endl;
+			cout << "Territory #" << i << ": " << myTerritories.at(i)->name
+			<< ". Armies: " << myTerritories.at(i)->nbArmies << endl;
 	}
 }
 
 // Print the cards that the player owns 
-void printPlayersCards(Player p) {
+void printPlayersCards(Player* p) {
 
-	
-	for (int i = 0; i < p.getHand()->handOfCards.size(); i++)
+	for (int i = 0; i < p->getHand()->handOfCards.size(); i++)
 	{
-			switch (p.getHand()->handOfCards.at(i))
+			switch (p->getHand()->handOfCards.at(i))
 			{
 				case Deck::Cards::Infantry: cout << "Card #" << i + 1 << ": Infantry" << endl; break;
 				case Deck::Cards::Cavalry: cout << "Card #" << i + 1 << ": Cavalry" << endl; break;
 				case Deck::Cards::Artillery: cout << "Card #" << i + 1 << ": Artillery" << endl; break;
 			}
 	}
-	
 }
 
 /*** Driver ***/
 int main() {
 	int ans; // option number the player chooses from the menu
 
-	// Create a deck for the game (would be the same for all players) 
+	// Create a deck for the game (same for all players) 
 	Deck gameDeck;
 	gameDeck.fillDeck(42);
 	
-	// Create one player and set the player's hand of cards with 5 cards from the deck created
-	Player player;
-	player.setHand(&gameDeck);
-	player.getHand()->fillHand(gameDeck);
+	// Create players and set the players' hand of cards with 5 cards from the deck created
+	/*	
+		CREATING PLAYER 1
+	*/
+	Player* player1 = new Player();
+	player1->setHand(&gameDeck);
+	player1->getHand()->fillHand(gameDeck);
+	player1->setName("Mark");
+
+	/*
+		CREATING PLAYER 2
+	*/
+	Player* player2 = new Player();
+	player2->setHand(&gameDeck);
+	player2->getHand()->fillHand(gameDeck);
+	player2->setName("Bob");
+
+	// Create vector of players
+	vector<Player*> players;
+	players.push_back(player1);
+	players.push_back(player2);
+
+	// Set up the game map (for demo only)
+	setUpGameDemo(player1, player2);
+
 
 	while (true) {
-		// MENU
-		cout << endl << "------------------------------------" << endl
-			<< "Select an action to perform: " << endl << "1. Reinforce" << endl << "2. Attack" << endl << "3. Fortify" << endl
-			<< "----------------" << endl << "4. Roll one Dice" << endl << "5. Show hand of cards" << endl << "6. See list of countries owned" << endl
-			<< "------------------------------------" << endl;
-		// Player enters a choice from the menu
-		cin >> ans;
-		cout << endl;
 
-		// Type checking the input
-		if (cin.fail())
-		{
-			cout << "You did not input a number." << endl;
-			cin.clear();
-			std::string ignoreLine; //read the invalid input into it
-			std::getline(cin, ignoreLine); //read the line till next space
-		}
-		else {
-			// Perform the action the player chose 
-			switch (ans) {
-				case 1: player.reinforce(); break;
-				case 2: player.attack(); break;
-				case 3: player.fortify(); break;
-				case 4: player.getDice().rollDice(1); break;
-				case 5: printPlayersCards(player); break;
-				case 6: player.getCountries(); break;
+		// Each player has a turn
+		for (int j = 0; j < players.size(); j++) {
+
+			// MENU
+			cout << endl << "---------------------------------------------------------------------- \n"
+				"/////////////////////////// PLAYER " << j + 1 << " TURN ///////////////////////////  \n"
+				"----------------------------------------------------------------------" << endl
+				<< "Select an action to perform: " << endl << "1. Reinforce" << endl << "2. Attack" << endl << "3. Fortify" << endl
+				<< "----------------" << endl << "4. Roll one Dice" << endl << "5. Show hand of cards" << endl << "6. See list of countries owned" << endl
+				<< "------------------------------------" << endl;
+			// Player enters a choice from the menu
+			cin >> ans;
+			cout << endl;
+
+			// Type checking the input
+			if (cin.fail())
+			{
+				cout << "You did not input a number." << endl;
+				cin.clear();
+				std::string ignoreLine; //read the invalid input into it
+				std::getline(cin, ignoreLine); //read the line till next space
+			}
+			else {
+				// Perform the action the player chose 
+				switch (ans) {
+				case 1: players.at(j)->reinforce(); break;
+				case 2: players.at(j)->attack(); break;
+				case 3: players.at(j)->fortify(); break;
+				case 4: players.at(j)->getDice()->rollDice(1); break;
+				case 5: printPlayersCards(players.at(j)); break;
+				case 6: players.at(j)->getCountries(); break;
 				default: cout << "Invalid answer." << endl;
+				}
 			}
 		}
 
 	}
 	return 0;
+}
+
+
+void setUpGameDemo(Player* mark, Player* bob) {
+	// Create countries
+	Country* Iceland = new Country();
+	Iceland->name = "Iceland";
+	Iceland->nbArmies = 2;
+	Iceland->owner = bob;
+
+	Country* France = new Country();
+	France->name = "France";
+	France->nbArmies = 6;
+	France->owner = mark;
+
+	Country* Germany = new Country();
+	Germany->name = "Germany";
+	Germany->nbArmies = 1;
+	Germany->owner = mark;
+
+	Country* Spain = new Country();
+	Spain->name = "Spain";
+	Spain->nbArmies = 2;
+	Spain->owner = bob;
+
+	Country* Italy = new Country();
+	Italy->name = "Italy";
+	Italy->nbArmies = 5;
+	Italy->owner = bob;
+
+	// Set up neighbors
+	Iceland->nbr = {};
+	France->nbr = { Germany, Spain, Italy };
+	Germany->nbr = { France };
+	Spain->nbr = { France };
+	Italy->nbr = { France };
+
+	// Put countries inside player's vector
+	mark->addCountry(France);
+	mark->addCountry(Germany);
+	bob->addCountry(Spain);
+	bob->addCountry(Italy);
+	bob->addCountry(Iceland);
 }
