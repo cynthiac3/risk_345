@@ -6,9 +6,8 @@
 #include <vector>
 #include <algorithm> 
 #include <iostream>
-#include ".\CGraph.h"
-#include ".\Map_CPNT.h"
-#include ".\Map_loader.h"
+
+#include ".\Player.h"
 #include ".\Map.h"
 
 using namespace std;
@@ -55,14 +54,81 @@ void Map::printMap(){
 	} 
 }
 
+//return true if a player owns all territories 
+bool Map::isOwnBy(Player *p){ 
+	return mapG.isOwnBy(p);
+} 
+		
+//Set the nb of army  on a territoriy
+void Map::setNbArmies(vertex v, int nbOfA){
+	mapG.setNbArmies(v, nbOfA);
+}	
 
+//return the nb of contrie of a territory
+int Map::getNbofArmies(vertex v){
+	return mapG.getNbofArmies(v);
+}
+			
+//set the owner of a territory	
+void Map::setOwner(vertex v, Player *p){
+	mapG.setOwner(v,p);
+}
+
+//return the owner of a vertex
+Player* Map::getOwner(vertex v){
+	return mapG.getOwner(v);
+}
+
+vector<vertex*> Map::getNbr(vertex v){
+	return mapG.getNbr(v);
+}
+
+//testing 
+
+void Map::setwinner(Player *p){
+	mapG.setAll(p);
+}
 
 
 //driver for the map
 int main(){
 	Map map;
-	map.printMap();
+	//map.printMap();
+	
+	Player p1; //creates player1
+	
+	map.setwinner(&p1); // set player winner 
+	
+	cout << map.isOwnBy(&p1) << endl; // check if player own the map (return true)
 
+	Player p2;// creates 
+	
+	//making country A1 for testing on EB.map
+	vector<string> nbr;
+	nbr.push_back("a2");
+	nbr.push_back("a4");
+	nbr.push_back("a5");
+	
+	vertex country = {"a1", nbr, &p1, 1};
+	
+	//set the owner of country A1 to p2
+	map.setOwner(country, &p2);
+	
+	cout << map.isOwnBy(&p1) << endl; // check if player two owns the map (return false since p2 owns 1 country)
+	
+	map.setNbArmies(country, 10); // set the nb of army of p2 on A1 to 10
+
+	cout << map.getNbofArmies(country) << endl;
+	
+	vector<vertex*> nbr_ofp2; // vector of vertex of A1
+	nbr_ofp2 = map.getNbr(country);
+	
+	for (vector<vertex*>::iterator i = nbr_ofp2.begin() ; i != nbr_ofp2.end(); ++i){
+		cout << (*i)->name <<endl;
+		
+	}
 }
+
+
 
 

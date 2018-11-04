@@ -71,6 +71,64 @@ bool Graph::isConnected(){
 	}	
 }
 
+//Check if the map is owned  by a player 
+bool Graph::isOwnBy(Player *p){
+
+	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
+		if ( (*i)->owner != p ) return false;
+	}
+	return true;
+}
+
+//Set the nb of army  on a territoriy
+void Graph::setNbArmies(vertex v, int nbOfA){
+	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
+		if ( (*i)->name.compare(v.name) == 0 ){
+			(*i)->nbOfArmies = nbOfA;
+		}
+	}
+				
+}	//Set the nb of army  on a territoriy
+int Graph::getNbofArmies(vertex v){
+	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
+		if ( (*i)->name.compare(v.name) == 0 ){
+			return (*i)->nbOfArmies;
+		}
+	}
+}
+
+//set the owner of a territory
+void Graph::setOwner(vertex v, Player *p){
+	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
+		if ( (*i)->name.compare(v.name) == 0 ){
+			(*i)->owner = p;
+		}
+	}
+}
+//return the owner of a vertex
+Player* Graph::getOwner(vertex v){
+	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
+		if ( (*i)->name.compare(v.name) == 0 ){
+			return v.owner;
+		}
+	}
+}
+
+vector<vertex*> Graph::getNbr(vertex v){
+	vector<vertex*> itsNBR;
+			
+			for (vector<string>::iterator j = v.nbr.list_nbr.begin() ; j != v.nbr.list_nbr.end(); ++j){
+				
+				for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
+					if ( (*i)->name.compare((*j)) == 0 ){
+						itsNBR.push_back(*i);
+					}
+				}
+			}
+	
+	return itsNBR;
+}
+		
 
 //simple function to print the Connected graph
 void Graph::printGraph(){
@@ -84,6 +142,16 @@ void Graph::printGraph(){
         	}
         }	
 }
+
+
+//stesting
+void Graph::setAll(Player *p){
+	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
+		(*i)->owner = p;
+		(*i)->nbOfArmies = 1;
+	}
+}
+
 
 //creates a sub graph. takes in the vector of territory and the continent for which the subgraph is being created 
 Subgraph::Subgraph(vector<Territory> myT, Continent myC){
