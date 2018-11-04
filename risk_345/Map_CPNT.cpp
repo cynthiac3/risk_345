@@ -39,6 +39,7 @@ Territory::Territory(string Cname, string Ccoord[2], string Cmotherland, vector<
 	coord[1] = Ccoord[1];
 	motherland = Cmotherland;
 	nbr_name = Cnbr_name;
+	nbArmies = 0;
 }
 
 //Continent constructor
@@ -46,4 +47,3 @@ Continent::Continent(string str, string B){
 	name = str;
 	bonus = B;
 }
-
