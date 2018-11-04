@@ -48,7 +48,41 @@ void Player::reinforce() {
 
 // To be implemented in later assignments
 void Player::attack() {
+	char ans;
+	int countryNB;
+	int nbrNB;
+	bool validCountry = false;
+
+	// Player chooses if they want to attack or not
 	cout << "The player is attacking." << endl;
+	cout << "Do you want to attack? (y/n)" << endl;
+	cin >> ans;
+	cout << endl;
+
+	if (ans == 'y') {
+		getCountries();
+
+		// Enter a valid country to attack from
+		while (!validCountry) {
+			cout << endl << "Select a country to attack from: ";
+			cin >> countryNB;
+			countryNB--; // bc indexes in vector starts at 0
+			if (myTerritories.at(countryNB)->getArmies() >= 2) {
+				validCountry = true;
+			}
+			else {
+				cout << "The country must have at least 2 armies on it." << endl;
+			}
+		}
+
+		// Player chooses on of the country's neighbor to attack
+		for (int i = 0; i < myTerritories.at(countryNB)->getNbr().size(); i++) {
+			cout << "Neighbor #" << i+1 << " : " << myTerritories.at(countryNB)->getNbr().at(i) << endl;
+		}
+		cout << "Select the neighbor of this country to attack: ";
+		cin >> nbrNB;
+
+	}
 }
 
 // To be implemented in later assignments
@@ -80,8 +114,9 @@ void Player::getCountries() {
 		cout << "Player doesn't own any countries.";
 	}
 	else {
-		for (int i =0; i < myTerritories.size(); i++)
-			cout << "Territory #" << i+1 << ": " << myTerritories.at(i)->getName() << endl;
+		for (int i = 0; i < myTerritories.size(); i++)
+			cout << "Territory #" << i + 1 << ": " << myTerritories.at(i)->getName()
+			<< ". Armies: " << myTerritories.at(i)->getArmies() << endl;
 	}
 }
 
