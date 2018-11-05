@@ -10,7 +10,8 @@ using namespace std;
 void setUpGameDemo(Player* mark, Player* bob);
 void clearInput();
 void moveArmies(Country* receiver, Country* giver);
-bool checkValidNeighbors(Country* attacking);
+bool checkValidNeighbors_Attack(Country* attacking);
+bool checkValidNeighbors_Fortify(Country* attacking);
 
 // Default constructor
 Player::Player() {
@@ -31,19 +32,28 @@ void Player::reinforce() {
 
 }
 
-// Player is allowed to declare a series of attacks to try to gain control of additional countries, and eventually control the entire map.
+// ATTACKING PHASE
+/* 
+	Player is allowed to declare a series of attacks to try to gain control of additional countries, 
+	and eventually control the entire map.
+*/
 void Player::attack() {
 	char ans;
 	int countryNB, nbrNB, dicesAttack, dicesDefend;
 	bool validCountry = false, validDice = false, attackOver = false, validMoveArmy = false, validNbr = false;
 
+	cout << "---------------------------------------------------------------------- \n"
+		"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
+		"----------------------------------------------------------------------" << endl;
+
 	// Player chooses if they want to attack or not
 	while (!attackOver) {
-		cout << "Do you want to attack a country? (y/n)" << endl;
+		cout << "Do you want to attack a country? ([Y] = Yes, [N] = No.)" << endl;
 		cin >> ans;
 		cout << endl;
 
-		if (ans == 'y') {
+		if (ans == 'y' || ans == 'Y') {
+			cout << "Here is a list of all your countries :" << endl;
 			getCountries();
 			cin.clear();
 
@@ -64,7 +74,7 @@ void Player::attack() {
 				else if (myTerritories.at(countryNB)->nbr.size() == 0) {
 					cout << "This country has no neighbors." << endl;
 				}
-				else if (!checkValidNeighbors(myTerritories.at(countryNB))) {
+				else if (!checkValidNeighbors_Attack(myTerritories.at(countryNB))) {
 					cout << "This country doesn't have any neighbors owned by other players." << endl;
 				}
 				else {
@@ -74,6 +84,7 @@ void Player::attack() {
 			validCountry = false;
 
 			// Player chooses on of the country's neighbor to attack
+			cout << endl << "Here are the neighbors of " << myTerritories.at(countryNB)->name << ": ";
 			for (int i = 0; i < myTerritories.at(countryNB)->nbr.size(); i++) {
 				if (myTerritories.at(countryNB)->nbr.at(i)->owner != this) {
 					cout << endl << "Neighbor #" << i << " : " << myTerritories.at(countryNB)->nbr.at(i)->name
@@ -222,18 +233,152 @@ void Player::attack() {
 
 			}
 		}
-		else if (ans == 'n') { // Player doesn't want to attack
+		else if (ans == 'n' || ans == 'N') { // Player doesn't want to attack
 			attackOver = true;
 		}
 		else {
 			clearInput();
 		}
 	}
+	cout << endl << "---------------------------------------------------------------------- \n"
+					"////////////////////// END ATTACKING PHASE ///////////////////////  \n"
+					"----------------------------------------------------------------------" << endl;
 }
 
-// To be implemented in other parts of the assignment
+// FORTIFICATION PHASE
+/*	After Attack Phase is complete:
+		Player may move as many armies as they want in to a NEIGHBOURING country that they own.
+		Player may only do this ONE time (you can't fortify multiple countries).
+*/
 void Player::fortify() {
-	cout << "The player is fortifying itself." << endl;
+	// Variables borrowed from Attack()
+	int countryNB, nbrNB;
+	bool validCountry = false, validNbr = false;
+
+	// Variables used in Fortify method:
+	bool fortificationPhaseIsHappening = true; // Needed to end fortification phase if player does not want to fortify
+	bool playerWantsToFortifyAnswerIsValid = false;
+	bool validNumberOfArmies = false;
+	char playerWantsToFortifyAnswer;
+	int numberOfFortifyingArmies;
+
+	cout << "---------------------------------------------------------------------- \n"
+		"///////////////////// BEGIN FORTIFICATION PHASE //////////////////////  \n"
+		"----------------------------------------------------------------------" << endl;
+	while (fortificationPhaseIsHappening == true) {
+
+		/* PART 1) Ask if Player wants to fortify a country (if "NO", Player's turn is finished.)
+		*/
+		while (playerWantsToFortifyAnswerIsValid == false) {
+			cout << "Do you wish to fortify one of your countries? ([Y] = Yes, [N] = No.)" << endl;
+			cin >> playerWantsToFortifyAnswer;
+
+			if (cin.fail()) {
+				clearInput();
+			}
+			if ((playerWantsToFortifyAnswer == 'Y') || (playerWantsToFortifyAnswer == 'y') || (playerWantsToFortifyAnswer == 'N') || (playerWantsToFortifyAnswer == 'n')) {
+				playerWantsToFortifyAnswerIsValid = true; // Answer is valid "Yes" or "No" 
+			}
+			else {
+				std::cout << "Invalid selection. Answer must be [Y] for Yes, or [N] for No." << endl;
+				playerWantsToFortifyAnswerIsValid = false; // Answer not valid, keep looping
+			}
+		}
+		// If player does not want to fortify, exit fortify method
+		if ((playerWantsToFortifyAnswer == 'N') || (playerWantsToFortifyAnswer == 'n')) {
+			std::cout << "Ok. This ends the fortification phase for this turn." << endl;
+			fortificationPhaseIsHappening = false;
+			break;
+		}
+
+		// METHOD 2) Ask which country will be the "SOURCE" country
+		// NEEDED FOR DEMO: Display list of invalid countries that can't be selected. 
+		//			Invalid countries are: 1) Countries with no neighbours
+		//								   2) Countries where all the neighbours only have 1 army each
+		cout << endl <<  "Ok. Here is a list of all your countries :" << endl;
+		getCountries();
+		cin.clear();
+		cout << endl << "    NOTE: A SOURCE country can only fortify a TARGET country if: " << endl;
+		cout << "    1) SOURCE and TARGET are neighbours" << endl;
+		cout << "    1) SOURCE and TARGET are owned by same player" << endl;
+		cout << "    2) SOURCE has more than 1 army" << endl << endl;
+
+		// Note: Was going to add a method here to DISPLAY a list of countries that player is not allowed to fortify. Will implement it later.
+
+		// Enter a valid SOURCE country
+		while (!validCountry) {
+			cout << endl << "Select the country that will be supplying the armies (the SOURCE country): ";
+			cin >> countryNB;
+
+			if (cin.fail()) {
+				clearInput();
+			}
+			else if (countryNB >= myTerritories.size() || countryNB < 0) {
+				cout << "Invalid number." << endl;
+			}
+			else if (myTerritories.at(countryNB)->nbArmies < 2) {
+				cout << "The country must have at least 2 armies on it." << endl;
+			}
+			else if (myTerritories.at(countryNB)->nbr.size() == 0) {
+				cout << "This country has no neighbors." << endl;
+			}
+			else if(!checkValidNeighbors_Fortify(myTerritories.at(countryNB))){
+				cout << "This country has no neighbors that are also owned by you." << endl;
+			}
+			else {
+				validCountry = true;
+			}
+		}
+		validCountry = false;
+		// Display player's choice of SOURCE country
+		cout << endl << "You selected " << myTerritories.at(countryNB)->name << "." << endl;
+		cout << myTerritories.at(countryNB)->name << "'s neighbours are: " << endl << endl;
+
+		// PART 3) After player has selected SOURCE country, ask which neighbour ("TARGET" country) you want to fortify
+		// Enter valid TARGET country to fortify
+		for (int i = 0; i < myTerritories.at(countryNB)->nbr.size(); i++) {
+			if (myTerritories.at(countryNB)->nbr.at(i)->owner == this) {
+				cout << "Neighbor #" << i << " : " << myTerritories.at(countryNB)->nbr.at(i)->name
+					<< ". Armies: " << myTerritories.at(countryNB)->nbr.at(i)->nbArmies << endl;
+			}
+		}
+		cout << endl << "Note: neighbor countries of " << myTerritories.at(countryNB)->name << " that belong to other players were omitted." << endl;
+		while (!validNbr) {
+			cout << "Select the neighbor of this country to fortify: ";
+			cin >> nbrNB;
+
+			if (cin.fail()) {
+				clearInput();
+			}
+			else if (nbrNB >= myTerritories.at(countryNB)->nbr.size()
+				|| nbrNB < 0 || myTerritories.at(countryNB)->nbr.at(nbrNB)->owner != this) {
+				cout << "Not a valid number." << endl;
+			}
+			else {
+				validNbr = true;
+			}
+		}
+		validNbr = false;
+
+		// Store neighbor country in a new variable to access to owner easily (changed "defenderCountry" to "targetCountry")
+		Country* targetCountry = myTerritories.at(countryNB)->nbr.at(nbrNB);
+		cout << "This country belongs to: " << targetCountry->owner->name << endl << endl;
+
+		// PART 4) Move armies to country
+		// NEEDED FOR DEMO: Show that player can't take so many armies that would leave less than 1 army in Source country
+		// Display the updated number of armies in each country.
+		moveArmies(targetCountry, myTerritories.at(countryNB));
+
+		//Display the new army totals for each country
+		cout << endl << "This is the updated list of countries (and armies): " << endl;
+		getCountries();
+		break; // needed to exit Loop
+
+	}//End While Loop: fortificationPhaseIsHappening
+	
+	cout << endl << "---------------------------------------------------------------------- \n"
+					"////////////////////// END FORTIFICATION PHASE ///////////////////////  \n"
+					"----------------------------------------------------------------------" << endl;
 }
 
 // Returns the dice facility of the player
@@ -467,10 +612,18 @@ void moveArmies(Country* receiver, Country* giver) {
 
 }
 
-bool checkValidNeighbors(Country* attacking) {
+bool checkValidNeighbors_Attack(Country* attacking) {
 	for (int i = 0; i < attacking->nbr.size(); i++) {
 		if (attacking->nbr.at(i)->owner != attacking->owner)
 			return true; // at least one neighbor is not owned by the same player 
+	}
+	return false;
+}
+
+bool checkValidNeighbors_Fortify(Country* attacking) {
+	for (int i = 0; i < attacking->nbr.size(); i++) {
+		if (attacking->nbr.at(i)->owner == attacking->owner)
+			return true; // at least one neighbor is owned by the same player 
 	}
 	return false;
 }
