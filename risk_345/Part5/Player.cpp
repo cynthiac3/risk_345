@@ -6,12 +6,13 @@
 
 using namespace std;
 
-// Declare methods to use it in main()
+// Declare free functions
 void setUpGameDemo(Player* mark, Player* bob);
 void clearInput();
 void moveArmies(Country* receiver, Country* giver);
+bool checkValidNeighbors(Country* attacking);
 
-
+// Default constructor
 Player::Player() {
 	cout << "A player was created." << endl;
 } 
@@ -24,7 +25,7 @@ Player::~Player() {
 	cout << "Player was deleted." << endl;
 }
 
-// To be implemented in later assignments
+// To be implemented in other parts of the assignment
 void Player::reinforce() {
 	cout << "The player is reinforcing itself." << endl;
 
@@ -62,6 +63,9 @@ void Player::attack() {
 				}
 				else if (myTerritories.at(countryNB)->nbr.size() == 0) {
 					cout << "This country has no neighbors." << endl;
+				}
+				else if (!checkValidNeighbors(myTerritories.at(countryNB))) {
+					cout << "This country doesn't have any neighbors owned by other players." << endl;
 				}
 				else {
 					validCountry = true;
@@ -193,7 +197,8 @@ void Player::attack() {
 			/* If the attacked country runs out of armies, it has been defeated. The defending country now belongs to
 			the attacking player. The attacker is allowed to move a number of armies from the attacking country to the
 			attacked country, in the range [1 to (number of armies on attacking country -1)] */
-			if (defenderCountry->nbArmies <= 0) {
+			
+			if (defenderCountry->nbArmies <= 0) { // Defender country loses
 				defenderCountry->owner->removeCountry(defenderCountry); // remove country from other player's list
 				defenderCountry->owner = this; // player now owns the defender country
 				myTerritories.push_back(defenderCountry); // add it to owned territories
@@ -203,8 +208,8 @@ void Player::attack() {
 
 				// Move a number of armies from one country to another
 				moveArmies(myTerritories.at(myTerritories.size() - 1), myTerritories.at(countryNB)); 	// receiver, giver
-			}
-			else if (myTerritories.at(countryNB)->nbArmies == 0) {
+			} 
+			else if (myTerritories.at(countryNB)->nbArmies == 0) { // Attacking country loses
 				cout << "Attacking country has been defeated. This country now belong to the defending player."
 					<< endl << "Defending player now needs to move at least 1 army from the defending country to their new country." << endl;
 
@@ -226,7 +231,7 @@ void Player::attack() {
 	}
 }
 
-// To be implemented in later assignments
+// To be implemented in other parts of the assignment
 void Player::fortify() {
 	cout << "The player is fortifying itself." << endl;
 }
@@ -460,4 +465,12 @@ void moveArmies(Country* receiver, Country* giver) {
 	}
 	validMoveArmy = false;
 
+}
+
+bool checkValidNeighbors(Country* attacking) {
+	for (int i = 0; i < attacking->nbr.size(); i++) {
+		if (attacking->nbr.at(i)->owner != attacking->owner)
+			return true; // at least one neighbor is not owned by the same player 
+	}
+	return false;
 }
