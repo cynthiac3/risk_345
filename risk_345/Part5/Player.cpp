@@ -1,6 +1,7 @@
 #include <iostream>
 #include "player.h"
 #include <cmath>
+#include <windows.h.>
 
 
 using namespace std;
@@ -8,6 +9,7 @@ using namespace std;
 // Declare methods to use it in main()
 void setUpGameDemo(Player* mark, Player* bob);
 void clearInput();
+void moveArmies(Country* receiver, Country* giver);
 
 
 Player::Player() {
@@ -31,7 +33,7 @@ void Player::reinforce() {
 // Player is allowed to declare a series of attacks to try to gain control of additional countries, and eventually control the entire map.
 void Player::attack() {
 	char ans;
-	int countryNB, nbrNB, movingArmies, dicesAttack, dicesDefend;
+	int countryNB, nbrNB, dicesAttack, dicesDefend;
 	bool validCountry = false, validDice = false, attackOver = false, validMoveArmy = false, validNbr = false;
 
 	// Player chooses if they want to attack or not
@@ -70,11 +72,11 @@ void Player::attack() {
 			// Player chooses on of the country's neighbor to attack
 			for (int i = 0; i < myTerritories.at(countryNB)->nbr.size(); i++) {
 				if (myTerritories.at(countryNB)->nbr.at(i)->owner != this) {
-					cout << "Neighbor #" << i << " : " << myTerritories.at(countryNB)->nbr.at(i)->name
-						<< ". Armies: " << myTerritories.at(countryNB)->nbr.at(i)->nbArmies << endl;
+					cout << endl << "Neighbor #" << i << " : " << myTerritories.at(countryNB)->nbr.at(i)->name
+						<< ". Armies: " << myTerritories.at(countryNB)->nbr.at(i)->nbArmies;
 				}
 			}
-			cout << "Note: neighbor countries of " << myTerritories.at(countryNB)->name << " that belong to you were omitted." << endl;
+			cout << endl << "Note: neighbor countries of " << myTerritories.at(countryNB)->name << " that belong to you were omitted." << endl;
 			while (!validNbr) {
 				cout << "Select the neighbor of this country to attack: ";
 				cin >> nbrNB;
@@ -82,8 +84,8 @@ void Player::attack() {
 				if (cin.fail()) {
 					clearInput();
 				}
-				else if (nbrNB >= myTerritories.at(countryNB)->nbr.size() 
-					 || nbrNB < 0 || myTerritories.at(countryNB)->nbr.at(nbrNB)->owner == this) {
+				else if (nbrNB >= myTerritories.at(countryNB)->nbr.size()
+					|| nbrNB < 0 || myTerritories.at(countryNB)->nbr.at(nbrNB)->owner == this) {
 					cout << "Not a valid number." << endl;
 				}
 				else {
@@ -100,9 +102,10 @@ void Player::attack() {
 			/*The attacker and defender players choose the number of dice to roll for their attack/defense. The attacker
 			is allowed 1 to 3 dice, with the maximum number of dice being the number of armies on the attacking
 			country, minus one. The defender is allowed 1 to 2 dice, with the maximum number of dice being the
-			number of armies on the defending country.			*/
+			number of armies on the defending country.
+			*/
 			while (!validDice) {
-				cout << "Attacker must choose number of dices to roll (1, 2 or 3): ";
+				cout << endl << "Attacker must choose number of dices to roll (1, 2 or 3): ";
 				cin >> dicesAttack;
 
 				if (cin.fail()) {
@@ -110,68 +113,71 @@ void Player::attack() {
 				}
 				else if (dicesAttack > myTerritories.at(countryNB)->nbArmies - 1) {
 					cout << "Number of dices must be smaller or equal to number of armies - 1 on the attacking country." << endl;
-					
+
 				}
 				else if (dicesAttack > 3 || dicesAttack < 1) {
 					cout << "Not a valid number.";
 				}
-				else{
+				else {
 					validDice = true;
 				}
 			}
 			validDice = false;
 
+
 			while (!validDice) {
 				cout << endl << "Defender chooses number of dices to roll (1 or 2): ";
 				cin >> dicesDefend;
-				
+
 				if (cin.fail()) {
 					clearInput();
 				}
 				else if (dicesDefend > defenderCountry->nbArmies) {
 					cout << "Number of dices must be smaller or equal to the number of armies on the defending country." << endl;
-					
+
 				}
 				else if (dicesDefend > 2 || dicesDefend < 1) {
 					cout << "Not a valid number.";
 				}
-				else{
+				else {
 					validDice = true;
 				}
 			}
 			validDice = false;
 
+
 			/*The dice are rolled for each player and sorted, then compared pair-wise. For each pair starting with the
 			highest, the player with the lowest roll loses one army. If the pair is equal, the attacker loses an army. */
-			dice.rollDice(dicesAttack);
+			this->dice.rollDice(dicesAttack);
+			Sleep(2000);
 			defenderCountry->owner->getDice()->rollDice(dicesDefend);
 
 			// HIGHEST ROLL - Attacker wins
 			if (dice.containerOfDiceRolls[2] > defenderCountry->owner->getDice()->containerOfDiceRolls[2]) {
 				defenderCountry->nbArmies--;
-				cout << "Defender looses 1 army" << endl;
+				cout << "Defender loses 1 army" << endl;
 			}
-			else { // Attacker looses
+			else { // Attacker loses
 				myTerritories.at(countryNB)->nbArmies--;
-				cout << "Attacker looses 1 army" << endl;
+				cout << "Attacker loses 1 army" << endl;
 			}
 			// MID ROLL - Attacker wins
 			if (dice.containerOfDiceRolls[1] > defenderCountry->owner->getDice()->containerOfDiceRolls[1]) {
 				defenderCountry->nbArmies--;
-				cout << "Defender looses 1 army" << endl;
+				cout << "Defender loses 1 army" << endl;
 			}
-			else { // Attacker looses
+			else { // Attacker looes
 				myTerritories.at(countryNB)->nbArmies--;
-				cout << "Attacker looses 1 army" << endl;
+				cout << "Attacker loses 1 army" << endl;
 			}
 			// LOWEST ROLL - Attacker wins
 			if (dice.containerOfDiceRolls[0] > defenderCountry->owner->getDice()->containerOfDiceRolls[0]) {
 				defenderCountry->nbArmies--;
-				cout << "Defender looses 1 army" << endl;
+				cout << "Defender loses 1 army" << endl;
 			}
-			else { // Attacker looses
+			else { // Attacker loses
 				myTerritories.at(countryNB)->nbArmies--;
-				cout << "Attacker looses 1 army" << endl;
+				cout << "Attacker loses 1 army" << endl;
 			}
 
 			// If number of armies gets lower than 0, set it to 0
@@ -187,40 +193,31 @@ void Player::attack() {
 			/* If the attacked country runs out of armies, it has been defeated. The defending country now belongs to
 			the attacking player. The attacker is allowed to move a number of armies from the attacking country to the
 			attacked country, in the range [1 to (number of armies on attacking country -1)] */
-			if (defenderCountry->nbArmies <= 0) {			
+			if (defenderCountry->nbArmies <= 0) {
 				defenderCountry->owner->removeCountry(defenderCountry); // remove country from other player's list
 				defenderCountry->owner = this; // player now owns the defender country
 				myTerritories.push_back(defenderCountry); // add it to owned territories
 
-				cout << "Defender country has been defeated. This country now belong to the attacking player."
+				cout << "Defending country has been defeated. This country now belong to the attacking player."
 					<< endl << "Attacking player now needs to move at least 1 army from the attacking country to their new country." << endl;
-				
-				while (!validMoveArmy) {
-					cout << "Please enter the number of armies you want to move: " << endl;
-					cin >> movingArmies;
 
-					if (cin.fail()) {
-						clearInput();
-					}
-					else if (movingArmies < 1) {
-						cout << "Number must be at least 1." << endl;
-					}
-					else if (movingArmies > myTerritories.at(countryNB)->nbArmies - 1) {
-						cout << "Number bigger than armies on attacking country - 1." << endl;
-					}
+				// Move a number of armies from one country to another
+				moveArmies(myTerritories.at(myTerritories.size() - 1), myTerritories.at(countryNB)); 	// receiver, giver
+			}
+			else if (myTerritories.at(countryNB)->nbArmies == 0) {
+				cout << "Attacking country has been defeated. This country now belong to the defending player."
+					<< endl << "Defending player now needs to move at least 1 army from the defending country to their new country." << endl;
 
-					else {
-						cout << movingArmies << " armies are moved from " << myTerritories.at(countryNB)->name << " to "
-							<< myTerritories.at(myTerritories.size() - 1)->name << endl;
-						myTerritories.at(countryNB)->nbArmies -= movingArmies;
-						myTerritories.at(myTerritories.size() - 1)->nbArmies += movingArmies;
-						validMoveArmy = true;
-					}
-				}
-				validMoveArmy = false;
+				// Move a number of armies from one country to another
+				moveArmies(myTerritories.at(countryNB), defenderCountry); 	// receiver, giver
+
+				myTerritories.at(countryNB)->owner = defenderCountry->owner; // player now owns the defender country
+				defenderCountry->owner->addCountry(myTerritories.at(countryNB));// add it to other player's territories
+				removeCountry(myTerritories.at(countryNB)); // remove country from player's list
+
 			}
 		}
-		else if(ans == 'n') { // Player doesn't want to attack
+		else if (ans == 'n') { // Player doesn't want to attack
 			attackOver = true;
 		}
 		else {
@@ -433,4 +430,34 @@ void clearInput() {
 	cin.clear();
 	std::string ignoreLine; //read the invalid input into it
 	std::getline(cin, ignoreLine); //read the line till next space
+}
+
+void moveArmies(Country* receiver, Country* giver) {
+	bool validMoveArmy = false;
+	int movingArmies;
+
+	while (!validMoveArmy) {
+		cout << "Please enter the number of armies you want to move: " << endl;
+		cin >> movingArmies;
+
+		if (cin.fail()) {
+			clearInput();
+		}
+		else if (movingArmies < 1) {
+			cout << "Number must be at least 1." << endl;
+		}
+		else if (movingArmies > giver->nbArmies - 1) {
+			cout << "Number bigger than armies on the country - 1." << endl;
+		}
+
+		else {
+			cout << movingArmies << " armies are moved from " << giver->name << " to "
+				<< receiver->name << endl;
+			giver->nbArmies -= movingArmies;
+			receiver->nbArmies += movingArmies;
+			validMoveArmy = true;
+		}
+	}
+	validMoveArmy = false;
+
 }
