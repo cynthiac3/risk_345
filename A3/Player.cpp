@@ -307,30 +307,18 @@ void Player::attack() {
 				myTerritories.at(countryNB)->nbArmies--;
 				cout << "Attacker loses 1 army" << endl;
 			}
-			// MID ROLL - Attacker wins
-			if (dice.containerOfDiceRolls[1] > defenderCountry->owner->getDice()->containerOfDiceRolls[1]) {
-				defenderCountry->nbArmies--;
-				cout << "Defender loses 1 army" << endl;
+			// MID ROLL - Only if both players rolled at least 2 dices
+			if (dicesAttack > 1 && dicesDefend > 1) { 
+				// Attacker wins
+				if (dice.containerOfDiceRolls[1] > defenderCountry->owner->getDice()->containerOfDiceRolls[1]) {
+					defenderCountry->nbArmies--;
+					cout << "Defender loses 1 army" << endl;
+				}
+				else { // Attacker loses
+					myTerritories.at(countryNB)->nbArmies--;
+					cout << "Attacker loses 1 army" << endl;
+				}
 			}
-			else { // Attacker looes
-				myTerritories.at(countryNB)->nbArmies--;
-				cout << "Attacker loses 1 army" << endl;
-			}
-			// LOWEST ROLL - Attacker wins
-			if (dice.containerOfDiceRolls[0] > defenderCountry->owner->getDice()->containerOfDiceRolls[0]) {
-				defenderCountry->nbArmies--;
-				cout << "Defender loses 1 army" << endl;
-			}
-			else { // Attacker loses
-				myTerritories.at(countryNB)->nbArmies--;
-				cout << "Attacker loses 1 army" << endl;
-			}
-
-			// If number of armies gets lower than 0, set it to 0
-			if (defenderCountry->nbArmies < 0)
-				defenderCountry->nbArmies = 0;
-			if (myTerritories.at(countryNB)->nbArmies < 0)
-				myTerritories.at(countryNB)->nbArmies = 0;
 
 			cout << endl << "Result: " << endl << myTerritories.at(countryNB)->name << ": " << myTerritories.at(countryNB)->nbArmies << " armies." << endl
 				<< defenderCountry->name << ": " << defenderCountry->nbArmies << " armies" << endl;
@@ -351,18 +339,6 @@ void Player::attack() {
 				// Move a number of armies from one country to another
 				moveArmies(myTerritories.at(myTerritories.size() - 1), myTerritories.at(countryNB)); 	// receiver, giver
 			} 
-			else if (myTerritories.at(countryNB)->nbArmies == 0) { // Attacking country loses
-				cout << "Attacking country has been defeated. This country now belong to the defending player."
-					<< endl << "Defending player now needs to move at least 1 army from the defending country to their new country." << endl;
-
-				// Move a number of armies from one country to another
-				moveArmies(myTerritories.at(countryNB), defenderCountry); 	// receiver, giver
-
-				myTerritories.at(countryNB)->owner = defenderCountry->owner; // player now owns the defender country
-				defenderCountry->owner->addCountry(myTerritories.at(countryNB));// add it to other player's territories
-				removeCountry(myTerritories.at(countryNB)); // remove country from player's list
-
-			}
 		}
 		else if (ans == 'n' || ans == 'N') { // Player doesn't want to attack
 			attackOver = true;
