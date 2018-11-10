@@ -152,6 +152,9 @@ void Player::reinforce() {
 		cout << "You placed " << nbOfUnits << " armies on " << myTerritories.at(countryNB)->name << "." << endl;
 		cout << "You have " << nbArmiesToPlace << " left." << endl << endl;
 	}
+	
+	cout << "This is the updated list of countries (and armies): " << endl;
+	getCountries();
 
 	cout << endl << "---------------------------------------------------------------------- \n"
 					"////////////////////// END REINFORCE PHASE ///////////////////////  \n"
@@ -245,7 +248,8 @@ void Player::attack() {
 			/*The attacker and defender players choose the number of dice to roll for their attack/defense. The attacker
 			is allowed 1 to 3 dice, with the maximum number of dice being the number of armies on the attacking
 			country, minus one. The defender is allowed 1 to 2 dice, with the maximum number of dice being the
-			number of armies on the defending country.			*/
+			number of armies on the defending country.
+			*/
 			while (!validDice) {
 				cout << endl << "Attacker must choose number of dices to roll (1, 2 or 3): ";
 				cin >> dicesAttack;
