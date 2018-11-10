@@ -237,7 +237,8 @@ void Human::attack() {
 			country, minus one. The defender is allowed 1 to 2 dice, with the maximum number of dice being the
 			number of armies on the defending country.			*/
 			while (!validDice) {
-				cout << endl << "Attacker must choose number of dices to roll (1, 2 or 3): ";
+				cout << endl << "NOTE: the attacker's number of dice can only be smaller or equal \n to the number of armies on the defender's country MINUS 1." << endl
+					<< "Attacker must choose number of dices to roll (1, 2 or 3):  " << endl;
 				cin >> dicesAttack;
 
 				if (cin.fail()) {
@@ -258,7 +259,9 @@ void Human::attack() {
 
 
 			while (!validDice) {
-				cout << endl << "Defender chooses number of dices to roll (1 or 2): ";
+				
+				cout << endl << "NOTE: the defender's number of dice can only be smaller or equal \n to the number of armies on the defender's country." << endl
+					<< "Defender chooses number of dices to roll (1 or 2): " << endl;
 				cin >> dicesDefend;
 
 				if (cin.fail()) {
@@ -293,33 +296,20 @@ void Human::attack() {
 				p->myTerritories.at(countryNB)->nbArmies--;
 				cout << "Attacker loses 1 army" << endl;
 			}
-			// MID ROLL - Attacker wins
-			if (p->dice.containerOfDiceRolls[1] > defenderCountry->owner->getDice()->containerOfDiceRolls[1]) {
-				defenderCountry->nbArmies--;
-				cout << "Defender loses 1 army" << endl;
+			// MID ROLL - Only if both players rolled at least 2 dices
+			if (dicesAttack > 1 && dicesDefend > 1) { 
+				if (p->dice.containerOfDiceRolls[1] > defenderCountry->owner->getDice()->containerOfDiceRolls[1]) {
+					defenderCountry->nbArmies--;
+					cout << "Defender loses 1 army" << endl;
+				}
+				else { // Attacker loses
+					p->myTerritories.at(countryNB)->nbArmies--;
+					cout << "Attacker loses 1 army" << endl;
+				}
 			}
-			else { // Attacker looes
-				p->myTerritories.at(countryNB)->nbArmies--;
-				cout << "Attacker loses 1 army" << endl;
-			}
-			// LOWEST ROLL - Attacker wins
-			if (p->dice.containerOfDiceRolls[0] > defenderCountry->owner->getDice()->containerOfDiceRolls[0]) {
-				defenderCountry->nbArmies--;
-				cout << "Defender loses 1 army" << endl;
-			}
-			else { // Attacker loses
-				p->myTerritories.at(countryNB)->nbArmies--;
-				cout << "Attacker loses 1 army" << endl;
-			}
-
-			// If number of armies gets lower than 0, set it to 0
-			if (defenderCountry->nbArmies < 0)
-				defenderCountry->nbArmies = 0;
-			if (p->myTerritories.at(countryNB)->nbArmies < 0)
-				p->myTerritories.at(countryNB)->nbArmies = 0;
 
 			cout << endl << "Result: " << endl << p->myTerritories.at(countryNB)->name << ": " << p->myTerritories.at(countryNB)->nbArmies << " armies." << endl
-				<< defenderCountry->name << ": " << defenderCountry->nbArmies << " armies" << endl;
+				<< defenderCountry->name << ": " << defenderCountry->nbArmies << " armies" << endl << endl;
 
 
 			/* If the attacked country runs out of armies, it has been defeated. The defending country now belongs to
@@ -332,22 +322,10 @@ void Human::attack() {
 				p->myTerritories.push_back(defenderCountry); // add it to owned territories
 
 				cout << "Defending country has been defeated. This country now belong to the attacking player."
-					<< endl << "Attacking player now needs to move at least 1 army from the attacking country to their new country." << endl;
+					<< endl << "Attacking player now needs to move at least 1 army from the attacking country to their new country." << endl << endl;
 
 				// Move a number of armies from one country to another
 				moveArmies(p->myTerritories.at(p->myTerritories.size() - 1), p->myTerritories.at(countryNB)); 	// receiver, giver
-			}
-			else if (p->myTerritories.at(countryNB)->nbArmies == 0) { // Attacking country loses
-				cout << "Attacking country has been defeated. This country now belong to the defending player."
-					<< endl << "Defending player now needs to move at least 1 army from the defending country to their new country." << endl;
-
-				// Move a number of armies from one country to another
-				moveArmies(p->myTerritories.at(countryNB), defenderCountry); 	// receiver, giver
-
-				p->myTerritories.at(countryNB)->owner = defenderCountry->owner; // player now owns the defender country
-				defenderCountry->owner->addCountry(p->myTerritories.at(countryNB));// add it to other player's territories
-				p->removeCountry(p->myTerritories.at(countryNB)); // remove country from player's list
-
 			}
 		}
 		else if (ans == 'n' || ans == 'N') { // Player doesn't want to attack
