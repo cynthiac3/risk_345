@@ -1,5 +1,1 @@
-g++ -std=c++11 Map_CPNT.cpp CGraph.cpp Map_loader.cpp ML_drive.cpp -o Map_loader
-g++ -std=c++11 Map_CPNT.cpp CGraph.cpp Map_loader.cpp Map.cpp -o map
-
-* the num 1 or 0 at the end of execution it the bool return of the ConnectedGraph  tester.
-* the CB maps doesn't load as a connected graph since it not one
+Using the Observer design pattern, implement a view that displays information happening in the current phase. It should first display a header showing what player and what phase is currently being played, e.g. “Player 3: Attack phase” or “Player 1: Fortification phase” Then it should display important information related to what is happening in this phase, which should be different depending on what phase is being played. This should dynamically be updated as the game goes through different players/phases and be visible at all times during game play. You must deliver a driver that demonstrates that (1) the information displayed by the phase view is cleared every time the phase is changing (2) the phase view is displaying the correct player:phase information as soon as the phase changes; (3) the phase view displays relevant information which is different for every phase. 
