@@ -19,6 +19,7 @@ public:
 	Hand(); //Default constructor
 	void fillHand(Deck &playingDeck);
 	int exchange();
+	int exchangeComputer();
 	int howManyCardsInHand();
 };
 

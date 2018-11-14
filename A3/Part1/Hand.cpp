@@ -51,7 +51,7 @@ int Hand::howManyCardsInHand()
 int  Hand::exchange()
 {
 	armies = 0;
-	cout << "Your hand of cards is" << endl;
+	cout << endl << "Your hand of cards is" << endl;
 	for (size_t x = 0; x < handOfCards.size(); x++)
 	{
 		cout << x + 1 << ". " << convertCardsToString(handOfCards[x]) << endl;
@@ -90,6 +90,89 @@ int  Hand::exchange()
 
 		numberOfExchanges++; //tracks number of exchanges player has had
 	}
+	return armies;
+}
+
+int  Hand::exchangeComputer()
+{
+	bool exchangeDif = false, exchangeSame = false;
+	vector<int> cardsToExchange;
+	int artillery = -1, infantry = -1, cavalry = -1, aNb = 0, iNb = 0, cNb = 0;
+	armies = 0; // number to return 
+
+	/* OPTION 1 */
+	// Check if player owns 3 different card
+	for (int x = 0; x < handOfCards.size(); x++)
+	{
+		if (handOfCards[x] == Deck::Cards::Artillery) {
+			artillery = x;
+			aNb++;
+		}
+		else if (handOfCards[x] == Deck::Cards::Infantry) {
+			infantry = x;
+			iNb++;
+		}
+		else if (handOfCards[x] == Deck::Cards::Cavalry) {
+			cavalry = x;
+			cNb++;
+		}
+	}
+	if (artillery != -1 && infantry != -1 && cavalry != -1) { // exchange is valid
+		exchangeDif = true;
+		// Set the index of the cards to exchange
+		cardsToExchange.push_back(artillery);
+		cardsToExchange.push_back(infantry);
+		cardsToExchange.push_back(cavalry);
+	}
+
+	/* OPTION 2 */
+	// If not, check if player owns 3 cards of the same type
+	if (!exchangeDif) {
+		Deck::Cards typeToExchange;
+		if (aNb >= 3) {
+			typeToExchange = Deck::Cards::Artillery;
+			exchangeSame = true;
+		}
+		else if (iNb >= 3) {
+			typeToExchange = Deck::Cards::Infantry;
+			exchangeSame = true;
+		}
+		else if (cNb >= 3) {
+			typeToExchange = Deck::Cards::Cavalry;
+			exchangeSame = true;
+		}
+
+		// Player can exchange 3 same cards, find them and add to vector
+		if (exchangeSame) {
+			for (int x = 0; x < handOfCards.size(); x++) {
+				if (handOfCards[x] == typeToExchange) {
+					cardsToExchange.push_back(x);
+				}
+			}
+		}
+	}
+
+	cout << endl << "Player computer's hand of cards is:" << endl;
+	for (size_t x = 0; x < handOfCards.size(); x++)
+	{
+		cout << x + 1 << ". " << convertCardsToString(handOfCards[x]) << endl;
+	}
+	// MAKE EXCHANGE
+	if (exchangeDif || exchangeSame) {		
+		cout << "Player can exchange cards " << cardsToExchange.at(0) + 1 << ", " << cardsToExchange.at(1) + 1 << ", " << cardsToExchange.at(2) + 1 << "." << endl;
+
+		handOfCards[cardsToExchange.at(0)] = Deck::Cards::Null; //Sets cards exchanged to null
+		handOfCards[cardsToExchange.at(1)] = Deck::Cards::Null; //Sets cards exchanged to null
+		handOfCards[cardsToExchange.at(2)] = Deck::Cards::Null; //Sets cards exchanged to null
+		
+		if (numberOfExchanges < 6 || numberOfExchanges > 0) //Depending on number of exchanges selects different equation for armies offered
+			armies = (((numberOfExchanges)-1) * 2) + 6;
+		else if (numberOfExchanges > 5)
+			armies = (numberOfExchanges - 5) * 5 + 10;
+
+		numberOfExchanges++; //tracks number of exchanges player has had
+	}
+
 	return armies;
 }
 

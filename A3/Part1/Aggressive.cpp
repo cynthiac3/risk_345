@@ -10,338 +10,202 @@ void moveArmiesB(Country* receiver, Country* giver);
 bool checkValidNeighbors_AttackA(Country* attacking);
 bool checkValidNeighbors_FortifyA(Country* attacking);
 
+/* AGGRESSIVE COMPUTER PLAYER:
+	an aggressive computer player that focuses on attack (reinforces its strongest
+	country, then always attack with it until it cannot attack anymore, then fortifies in order to maximize aggregation of
+	forces in one country),
+*/
 
-/***********************************************   ASSIGNMENT #2 - PART 4 **********************************************/
-// REINFORCING PHASE
+
+/***********************************************  REINFORCING PHASE **********************************************/
 /*
 	 Player gets a number of armies to place on its countries.
 */
 void Aggressive::reinforce() {
 	cout << "Aggressive computer player's reinforce method." << endl;
 
-	bool validCountry = false, validNB = false, exchangeCards = false, validAns = false;
-	int countryNB, nbOfUnits = 0;
-	char ans;
 	cout << "---------------------------------------------------------------------- \n"
-		"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
+			"----------------------------------------------------------------------" << endl;
+
+	/* FIND STRONGEST COUNTRY */
+	Country * strongest = p->myTerritories.at(0);
+	for (int i = 1; i < p->myTerritories.size(); i++) {
+		if (strongest->nbArmies < p->myTerritories.at(i)->nbArmies) {
+			strongest = p->myTerritories.at(i);
+		}
+	}
 
 	// STEP 1: Player receives armies equals to nb of countries owned divided by 3 rounded down
 	int nbArmiesToPlace = floor(p->myTerritories.size() / 3);
 	if (nbArmiesToPlace < 3) // min is 3
 		nbArmiesToPlace = 3;
 
-	cout << "Based on the number of countries you own, you get " << nbArmiesToPlace << " armies." << endl;
+	cout << "Based on the number of countries they own, they get " << nbArmiesToPlace << " armies." << endl;
 
 	// STEP 2: Player gets a certain bonus for each continent owned
-	// bonusValue = int bonusContinents(Player* p);
 	int bonusValue = 0;
 	if (p->myContinents.size() == 0) {
-		cout << "You don't own any continents." << endl << "You get 0 bonus armies." << endl;
+		cout << "Aggressive computer doesn't own any continents." << endl << "They get 0 bonus armies." << endl;
 	}
 	else {
 		for (int x = 0; x < p->myContinents.size(); x++) {
-			cout << "You own " << p->myContinents.at(x)->name << " so you get " << p->myContinents.at(x)->bonus << " bonus armies." << endl;
+			cout << "They own " << p->myContinents.at(x)->name << " so they get " << p->myContinents.at(x)->bonus << " bonus armies." << endl;
 			bonusValue += p->myContinents.at(x)->bonus;
 		}
 		nbArmiesToPlace += bonusValue;
-		cout << "You get a total of " << bonusValue << " bonus armies for a new total of " << nbArmiesToPlace << " armies." << endl;
+		cout << "Computer gets a total of " << bonusValue << " bonus armies for a new total of " << nbArmiesToPlace << " armies." << endl;
 	}
 
 	// STEP 3: Player can exchange cards for armies
-	if (p->hand.howManyCardsInHand() > 5) {//If handOfCards is greater than 5 it forces player to exchange cards for army units
-		cout << "You have more than 5 cards in hand. You must make an exchange." << endl;
-		exchangeCards = true;
-	}
-	else {
-		while (!validAns) {
-			cout << endl << "Would you like to trade cards for armies? ";
-			cin >> ans;
-			if (cin.fail()) {
-				clearInputA();
-			}
-			if (ans == 'y' || ans == 'Y') { // Player wants to draw cards
-				exchangeCards = true;
-				validAns = true;
-			}
-			else if (ans == 'n' || ans == 'N') { // Player doesn't want to draw cards
-				validAns = true;
-			}
-			else {
-				cout << "Not a valid answer." << endl;
-			}
-		}
-	}
-	if (exchangeCards) { // If player want to exchange cards
-		bool check = true;
-		int resultingArmies;
-		do
-		{
-			//cout << "You have more than 2 cards. You can make and exchange" << endl;
-			resultingArmies = p->hand.exchange();
-			if (resultingArmies == 0)
-				cout << "Not a valid exchange. You don't get any armies." << endl;
-			else
-				cout << "This is your exchange #" << p->hand.numberOfExchanges << ", you get " << resultingArmies << " armies." << endl;
-			nbArmiesToPlace += resultingArmies;
+	int resultingArmies = p->hand.exchangeComputer();
+	if (resultingArmies == 0)
+		cout << "Computer can't make an exchange. They do not get any armies." << endl;
+	else
+		cout << "This is the computer's exchange #" << p->hand.numberOfExchanges << ", they get " << resultingArmies << " armies." << endl;
+	nbArmiesToPlace += resultingArmies;
 
-			if (p->hand.howManyCardsInHand() < 6)
-				check = false;
-		} while (check);
-	}
+	cout << "Aggressive computer has this many armies to place: " << nbArmiesToPlace << endl << endl;
 
-	// STEP 4: Give armies to any countries owned
-	cout << "You have this many armies to place: " << nbArmiesToPlace << endl << endl;
+	// STEP 4: Give armies to weakest country owned
+	cout << "Aggressive computer's strongest country is " << strongest->name << " with " << strongest->nbArmies << " armies" << endl;
+	strongest->nbArmies += nbArmiesToPlace;
+	cout << "Aggressive computer places " << nbArmiesToPlace << " armies on " << strongest->name << "." << endl;
 
-	while (nbArmiesToPlace > 0) {
-		// Print countries owned
-		p->getCountries();
-		// Enter a valid country
-		while (!validCountry) {
-			cout << "Please select which of your countries you would like to place your armies on: " << endl;
-			cin >> countryNB;
-
-			if (cin.fail()) {
-				clearInputA();
-			}
-			else if (countryNB >= p->myTerritories.size() || countryNB < 0) {
-				cout << "Invalid number." << endl;
-			}
-			else {
-				validCountry = true;
-			}
-		}
-		validCountry = false;
-		// Enter a valid number to armies to place
-		while (!validNB) {
-			cout << "How many units would you like to place on " << p->myTerritories.at(countryNB)->name << " ? ";
-			cin >> nbOfUnits;
-
-			if (cin.fail()) {
-				clearInputA();
-			}
-			else if (nbOfUnits < 0 || nbOfUnits > nbArmiesToPlace) {
-				cout << "Invalid number. Please enter a number from 0 to " << nbArmiesToPlace << "." << endl;
-
-			}
-			else {
-				validNB = true;
-			}
-		}
-		validNB = false;
-
-		// Results
-		p->myTerritories.at(countryNB)->nbArmies += nbOfUnits;
-		nbArmiesToPlace -= nbOfUnits;
-
-		cout << "You placed " << nbOfUnits << " armies on " << p->myTerritories.at(countryNB)->name << "." << endl;
-		cout << "You have " << nbArmiesToPlace << " left." << endl << endl;
-	}
-
-	cout << "This is the updated list of countries (and armies): " << endl;
+	// Results
+	cout << endl << "This is the updated list of countries (and armies): " << endl;
 	p->getCountries();
 
 	cout << endl << "---------------------------------------------------------------------- \n"
-		"////////////////////// END REINFORCE PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+					"////////////////////// END REINFORCE PHASE ///////////////////////  \n"
+					"----------------------------------------------------------------------" << endl;
 }
 
 
-/***********************************************   ASSIGNMENT #2 - PART 5 **********************************************/
-// ATTACKING PHASE
+/*********************************************** ATTACKING PHASE **********************************************/
 /*
 	Player is allowed to declare a series of attacks to try to gain control of additional countries,
 	and eventually control the entire map.
 */
 void Aggressive::attack() {
+	int dicesAttack, dicesDefend;
 	cout << "Aggressive computer player's attack method." << endl;
-
-	char ans;
-	int countryNB, nbrNB, dicesAttack, dicesDefend;
-	bool validCountry = false, validDice = false, attackOver = false, validMoveArmy = false, validNbr = false;
 
 	cout << "---------------------------------------------------------------------- \n"
 		"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
 		"----------------------------------------------------------------------" << endl;
+	bool canAttack = true;
+	do {
+		/* FIND STRONGEST COUNTRY */
+		bool validCountry = false;
+		Country * strongest = p->myTerritories.at(0);
 
-	// Player chooses if they want to attack or not
-	while (!attackOver) {
-		cout << "Do you want to attack a country? ([Y] = Yes, [N] = No.)" << endl;
-		cin >> ans;
-		cout << endl;
+		for (int i = 1; i < p->myTerritories.size(); i++) {
+			// Finds a country owned with more armies than current temp strongest country
+			if (strongest->nbArmies < p->myTerritories.at(i)->nbArmies) {
+				// Verifies if country has a neighbor that they can attack & country has more than 2 armies
+				if (checkValidNeighbors_AttackA(p->myTerritories.at(i)) && (p->myTerritories.at(i)->nbArmies > 2)) {
+					strongest = p->myTerritories.at(i);
+				}
+			}
+		}
+		// Double check if weakest found has valid neighbors (in case it is still country at index 0)
+		if (checkValidNeighbors_AttackA(strongest) && strongest->nbArmies > 2) {
+			validCountry = true;
+		}
+		else {
+			cout << endl << "Aggressive computer currently doesn't have any strong country that can attack one of its neighbors." << endl;
+			canAttack = false;
+		}
 
-		if (ans == 'y' || ans == 'Y') {
-			cout << "Here is a list of all your countries :" << endl;
-			p->getCountries();
-			cin.clear();
+		/* FIND WEAKEST NEIGHBOR */
+		if (validCountry) {
+			cout <<  endl << "Strongest country of Aggressive computer is: " << strongest->name << " with " << strongest->nbArmies << " armies." << endl;
+			Country* weakestNbr = strongest->nbr.at(0);
+			bool firstFound = false;
 
-			// Enter a valid country to attack from
-			while (!validCountry) {
-				cout << endl << "Select a country to attack from: ";
-				cin >> countryNB;
-
-				if (cin.fail()) {
-					clearInputA();
-				}
-				else if (countryNB >= p->myTerritories.size() || countryNB < 0) {
-					cout << "Invalid number." << endl;
-				}
-				else if (p->myTerritories.at(countryNB)->nbArmies < 2) {
-					cout << "The country must have at least 2 armies on it." << endl;
-				}
-				else if (p->myTerritories.at(countryNB)->nbr.size() == 0) {
-					cout << "This country has no neighbors." << endl;
-				}
-				else if (!checkValidNeighbors_AttackA(p->myTerritories.at(countryNB))) {
-					cout << "This country doesn't have any neighbors owned by other players." << endl;
+			// Find weakest neighbor of strongest country & not owned by aggressive player
+			for (int j = 0; j < strongest->nbr.size(); j++) {
+				if (!firstFound && strongest->nbr.at(j)->owner != p) {
+					weakestNbr = strongest->nbr.at(j);
+					firstFound = true;
 				}
 				else {
-					validCountry = true;
+					if (weakestNbr->nbArmies > strongest->nbr.at(j)->nbArmies && strongest->nbr.at(j)->owner != p) {
+						weakestNbr = strongest->nbr.at(j);
+					}
 				}
 			}
-			validCountry = false;
+			cout << "Weakest neighbor of " << strongest->name << " is " << weakestNbr->name << " with " << weakestNbr->nbArmies << " armies." << endl;
 
-			// Player chooses on of the country's neighbor to attack
-			cout << endl << "Here are the neighbors of " << p->myTerritories.at(countryNB)->name << ": ";
-			for (int i = 0; i < p->myTerritories.at(countryNB)->nbr.size(); i++) {
-				if (p->myTerritories.at(countryNB)->nbr.at(i)->owner != p) {
-					cout << endl << "Neighbor #" << i << " : " << p->myTerritories.at(countryNB)->nbr.at(i)->name
-						<< ". Armies: " << p->myTerritories.at(countryNB)->nbr.at(i)->nbArmies;
-				}
-			}
-			cout << endl << "Note: neighbor countries of " << p->myTerritories.at(countryNB)->name << " that belong to you were omitted." << endl;
-			while (!validNbr) {
-				cout << "Select the neighbor of this country to attack: ";
-				cin >> nbrNB;
-
-				if (cin.fail()) {
-					clearInputA();
-				}
-				else if (nbrNB >= p->myTerritories.at(countryNB)->nbr.size()
-					|| nbrNB < 0 || p->myTerritories.at(countryNB)->nbr.at(nbrNB)->owner == p) {
-					cout << "Not a valid number." << endl;
-				}
-				else {
-					validNbr = true;
-				}
-			}
-			validNbr = false;
-
-			// Store neighbor country in a new variable to access to owner easily
-			Country* defenderCountry = p->myTerritories.at(countryNB)->nbr.at(nbrNB);
-			cout << "This country belongs to: " << defenderCountry->owner->name << endl;
-
-
-			/*The attacker and defender players choose the number of dice to roll for their attack/defense. The attacker
-			is allowed 1 to 3 dice, with the maximum number of dice being the number of armies on the attacking
-			country, minus one. The defender is allowed 1 to 2 dice, with the maximum number of dice being the
-			number of armies on the defending country.			*/
-			while (!validDice) {
-				cout << endl << "NOTE: the attacker's number of dice can only be smaller or equal \n to the number of armies on the defender's country MINUS 1." << endl
-					<< "Attacker must choose number of dices to roll (1, 2 or 3):  " << endl;
-				cin >> dicesAttack;
-
-				if (cin.fail()) {
-					clearInputA();
-				}
-				else if (dicesAttack > p->myTerritories.at(countryNB)->nbArmies - 1) {
-					cout << "Number of dices must be smaller or equal to number of armies - 1 on the attacking country." << endl;
-
-				}
-				else if (dicesAttack > 3 || dicesAttack < 1) {
-					cout << "Not a valid number.";
-				}
-				else {
-					validDice = true;
-				}
-			}
-			validDice = false;
-
-
-			while (!validDice) {
-
-				cout << endl << "NOTE: the defender's number of dice can only be smaller or equal \n to the number of armies on the defender's country." << endl
-					<< "Defender chooses number of dices to roll (1 or 2): " << endl;
-				cin >> dicesDefend;
-
-				if (cin.fail()) {
-					clearInputA();
-				}
-				else if (dicesDefend > defenderCountry->nbArmies) {
-					cout << "Number of dices must be smaller or equal to the number of armies on the defending country." << endl;
-
-				}
-				else if (dicesDefend > 2 || dicesDefend < 1) {
-					cout << "Not a valid number.";
-				}
-				else {
-					validDice = true;
-				}
-			}
-			validDice = false;
-
-
-			/*The dice are rolled for each player and sorted, then compared pair-wise. For each pair starting with the
-			highest, the player with the lowest roll loses one army. If the pair is equal, the attacker loses an army. */
-			p->dice.rollDice(dicesAttack);
+			// TODO: Roll dices
+			// Find nb of dices to roll for player
+			if (strongest->nbArmies - 1 >= 3)
+				dicesAttack = 3;
+			else
+				dicesAttack = 2;
+			p->getDice()->rollDice(dicesAttack);
 			Sleep(2000);
-			defenderCountry->owner->getDice()->rollDice(dicesDefend);
+			// Assume owner of defendent country is a computer 
+			if (weakestNbr->nbArmies >= 2)
+				dicesDefend = 2;
+			else
+				dicesDefend = 1;
+			weakestNbr->owner->getDice()->rollDice(dicesDefend);
 
 			// HIGHEST ROLL - Attacker wins
-			if (p->dice.containerOfDiceRolls[2] > defenderCountry->owner->getDice()->containerOfDiceRolls[2]) {
-				defenderCountry->nbArmies--;
+			if (p->dice.containerOfDiceRolls[2] > weakestNbr->owner->getDice()->containerOfDiceRolls[2]) {
+				weakestNbr->nbArmies--;
 				cout << "Defender loses 1 army" << endl;
 			}
 			else { // Attacker loses
-				p->myTerritories.at(countryNB)->nbArmies--;
+				strongest->nbArmies--;
 				cout << "Attacker loses 1 army" << endl;
 			}
 			// MID ROLL - Only if both players rolled at least 2 dices
 			if (dicesAttack > 1 && dicesDefend > 1) {
-				if (p->dice.containerOfDiceRolls[1] > defenderCountry->owner->getDice()->containerOfDiceRolls[1]) {
-					defenderCountry->nbArmies--;
+				if (p->dice.containerOfDiceRolls[1] > weakestNbr->owner->getDice()->containerOfDiceRolls[1]) {
+					weakestNbr->nbArmies--;
 					cout << "Defender loses 1 army" << endl;
 				}
 				else { // Attacker loses
-					p->myTerritories.at(countryNB)->nbArmies--;
+					strongest->nbArmies--;
 					cout << "Attacker loses 1 army" << endl;
 				}
 			}
 
-			cout << endl << "Result: " << endl << p->myTerritories.at(countryNB)->name << ": " << p->myTerritories.at(countryNB)->nbArmies << " armies." << endl
-				<< defenderCountry->name << ": " << defenderCountry->nbArmies << " armies" << endl << endl;
+			cout << endl << "Result: " << endl << strongest->name << ": " << strongest->nbArmies << " armies." << endl
+				<< weakestNbr->name << ": " << weakestNbr->nbArmies << " armies" << endl << endl;
 
+			// Check if defender has 0 armies 
+			if (weakestNbr->nbArmies <= 0) { // Defender country loses
+				weakestNbr->owner->removeCountry(weakestNbr); // remove country from other player's list
+				weakestNbr->owner = p; // player now owns the defender country
+				p->myTerritories.push_back(weakestNbr); // add it to owned territories
 
-			/* If the attacked country runs out of armies, it has been defeated. The defending country now belongs to
-			the attacking player. The attacker is allowed to move a number of armies from the attacking country to the
-			attacked country, in the range [1 to (number of armies on attacking country -1)] */
-
-			if (defenderCountry->nbArmies <= 0) { // Defender country loses
-				defenderCountry->owner->removeCountry(defenderCountry); // remove country from other player's list
-				defenderCountry->owner = p; // player now owns the defender country
-				p->myTerritories.push_back(defenderCountry); // add it to owned territories
-
-				cout << "Defending country has been defeated. This country now belong to the attacking player."
-					<< endl << "Attacking player now needs to move at least 1 army from the attacking country to their new country." << endl << endl;
-
-				// Move a number of armies from one country to another
-				moveArmiesB(p->myTerritories.at(p->myTerritories.size() - 1), p->myTerritories.at(countryNB)); 	// receiver, giver
+				cout << "Defending country has been defeated. This country now belong to the attacking player." << endl;
+				int value = floor(strongest->nbArmies / 3);
+				if (value < 1)
+					value = 1;
+				cout << "Number of armies transferred is " << strongest->nbArmies << " / 3  = " << value << "." << endl
+					<< "NOTE: minimum value of armies moved is 1." << endl;
+				strongest->nbArmies -= value;
+				p->myTerritories.at(p->myTerritories.size() - 1)->nbArmies += value;
 			}
+
+			//Display the new army totals for each country
+			cout << endl << "This is the updated list of countries (and armies): " << endl;
+			p->getCountries();
 		}
-		else if (ans == 'n' || ans == 'N') { // Player doesn't want to attack
-			attackOver = true;
-		}
-		else {
-			clearInputA();
-		}
-	}
+
+	}while (canAttack);
+
 	cout << endl << "---------------------------------------------------------------------- \n"
-		"////////////////////// END ATTACKING PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+					"////////////////////// END ATTACKING PHASE ///////////////////////  \n"
+					"----------------------------------------------------------------------" << endl;
 }
 
-/***********************************************   ASSIGNMENT #2 - PART 6 **********************************************/
-// FORTIFICATION PHASE
+/***********************************************   FORTIFICATION PHASE **********************************************/
 /*	After Attack Phase is complete:
 		Player may move as many armies as they want in to a NEIGHBOURING country that they own.
 		Player may only do this ONE time (you can't fortify multiple countries).
@@ -349,130 +213,62 @@ void Aggressive::attack() {
 void Aggressive::fortify() {
 	cout << "Aggressive computer player's fortify method." << endl;
 
-	// Variables borrowed from Attack()
-	int countryNB, nbrNB;
-	bool validCountry = false, validNbr = false;
-
-	// Variables used in Fortify method:
-	bool fortificationPhaseIsHappening = true; // Needed to end fortification phase if player does not want to fortify
-	bool playerWantsToFortifyAnswerIsValid = false;
-	bool validNumberOfArmies = false;
-	char playerWantsToFortifyAnswer;
-	int numberOfFortifyingArmies;
-
 	cout << "---------------------------------------------------------------------- \n"
-		"///////////////////// BEGIN FORTIFICATION PHASE //////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
-	while (fortificationPhaseIsHappening == true) {
+			"///////////////////// BEGIN FORTIFICATION PHASE //////////////////////  \n"
+			"----------------------------------------------------------------------" << endl;
 
-		/* PART 1) Ask if Player wants to fortify a country (if "NO", Player's turn is finished.)
-		*/
-		while (playerWantsToFortifyAnswerIsValid == false) {
-			cout << "Do you wish to fortify one of your countries? ([Y] = Yes, [N] = No.)" << endl;
-			cin >> playerWantsToFortifyAnswer;
+	/* FIND STRONGEST COUNTRY */
+	bool validCountry = false;
+	Country * strongest = p->myTerritories.at(0);
 
-			if (cin.fail()) {
-				clearInputA();
+	for (int i = 1; i < p->myTerritories.size(); i++) {
+		// Finds a country owned with less armies than current temp weakest country
+		if (strongest->nbArmies < p->myTerritories.at(i)->nbArmies) {
+			// Verifies if country has a neighbor that can fortify it
+			if (checkValidNeighbors_FortifyA(p->myTerritories.at(i))) {
+				strongest = p->myTerritories.at(i);
 			}
-			if ((playerWantsToFortifyAnswer == 'Y') || (playerWantsToFortifyAnswer == 'y') || (playerWantsToFortifyAnswer == 'N') || (playerWantsToFortifyAnswer == 'n')) {
-				playerWantsToFortifyAnswerIsValid = true; // Answer is valid "Yes" or "No" 
+		}
+	}
+	// Double check if weakest found has valid neighbors (in case it is still country at index 0)
+	if (checkValidNeighbors_FortifyA(strongest)) {
+		validCountry = true;
+	}
+	else {
+		cout << "Aggressive computer currently doesn't have any strong country that can be fortified by one of its neighbors." << endl;
+	}
+
+	/* FIND STRONGEST NEIGHBOR */
+	if (validCountry) {
+		cout << "Strongest country of Aggressive computer is: " << strongest->name << " with " << strongest->nbArmies << " armies." << endl;
+		Country* strongestNbr = strongest->nbr.at(0);
+		bool firstFound = false;
+
+		// Find strongest neighbor of weakest country & also owned by aggressive player
+		for (int j = 0; j < strongest->nbr.size(); j++) {
+			if (!firstFound && strongest->nbr.at(j)->owner == p) {
+				strongestNbr = strongest->nbr.at(j);
+				firstFound = true;
 			}
 			else {
-				std::cout << "Invalid selection. Answer must be [Y] for Yes, or [N] for No." << endl;
-				playerWantsToFortifyAnswerIsValid = false; // Answer not valid, keep looping
+				if (strongestNbr->nbArmies < strongest->nbr.at(j)->nbArmies && strongest->nbr.at(j)->owner == p) {
+					strongestNbr = strongest->nbr.at(j);
+				}
 			}
 		}
-		// If player does not want to fortify, exit fortify method
-		if ((playerWantsToFortifyAnswer == 'N') || (playerWantsToFortifyAnswer == 'n')) {
-			std::cout << "Ok. This ends the fortification phase for this turn." << endl;
-			fortificationPhaseIsHappening = false;
-			break;
-		}
 
-		// METHOD 2) Ask which country will be the "SOURCE" country
-		// NEEDED FOR DEMO: Display list of invalid countries that can't be selected. 
-		//			Invalid countries are: 1) Countries with no neighbours
-		//								   2) Countries where all the neighbours only have 1 army each
-		cout << endl << "Ok. Here is a list of all your countries :" << endl;
-		p->getCountries();
-		cin.clear();
-		cout << endl << "    NOTE: A SOURCE country can only fortify a TARGET country if: " << endl
-			<< "    1) SOURCE and TARGET are neighbours" << endl
-			<< "    1) SOURCE and TARGET are owned by same player" << endl
-			<< "    2) SOURCE has more than 1 army" << endl << endl;
+		cout << "Strongest neighbor of " << strongest->name << " is " << strongestNbr->name << " with " << strongestNbr->nbArmies << " armies." << endl;
 
-		// Note: Was going to add a method here to DISPLAY a list of countries that player is not allowed to fortify. Will implement it later.
-
-		// Enter a valid SOURCE country
-		while (!validCountry) {
-			cout << endl << "Select the country that will be supplying the armies (the SOURCE country): ";
-			cin >> countryNB;
-
-			if (cin.fail()) {
-				clearInputA();
-			}
-			else if (countryNB >= p->myTerritories.size() || countryNB < 0) {
-				cout << "Invalid number." << endl;
-			}
-			else if (p->myTerritories.at(countryNB)->nbArmies < 2) {
-				cout << "The country must have at least 2 armies on it." << endl;
-			}
-			else if (p->myTerritories.at(countryNB)->nbr.size() == 0) {
-				cout << "This country has no neighbors." << endl;
-			}
-			else if (!checkValidNeighbors_FortifyA(p->myTerritories.at(countryNB))) {
-				cout << "This country has no neighbors that are also owned by you." << endl;
-			}
-			else {
-				validCountry = true;
-			}
-		}
-		validCountry = false;
-		// Display player's choice of SOURCE country
-		cout << endl << "You selected " << p->myTerritories.at(countryNB)->name << "." << endl;
-		cout << p->myTerritories.at(countryNB)->name << "'s neighbours are: " << endl << endl;
-
-		// PART 3) After player has selected SOURCE country, ask which neighbour ("TARGET" country) you want to fortify
-		// Enter valid TARGET country to fortify
-		for (int i = 0; i < p->myTerritories.at(countryNB)->nbr.size(); i++) {
-			if (p->myTerritories.at(countryNB)->nbr.at(i)->owner == p) {
-				cout << "Neighbor #" << i << ": " << p->myTerritories.at(countryNB)->nbr.at(i)->name
-					<< ". Armies: " << p->myTerritories.at(countryNB)->nbr.at(i)->nbArmies << endl;
-			}
-		}
-		cout << endl << "Note: neighbor countries of " << p->myTerritories.at(countryNB)->name << " that belong to other players were omitted." << endl;
-		while (!validNbr) {
-			cout << "Select the neighbor of this country to fortify: ";
-			cin >> nbrNB;
-
-			if (cin.fail()) {
-				clearInputA();
-			}
-			else if (nbrNB >= p->myTerritories.at(countryNB)->nbr.size()
-				|| nbrNB < 0 || p->myTerritories.at(countryNB)->nbr.at(nbrNB)->owner != p) {
-				cout << "Not a valid number." << endl;
-			}
-			else {
-				validNbr = true;
-			}
-		}
-		validNbr = false;
-
-		// Store neighbor country in a new variable to access to owner easily (changed "defenderCountry" to "targetCountry")
-		Country* targetCountry = p->myTerritories.at(countryNB)->nbr.at(nbrNB);
-		cout << "This country belongs to: " << targetCountry->owner->name << endl << endl;
-
-		// PART 4) Move armies to country
-		// NEEDED FOR DEMO: Show that player can't take so many armies that would leave less than 1 army in Source country
-		// Display the updated number of armies in each country.
-		moveArmiesB(targetCountry, p->myTerritories.at(countryNB));
+		// Transfer the armies from strongest neighbor to weakest country
+		int value = floor(strongestNbr->nbArmies / 2);
+		cout << "Number of armies transferred is " << strongestNbr->nbArmies << " / 2  = " << value << endl;
+		strongestNbr->nbArmies -= value;
+		strongest->nbArmies += value;
 
 		//Display the new army totals for each country
 		cout << endl << "This is the updated list of countries (and armies): " << endl;
 		p->getCountries();
-		break; // needed to exit Loop
-
-	} //End While Loop: fortificationPhaseIsHappening
+	}
 
 	cout << endl << "---------------------------------------------------------------------- \n"
 		"////////////////////// END FORTIFICATION PHASE ///////////////////////  \n"
