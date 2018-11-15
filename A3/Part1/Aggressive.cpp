@@ -5,11 +5,6 @@
 
 using namespace std;
 
-void clearInputA();
-void moveArmiesB(Country* receiver, Country* giver);
-bool checkValidNeighbors_AttackA(Country* attacking);
-bool checkValidNeighbors_FortifyA(Country* attacking);
-void defenderEliminatedA(Player* p1, Player* p2);
 
 /* AGGRESSIVE COMPUTER PLAYER:
 	an aggressive computer player that focuses on attack (reinforces its strongest
@@ -106,13 +101,13 @@ void Aggressive::attack() {
 			// Finds a country owned with more armies than current temp strongest country
 			if (strongest->nbArmies < p->myTerritories.at(i)->nbArmies) {
 				// Verifies if country has a neighbor that they can attack & country has more than 2 armies
-				if (checkValidNeighbors_AttackA(p->myTerritories.at(i)) && (p->myTerritories.at(i)->nbArmies >= 2)) {
+				if (checkValidNeighbors_Attack(p->myTerritories.at(i)) && (p->myTerritories.at(i)->nbArmies >= 2)) {
 					strongest = p->myTerritories.at(i);
 				}
 			}
 		}
 		// Double check if weakest found has valid neighbors (in case it is still country at index 0)
-		if (checkValidNeighbors_AttackA(strongest) && strongest->nbArmies >= 2) {
+		if (checkValidNeighbors_Attack(strongest) && strongest->nbArmies >= 2) {
 			validCountry = true;
 		}
 		else {
@@ -160,7 +155,7 @@ void Aggressive::attack() {
 					cin >> dicesDefend;
 
 					if (cin.fail()) {
-						clearInputA();
+						clearInput();
 					}
 					else if (dicesDefend > weakestNbr->nbArmies) {
 						cout << "Number of dices must be smaller or equal to the number of armies on the defending country." << endl;
@@ -231,15 +226,18 @@ void Aggressive::attack() {
 					value = 1;
 				cout << "Number of armies transferred is " << strongest->nbArmies << " / 3  = " << value << "." << endl
 					<< "NOTE: minimum value of armies moved is 1." << endl;
+
+				// Move a number of armies from one country to another
 				strongest->nbArmies -= value;
 				p->myTerritories.at(p->myTerritories.size() - 1)->nbArmies += value;
 
+				// Pick up a new cards because country is conquered
 				p->getHand()->pickUpCard();
 				cout << "Because you conquered one new country, you pick up one new risk card. Here is your new hand:" << endl;
 				p->getHand()->printHand();			
 
 				// Check if a card exchange has to be made
-				defenderEliminatedA(p,p2);
+				defenderEliminated(p,p2);
 				cout << "-------------------------------------------------------------------------------------" << endl;
 			}
 
@@ -275,13 +273,13 @@ void Aggressive::fortify() {
 		// Finds a country owned with less armies than current temp weakest country
 		if (strongest->nbArmies < p->myTerritories.at(i)->nbArmies) {
 			// Verifies if country has a neighbor that can fortify it
-			if (checkValidNeighbors_FortifyA(p->myTerritories.at(i))) {
+			if (checkValidNeighbors_Fortify(p->myTerritories.at(i))) {
 				strongest = p->myTerritories.at(i);
 			}
 		}
 	}
 	// Double check if weakest found has valid neighbors (in case it is still country at index 0)
-	if (checkValidNeighbors_FortifyA(strongest)) {
+	if (checkValidNeighbors_Fortify(strongest)) {
 		validCountry = true;
 	}
 	else {
@@ -325,73 +323,3 @@ void Aggressive::fortify() {
 		"----------------------------------------------------------------------" << endl;
 }
 
-void clearInputA() {
-	cout << "Not a valid answer." << endl;
-	cin.clear();
-	std::string ignoreLine; //read the invalid input into it
-	std::getline(cin, ignoreLine); //read the line till next space
-}
-
-
-void moveArmiesA(Country* receiver, Country* giver) {
-	bool validMoveArmy = false;
-	int movingArmies;
-
-	while (!validMoveArmy) {
-		cout << "Please enter the number of armies you want to move: " << endl;
-		cin >> movingArmies;
-
-		if (cin.fail()) {
-			clearInputA();
-		}
-		else if (movingArmies < 1) {
-			cout << "Number must be at least 1." << endl;
-		}
-		else if (movingArmies > giver->nbArmies - 1) {
-			cout << "Number bigger than armies on the country - 1." << endl;
-		}
-
-		else {
-			cout << movingArmies << " armies are moved from " << giver->name << " to "
-				<< receiver->name << endl;
-			giver->nbArmies -= movingArmies;
-			receiver->nbArmies += movingArmies;
-			validMoveArmy = true;
-		}
-	}
-	validMoveArmy = false;
-
-}
-
-bool checkValidNeighbors_AttackA(Country* attacking) {
-	for (int i = 0; i < attacking->nbr.size(); i++) {
-		if (attacking->nbr.at(i)->owner != attacking->owner)
-			return true; // at least one neighbor is not owned by the same player 
-	}
-	return false;
-}
-
-bool checkValidNeighbors_FortifyA(Country* attacking) {
-	for (int i = 0; i < attacking->nbr.size(); i++) {
-		if (attacking->nbr.at(i)->owner == attacking->owner)
-			return true; // at least one neighbor is owned by the same player 
-	}
-	return false;
-}
-
-void defenderEliminatedA(Player* p1, Player* p2) {
-	if (p2 != NULL) {
-		cout << "Defending player " << p2->name << " has no country left. This player is eliminated from the game and " 
-			<< p1->name << " receives their cards. " << endl;
-
-		// transfer cards from loser(p2) to winner(p1)
-		for (int j = 0; j < p2->getHand()->handOfCards.size(); j++) {
-			p1->getHand()->handOfCards.push_back(p2->getHand()->handOfCards.at(j));
-		}
-		p2->getHand()->handOfCards.clear();
-		
-	}
-	else {
-		cout << "Defending player has some countries left. Player is NOT eliminated from the game" << endl;
-	}
-}

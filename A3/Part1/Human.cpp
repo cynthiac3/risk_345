@@ -1,19 +1,12 @@
 #include <iostream>
-#include "Human.h"
 #include <windows.h.>
+#include "Human.h"
 #include "Player.h"
 
 using namespace std;
 
-void clearInputH();
-void moveArmies(Country* receiver, Country* giver);
-bool checkValidNeighbors_Attack(Country* attacking);
-bool checkValidNeighbors_Fortify(Country* attacking);
-void defenderEliminated(Player* p1, Player* p2);
 
-
-/***********************************************   ASSIGNMENT #2 - PART 4 **********************************************/
-// REINFORCING PHASE
+/***********************************************   REINFORCING PHASE **********************************************/
 /*
 	 Player gets a number of armies to place on its countries.
 */
@@ -59,7 +52,7 @@ void Human::reinforce() {
 			cout << endl << "Would you like to trade cards for armies? ";
 			cin >> ans;
 			if (cin.fail()) {
-				clearInputH();
+				clearInput();
 			}
 			if (ans == 'y' || ans == 'Y') { // Player wants to draw cards
 				exchangeCards = true;
@@ -103,7 +96,7 @@ void Human::reinforce() {
 			cin >> countryNB;
 
 			if (cin.fail()) {
-				clearInputH();
+				clearInput();
 			}
 			else if (countryNB >= p->myTerritories.size() || countryNB < 0) {
 				cout << "Invalid number." << endl;
@@ -119,7 +112,7 @@ void Human::reinforce() {
 			cin >> nbOfUnits;
 
 			if (cin.fail()) {
-				clearInputH();
+				clearInput();
 			}
 			else if (nbOfUnits < 0 || nbOfUnits > nbArmiesToPlace) {
 				cout << "Invalid number. Please enter a number from 0 to " << nbArmiesToPlace << "." << endl;
@@ -148,8 +141,7 @@ void Human::reinforce() {
 
 }
 
-/***********************************************   ASSIGNMENT #2 - PART 5 **********************************************/
-// ATTACKING PHASE
+/***********************************************   ATTACKING PHASE **********************************************/
 /*
 	Player is allowed to declare a series of attacks to try to gain control of additional countries,
 	and eventually control the entire map.
@@ -182,7 +174,7 @@ void Human::attack() {
 				cin >> countryNB;
 
 				if (cin.fail()) {
-					clearInputH();
+					clearInput();
 				}
 				else if (countryNB >= p->myTerritories.size() || countryNB < 0) {
 					cout << "Invalid number." << endl;
@@ -216,7 +208,7 @@ void Human::attack() {
 				cin >> nbrNB;
 
 				if (cin.fail()) {
-					clearInputH();
+					clearInput();
 				}
 				else if (nbrNB >= p->myTerritories.at(countryNB)->nbr.size()
 					|| nbrNB < 0 || p->myTerritories.at(countryNB)->nbr.at(nbrNB)->owner == p) {
@@ -243,7 +235,7 @@ void Human::attack() {
 				cin >> dicesAttack;
 
 				if (cin.fail()) {
-					clearInputH();
+					clearInput();
 				}
 				else if (dicesAttack > p->myTerritories.at(countryNB)->nbArmies - 1) {
 					cout << "Number of dices must be smaller or equal to number of armies - 1 on the attacking country." << endl;
@@ -266,7 +258,7 @@ void Human::attack() {
 				cin >> dicesDefend;
 
 				if (cin.fail()) {
-					clearInputH();
+					clearInput();
 				}
 				else if (dicesDefend > defenderCountry->nbArmies) {
 					cout << "Number of dices must be smaller or equal to the number of armies on the defending country." << endl;
@@ -340,6 +332,11 @@ void Human::attack() {
 				// Move a number of armies from one country to another
 				moveArmies(p->myTerritories.at(p->myTerritories.size() - 1), p->myTerritories.at(countryNB)); 	// receiver, giver
 			
+				// Pick up a new cards because country is conquered
+				p->getHand()->pickUpCard();
+				cout << "Because you conquered one new country, you pick up one new risk card. Here is your new hand:" << endl;
+				p->getHand()->printHand();
+
 
 				// Check if a card exchange has to be made
 				defenderEliminated(p, p2);
@@ -355,7 +352,7 @@ void Human::attack() {
 			attackOver = true;
 		}
 		else {
-			clearInputH();
+			clearInput();
 		}
 	}
 	cout << endl << "---------------------------------------------------------------------- \n"
@@ -364,8 +361,7 @@ void Human::attack() {
 }
 
 
-/***********************************************   ASSIGNMENT #2 - PART 6 **********************************************/
-// FORTIFICATION PHASE
+/***********************************************   FORTIFICATION PHASE **********************************************/
 /*	After Attack Phase is complete:
 		Player may move as many armies as they want in to a NEIGHBOURING country that they own.
 		Player may only do this ONE time (you can't fortify multiple countries).
@@ -396,7 +392,7 @@ void Human::fortify() {
 			cin >> playerWantsToFortifyAnswer;
 
 			if (cin.fail()) {
-				clearInputH();
+				clearInput();
 			}
 			if ((playerWantsToFortifyAnswer == 'Y') || (playerWantsToFortifyAnswer == 'y') || (playerWantsToFortifyAnswer == 'N') || (playerWantsToFortifyAnswer == 'n')) {
 				playerWantsToFortifyAnswerIsValid = true; // Answer is valid "Yes" or "No" 
@@ -433,7 +429,7 @@ void Human::fortify() {
 			cin >> countryNB;
 
 			if (cin.fail()) {
-				clearInputH();
+				clearInput();
 			}
 			else if (countryNB >= p->myTerritories.size() || countryNB < 0) {
 				cout << "Invalid number." << endl;
@@ -470,7 +466,7 @@ void Human::fortify() {
 			cin >> nbrNB;
 
 			if (cin.fail()) {
-				clearInputH();
+				clearInput();
 			}
 			else if (nbrNB >= p->myTerritories.at(countryNB)->nbr.size()
 				|| nbrNB < 0 || p->myTerritories.at(countryNB)->nbr.at(nbrNB)->owner != p) {
@@ -501,74 +497,4 @@ void Human::fortify() {
 	cout << endl << "---------------------------------------------------------------------- \n"
 		"////////////////////// END FORTIFICATION PHASE ///////////////////////  \n"
 		"----------------------------------------------------------------------" << endl;
-}
-
-void clearInputH() {
-	cout << "Not a valid answer." << endl;
-	cin.clear();
-	std::string ignoreLine; //read the invalid input into it
-	std::getline(cin, ignoreLine); //read the line till next space
-}
-
-void moveArmies(Country* receiver, Country* giver) {
-	bool validMoveArmy = false;
-	int movingArmies;
-
-	while (!validMoveArmy) {
-		cout << "Please enter the number of armies you want to move: " << endl;
-		cin >> movingArmies;
-
-		if (cin.fail()) {
-			clearInputH();
-		}
-		else if (movingArmies < 1) {
-			cout << "Number must be at least 1." << endl;
-		}
-		else if (movingArmies > giver->nbArmies - 1) {
-			cout << "Number bigger than armies on the country - 1." << endl;
-		}
-
-		else {
-			cout << movingArmies << " armies are moved from " << giver->name << " to "
-				<< receiver->name << endl;
-			giver->nbArmies -= movingArmies;
-			receiver->nbArmies += movingArmies;
-			validMoveArmy = true;
-		}
-	}
-	validMoveArmy = false;
-
-}
-
-bool checkValidNeighbors_Attack(Country* attacking) {
-	for (int i = 0; i < attacking->nbr.size(); i++) {
-		if (attacking->nbr.at(i)->owner != attacking->owner)
-			return true; // at least one neighbor is not owned by the same player 
-	}
-	return false;
-}
-
-bool checkValidNeighbors_Fortify(Country* attacking) {
-	for (int i = 0; i < attacking->nbr.size(); i++) {
-		if (attacking->nbr.at(i)->owner == attacking->owner)
-			return true; // at least one neighbor is owned by the same player 
-	}
-	return false;
-}
-
-void defenderEliminated(Player* p1, Player* p2) {
-	if (p2 != NULL) {
-		cout << "Defending player " << p2->name << " has no country left. This player is eliminated from the game and " 
-			<< p1->name << " receives their cards. " << endl;
-
-		// transfer cards 
-		for (int j = 0; j < p2->getHand()->handOfCards.size(); j++) {
-			p1->getHand()->handOfCards.push_back(p2->getHand()->handOfCards.at(j));
-		}
-		p2->getHand()->handOfCards.clear();
-
-	}
-	else {
-		cout << "Defending player has some countries left. Player is NOT eliminated from the game" << endl;
-	}
 }

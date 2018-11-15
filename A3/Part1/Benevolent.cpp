@@ -5,16 +5,11 @@
 
 using namespace std;
 
-void clearInputB();
-void moveArmiesB(Country* receiver, Country* giver);
-bool checkValidNeighbors_AttackB(Country* attacking);
-bool checkValidNeighbors_FortifyB(Country* attacking);
 
 /*	BENEVOLENT COMPUTER PLAYER:
 	a benevolent computer player that focuses on protecting its weak countries (reinforces
 	its weakest countries, never attacks, then fortifies in order to move armies to weaker countries). 
 */
-
 
 /***********************************************  REINFORCING PHASE **********************************************/
 /*
@@ -113,13 +108,13 @@ void Benevolent::fortify() {
 		// Finds a country owned with less armies than current temp weakest country
 		if (weakest->nbArmies > p->myTerritories.at(i)->nbArmies) {
 			// Verifies if country has a neighbor that can fortify it
-			if (checkValidNeighbors_FortifyB(weakest)) {
+			if (checkValidNeighbors_Fortify(weakest)) {
 				weakest = p->myTerritories.at(i);
 			}	
 		}
 	}
 	// Double check if weakest found has valid neighbors (in case it is still country at index 0)
-	if (checkValidNeighbors_FortifyB(weakest)) {
+	if (checkValidNeighbors_Fortify(weakest)) {
 		validCountry = true;
 	}
 	else {
@@ -158,58 +153,4 @@ void Benevolent::fortify() {
 	cout << endl << "---------------------------------------------------------------------- \n"
 		"////////////////////// END FORTIFICATION PHASE ///////////////////////  \n"
 		"----------------------------------------------------------------------" << endl;
-}
-
-void clearInputB() {
-	cout << "Not a valid answer." << endl;
-	cin.clear();
-	std::string ignoreLine; //read the invalid input into it
-	std::getline(cin, ignoreLine); //read the line till next space
-}
-
-
-void moveArmiesB(Country* receiver, Country* giver) {
-	bool validMoveArmy = false;
-	int movingArmies;
-
-	while (!validMoveArmy) {
-		cout << "Please enter the number of armies you want to move: " << endl;
-		cin >> movingArmies;
-
-		if (cin.fail()) {
-			clearInputB();
-		}
-		else if (movingArmies < 1) {
-			cout << "Number must be at least 1." << endl;
-		}
-		else if (movingArmies > giver->nbArmies - 1) {
-			cout << "Number bigger than armies on the country - 1." << endl;
-		}
-
-		else {
-			cout << movingArmies << " armies are moved from " << giver->name << " to "
-				<< receiver->name << endl;
-			giver->nbArmies -= movingArmies;
-			receiver->nbArmies += movingArmies;
-			validMoveArmy = true;
-		}
-	}
-	validMoveArmy = false;
-
-}
-
-bool checkValidNeighbors_AttackB(Country* attacking) {
-	for (int i = 0; i < attacking->nbr.size(); i++) {
-		if (attacking->nbr.at(i)->owner != attacking->owner)
-			return true; // at least one neighbor is not owned by the same player 
-	}
-	return false;
-}
-
-bool checkValidNeighbors_FortifyB(Country* attacking) {
-	for (int i = 0; i < attacking->nbr.size(); i++) {
-		if (attacking->nbr.at(i)->owner == attacking->owner)
-			return true; // at least one neighbor is owned by the same player 
-	}
-	return false;
 }
