@@ -9,6 +9,7 @@ void clearInputH();
 void moveArmies(Country* receiver, Country* giver);
 bool checkValidNeighbors_Attack(Country* attacking);
 bool checkValidNeighbors_Fortify(Country* attacking);
+void defenderEliminated(Player* p1, Player* p2);
 
 
 /***********************************************   ASSIGNMENT #2 - PART 4 **********************************************/
@@ -318,15 +319,37 @@ void Human::attack() {
 
 			if (defenderCountry->nbArmies <= 0) { // Defender country loses
 				defenderCountry->owner->removeCountry(defenderCountry); // remove country from other player's list
+
+				// Check if defending player is defeated
+				Player* p2;
+				if (defenderCountry->owner->myTerritories.size() == 0) {
+					p2 = defenderCountry->owner;
+				}
+				else {
+					p2 = NULL;
+				}
+				
 				defenderCountry->owner = p; // player now owns the defender country
 				p->myTerritories.push_back(defenderCountry); // add it to owned territories
+
+				cout << "-------------------------------------------------------------------------------------" << endl;
 
 				cout << "Defending country has been defeated. This country now belong to the attacking player."
 					<< endl << "Attacking player now needs to move at least 1 army from the attacking country to their new country." << endl << endl;
 
 				// Move a number of armies from one country to another
 				moveArmies(p->myTerritories.at(p->myTerritories.size() - 1), p->myTerritories.at(countryNB)); 	// receiver, giver
+			
+
+				// Check if a card exchange has to be made
+				defenderEliminated(p, p2);
+				cout << "-------------------------------------------------------------------------------------" << endl;
+
 			}
+
+			//Display the new army totals for each country
+			cout << endl << "This is the updated list of countries (and armies): " << endl;
+			p->getCountries();
 		}
 		else if (ans == 'n' || ans == 'N') { // Player doesn't want to attack
 			attackOver = true;
@@ -531,4 +554,21 @@ bool checkValidNeighbors_Fortify(Country* attacking) {
 			return true; // at least one neighbor is owned by the same player 
 	}
 	return false;
+}
+
+void defenderEliminated(Player* p1, Player* p2) {
+	if (p2 != NULL) {
+		cout << "Defending player " << p2->name << " has no country left. This player is eliminated from the game and " 
+			<< p1->name << " receives their cards. " << endl;
+
+		// transfer cards 
+		for (int j = 0; j < p2->getHand()->handOfCards.size(); j++) {
+			p1->getHand()->handOfCards.push_back(p2->getHand()->handOfCards.at(j));
+		}
+		p2->getHand()->handOfCards.clear();
+
+	}
+	else {
+		cout << "Defending player has some countries left. Player is NOT eliminated from the game" << endl;
+	}
 }

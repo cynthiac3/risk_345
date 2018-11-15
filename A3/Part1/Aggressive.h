@@ -3,7 +3,7 @@
 
 class Aggressive : public Strategy {
 public:
-	Aggressive(Player* player) { p = player; };
+	Aggressive(Player* player) { p = player; human = false; };
 	~Aggressive() {};
 	// Game methods
 	void reinforce();

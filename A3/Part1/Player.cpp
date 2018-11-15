@@ -2,8 +2,8 @@
 #include <cmath>
 #include <windows.h.>
 #include "player.h"
-#include "Human.h"
 #include "Strategy.h"
+#include "Human.h"
 #include "Aggressive.h"
 #include "Benevolent.h"
 
@@ -130,20 +130,6 @@ void Player::getCountries() {
 	}
 }
 
-// Print the cards that the player owns 
-void printPlayersCards(Player* p) {
-
-	for (int i = 0; i < p->getHand()->handOfCards.size(); i++)
-	{
-			switch (p->getHand()->handOfCards.at(i))
-			{
-				case Deck::Cards::Infantry: cout << "Card #" << i + 1 << ": Infantry" << endl; break;
-				case Deck::Cards::Cavalry: cout << "Card #" << i + 1 << ": Cavalry" << endl; break;
-				case Deck::Cards::Artillery: cout << "Card #" << i + 1 << ": Artillery" << endl; break;
-			}
-	}
-}
-
 /*** Driver ***/
 int main() {
 	int ans; // option number the player chooses from the menu
@@ -161,6 +147,7 @@ int main() {
 	player1->getHand()->fillHand(gameDeck);
 	player1->setName("Player1");
 	player1->setStrategy(new Human(player1));
+	player1->getHand()->setDeck(gameDeck);
 
 	/*
 		CREATING PLAYER 2
@@ -170,6 +157,7 @@ int main() {
 	player2->getHand()->fillHand(gameDeck);
 	player2->setName("Player2");
 	player2->setStrategy(new Human(player2));
+	player2->getHand()->setDeck(gameDeck);
 
 	// Create vector of players
 	vector<Player*> players;
@@ -207,7 +195,7 @@ int main() {
 				case 2: players.at(j)->strategy->attack(); break;
 				case 3: players.at(j)->strategy->fortify(); break;
 				case 4: players.at(j)->getDice()->rollDice(1); break;
-				case 5: printPlayersCards(players.at(j)); break;
+				case 5: players.at(j)->getHand()->printHand(); break;
 				case 6: players.at(j)->getCountries(); break;
 				case 7: chooseStrategy(players.at(j)); break;
 				default: cout << "Invalid answer." << endl;
@@ -292,7 +280,7 @@ void setUpGameDemo(Player* mark, Player* bob) {
 	mark->addCountry(Germany);
 	bob->addCountry(Spain);
 	bob->addCountry(Italy);
-	bob->addCountry(Iceland);
+	//bob->addCountry(Iceland);
 
 	// Add one continent for bob
 	Continent* Antartica = new Continent();

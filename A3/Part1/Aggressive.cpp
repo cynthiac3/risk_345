@@ -9,6 +9,7 @@ void clearInputA();
 void moveArmiesB(Country* receiver, Country* giver);
 bool checkValidNeighbors_AttackA(Country* attacking);
 bool checkValidNeighbors_FortifyA(Country* attacking);
+void defenderEliminatedA(Player* p1, Player* p2);
 
 /* AGGRESSIVE COMPUTER PLAYER:
 	an aggressive computer player that focuses on attack (reinforces its strongest
@@ -89,6 +90,7 @@ void Aggressive::reinforce() {
 */
 void Aggressive::attack() {
 	int dicesAttack, dicesDefend;
+	bool validDice = false;
 	cout << "Aggressive computer player's attack method." << endl;
 
 	cout << "---------------------------------------------------------------------- \n"
@@ -104,13 +106,13 @@ void Aggressive::attack() {
 			// Finds a country owned with more armies than current temp strongest country
 			if (strongest->nbArmies < p->myTerritories.at(i)->nbArmies) {
 				// Verifies if country has a neighbor that they can attack & country has more than 2 armies
-				if (checkValidNeighbors_AttackA(p->myTerritories.at(i)) && (p->myTerritories.at(i)->nbArmies > 2)) {
+				if (checkValidNeighbors_AttackA(p->myTerritories.at(i)) && (p->myTerritories.at(i)->nbArmies >= 2)) {
 					strongest = p->myTerritories.at(i);
 				}
 			}
 		}
 		// Double check if weakest found has valid neighbors (in case it is still country at index 0)
-		if (checkValidNeighbors_AttackA(strongest) && strongest->nbArmies > 2) {
+		if (checkValidNeighbors_AttackA(strongest) && strongest->nbArmies >= 2) {
 			validCountry = true;
 		}
 		else {
@@ -138,20 +140,49 @@ void Aggressive::attack() {
 			}
 			cout << "Weakest neighbor of " << strongest->name << " is " << weakestNbr->name << " with " << weakestNbr->nbArmies << " armies." << endl;
 
-			// TODO: Roll dices
+			// Roll dices
 			// Find nb of dices to roll for player
-			if (strongest->nbArmies - 1 >= 3)
+			if ((strongest->nbArmies - 1) >= 3)
 				dicesAttack = 3;
-			else
+			else if ((strongest->nbArmies - 1) >= 2)
 				dicesAttack = 2;
+			else
+				dicesAttack = 1;
 			p->getDice()->rollDice(dicesAttack);
 			Sleep(2000);
-			// Assume owner of defendent country is a computer 
-			if (weakestNbr->nbArmies >= 2)
-				dicesDefend = 2;
-			else
-				dicesDefend = 1;
-			weakestNbr->owner->getDice()->rollDice(dicesDefend);
+			
+			// Owner of defendent country is a HUMAN
+			if (weakestNbr->owner->strategy->isHuman()) {
+				while (!validDice) {
+
+					cout << endl << "NOTE: the defender's number of dice can only be smaller or equal \n to the number of armies on the defender's country." << endl
+						<< "Defender chooses number of dices to roll (1 or 2): " << endl;
+					cin >> dicesDefend;
+
+					if (cin.fail()) {
+						clearInputA();
+					}
+					else if (dicesDefend > weakestNbr->nbArmies) {
+						cout << "Number of dices must be smaller or equal to the number of armies on the defending country." << endl;
+
+					}
+					else if (dicesDefend > 2 || dicesDefend < 1) {
+						cout << "Not a valid number.";
+					}
+					else {
+						validDice = true;
+					}
+				}
+				validDice = false;
+			}
+			else { // Owner of defendent country is a COMPUTER
+				if (weakestNbr->nbArmies >= 2)
+					dicesDefend = 2;
+				else
+					dicesDefend = 1;
+				weakestNbr->owner->getDice()->rollDice(dicesDefend);		
+			}
+
 
 			// HIGHEST ROLL - Attacker wins
 			if (p->dice.containerOfDiceRolls[2] > weakestNbr->owner->getDice()->containerOfDiceRolls[2]) {
@@ -180,9 +211,20 @@ void Aggressive::attack() {
 			// Check if defender has 0 armies 
 			if (weakestNbr->nbArmies <= 0) { // Defender country loses
 				weakestNbr->owner->removeCountry(weakestNbr); // remove country from other player's list
+
+				// Check if defending player is defeated
+				Player* p2;
+				if (weakestNbr->owner->myTerritories.size() == 0) {
+					p2 = weakestNbr->owner;
+				}
+				else {
+					p2 = NULL;
+				}
+
 				weakestNbr->owner = p; // player now owns the defender country
 				p->myTerritories.push_back(weakestNbr); // add it to owned territories
 
+				cout << "-------------------------------------------------------------------------------------" << endl;
 				cout << "Defending country has been defeated. This country now belong to the attacking player." << endl;
 				int value = floor(strongest->nbArmies / 3);
 				if (value < 1)
@@ -191,6 +233,14 @@ void Aggressive::attack() {
 					<< "NOTE: minimum value of armies moved is 1." << endl;
 				strongest->nbArmies -= value;
 				p->myTerritories.at(p->myTerritories.size() - 1)->nbArmies += value;
+
+				p->getHand()->pickUpCard();
+				cout << "Because you conquered one new country, you pick up one new risk card. Here is your new hand:" << endl;
+				p->getHand()->printHand();			
+
+				// Check if a card exchange has to be made
+				defenderEliminatedA(p,p2);
+				cout << "-------------------------------------------------------------------------------------" << endl;
 			}
 
 			//Display the new army totals for each country
@@ -327,4 +377,21 @@ bool checkValidNeighbors_FortifyA(Country* attacking) {
 			return true; // at least one neighbor is owned by the same player 
 	}
 	return false;
+}
+
+void defenderEliminatedA(Player* p1, Player* p2) {
+	if (p2 != NULL) {
+		cout << "Defending player " << p2->name << " has no country left. This player is eliminated from the game and " 
+			<< p1->name << " receives their cards. " << endl;
+
+		// transfer cards from loser(p2) to winner(p1)
+		for (int j = 0; j < p2->getHand()->handOfCards.size(); j++) {
+			p1->getHand()->handOfCards.push_back(p2->getHand()->handOfCards.at(j));
+		}
+		p2->getHand()->handOfCards.clear();
+		
+	}
+	else {
+		cout << "Defending player has some countries left. Player is NOT eliminated from the game" << endl;
+	}
 }

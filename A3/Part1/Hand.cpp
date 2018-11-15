@@ -19,6 +19,11 @@ Hand::Hand(Deck *deck)
 	armies = 0;
 }
 
+void Hand::setDeck(Deck &deck) {
+	playingDeck = &deck;
+
+}
+
 //Takes address of deck object, finds empty spot in hand and fills with card.  If no empty spots no card is accepted
 void Hand::fillHand(Deck &playingDeck)
 {
@@ -164,6 +169,7 @@ int  Hand::exchangeComputer()
 		handOfCards[cardsToExchange.at(0)] = Deck::Cards::Null; //Sets cards exchanged to null
 		handOfCards[cardsToExchange.at(1)] = Deck::Cards::Null; //Sets cards exchanged to null
 		handOfCards[cardsToExchange.at(2)] = Deck::Cards::Null; //Sets cards exchanged to null
+		cleanUpHand();
 		
 		if (numberOfExchanges < 6 || numberOfExchanges > 0) //Depending on number of exchanges selects different equation for armies offered
 			armies = (((numberOfExchanges)-1) * 2) + 6;
@@ -174,6 +180,43 @@ int  Hand::exchangeComputer()
 	}
 
 	return armies;
+}
+
+void Hand::cleanUpHand() {
+	vector<Deck::Cards>::iterator it = handOfCards.begin();
+	while (it != handOfCards.end())
+	{
+		if (*it == Deck::Cards::Null)
+		{
+			it = handOfCards.erase(it);
+		}
+		else
+			it++;
+	}
+}
+
+// Player picks up one card from the game deck
+void Hand::pickUpCard() {
+	handOfCards.push_back(playingDeck->draw(playingDeck->deck));
+}
+
+// Print the cards that the player owns 
+void Hand::printHand() {
+
+	if (handOfCards.size() == 0) {
+		cout << "Player currently doesn't have any cards." << endl;
+	}
+	else {
+		for (int i = 0; i <handOfCards.size(); i++)
+		{
+			switch (handOfCards.at(i))
+			{
+			case Deck::Cards::Infantry: cout << "Card #" << i + 1 << ": Infantry" << endl; break;
+			case Deck::Cards::Cavalry: cout << "Card #" << i + 1 << ": Cavalry" << endl; break;
+			case Deck::Cards::Artillery: cout << "Card #" << i + 1 << ": Artillery" << endl; break;
+			}
+		}
+	}
 }
 
 

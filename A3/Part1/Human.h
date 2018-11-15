@@ -3,7 +3,7 @@
 
 class Human : public Strategy {
 public:
-	Human(Player* player) { p = player; };
+	Human(Player* player) { p = player; human = true; };
 	~Human() {};
 	// Game methods
 	void reinforce();

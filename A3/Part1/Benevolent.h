@@ -3,7 +3,7 @@
 
 class Benevolent : public Strategy {
 public:
-	Benevolent(Player* player) { p = player; };
+	Benevolent(Player* player) { p = player; human = false; };
 	~Benevolent() {};
 	// Game methods
 	void reinforce();

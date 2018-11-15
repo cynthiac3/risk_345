@@ -11,7 +11,6 @@ public:
 	vector <Deck::Cards> handOfCards; //Cards in Players possesion
 	enum Army { Infantry, Cavalry, Artillery };  //Possible types of Army
 
-
 	int numberOfExchanges;
 	int armies;
 
@@ -21,6 +20,10 @@ public:
 	int exchange();
 	int exchangeComputer();
 	int howManyCardsInHand();
+	void cleanUpHand();
+	void pickUpCard();
+	void setDeck(Deck &deck);
+	void printHand(); // prints the cards in hand
 };
 
 string convertCardsToString(Deck::Cards card);
