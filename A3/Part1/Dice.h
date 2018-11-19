@@ -4,8 +4,7 @@
 class Dice {
 
 private:
-	// Number of dice player will roll on their turn
-	int howManyDice=0; 
+	int howManyDice=0; // Number of dice player will roll on their turn
 	// Array stores how many times each dice value has appeared (each player has their own copy of this array to store their own values)
 	int howManyTimesEachValueHasOccurred [6] = { 0,0,0,0,0,0 }; 	
 	int totalTimesPlayerHasRolledDice = 0;

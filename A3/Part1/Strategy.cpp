@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// Clears the user input from the console
 void Strategy::clearInput() {
 	cout << "Not a valid answer." << endl;
 	cin.clear();
@@ -12,6 +13,7 @@ void Strategy::clearInput() {
 	std::getline(cin, ignoreLine); //read the line till next space
 }
 
+// Transfer a certain number of armies from one country to another by user input
 void Strategy::moveArmies(Country* receiver, Country* giver) {
 	bool validMoveArmy = false;
 	int movingArmies;
@@ -42,6 +44,8 @@ void Strategy::moveArmies(Country* receiver, Country* giver) {
 
 }
 
+// Verifies if a certain country has any neighbor that doesn't belong to their owner 
+// (in other words, a neighbor they can attack)
 bool Strategy::checkValidNeighbors_Attack(Country* attacking) {
 	for (int i = 0; i < attacking->nbr.size(); i++) {
 		if (attacking->nbr.at(i)->owner != attacking->owner)
@@ -50,6 +54,8 @@ bool Strategy::checkValidNeighbors_Attack(Country* attacking) {
 	return false;
 }
 
+// Verifies if a certain country has any neighbor that also belongs to their owner 
+// (in other words, a neighbor they can fortify)
 bool Strategy::checkValidNeighbors_Fortify(Country* attacking) {
 	for (int i = 0; i < attacking->nbr.size(); i++) {
 		if (attacking->nbr.at(i)->owner == attacking->owner)
@@ -58,6 +64,8 @@ bool Strategy::checkValidNeighbors_Fortify(Country* attacking) {
 	return false;
 }
 
+// Verifies if the defending country which was defeated was the last country of their owner
+// if it was, the player is eliminated from the game
 void Strategy::defenderEliminated(Player* p1, Player* p2) {
 	if (p2 != NULL) {
 		cout << endl << "Defending player " << p2->name << " has no country left. This player is eliminated from the game and "

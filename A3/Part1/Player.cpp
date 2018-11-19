@@ -23,15 +23,11 @@ Player::Player() {
 
 // Default destructor
 Player::~Player() {
-	// Delete vector of pointers to countries
-	for (int i = 0; i < myTerritories.size(); i++){		
-		delete myTerritories.at(i);
-	}
+	delete strategy;
 	cout << "Player was deleted." << endl;
 }
 
 
-/***********************************************   ASSIGNMENT #2 - PART 4 **********************************************/
 // REINFORCING PHASE
 /*
 	 Player gets a number of armies to place on its countries.
@@ -40,7 +36,6 @@ void Player::reinforce() {
 	strategy->reinforce();
 }
 
-/***********************************************   ASSIGNMENT #2 - PART 5 **********************************************/
 // ATTACKING PHASE
 /*	
 	Player is allowed to declare a series of attacks to try to gain control of additional countries, 
@@ -50,7 +45,6 @@ void Player::attack() {
 	strategy->attack();
 }
 
-/***********************************************   ASSIGNMENT #2 - PART 6 **********************************************/
 // FORTIFICATION PHASE
 /*	After Attack Phase is complete:
 		Player may move as many armies as they want in to a NEIGHBOURING country that they own.
@@ -60,6 +54,7 @@ void Player::fortify() {
 	strategy->fortify();
 }
 
+// Simulates 1 player's turn (reinforce, attack then fortify)
 void Player::play() {
 	strategy->reinforce();
 	strategy->attack();
@@ -76,12 +71,12 @@ Hand* Player::getHand() {
 	return &hand;
 }
 
-// Returns the Hand object holding the player's cards
+// Returns the name of the player
 string Player::getName() {
 	return name;
 }
 
-// Set 5 cards in the hand of the player, picked from the deck passed as a parameter
+// Set the player's name
 void Player::setName(string theName) {
 	name = theName;
 }
@@ -116,7 +111,7 @@ void Player::addContinent(Continent* continent) {
 	myContinents.push_back(continent);
 }
 
-// Remove a continent from the vector of owned countries
+// Remove a continent from the vector of owned continents
 void Player::removeContinent(Continent* continent) {
 	for (int i = 0; i < myContinents.size(); i++) {
 		if (myContinents.at(i) == continent) {
@@ -210,7 +205,7 @@ int main() {
 				default: cout << "Invalid answer." << endl;
 				}
 			}
-
+			// pass vector of player to check if one is eliminated from the game
 			checkPlayerEliminated(&players);
 		} // Player turn ends
 		
@@ -218,13 +213,14 @@ int main() {
 	} // Game ends
 
 	// Destory objects to prevent memory leaks
-	delete player1;
-	delete player2;
+	for (int i = 0; i < players.size(); i++) {
+		delete players.at(i);
+	}
 
 	return 0;
 }
 
-// Display menu that allows to change its current strategy
+// Display menu that allows player to change its current strategy
 void chooseStrategy(Player* p) {
 	int answ;
 	bool valid;
@@ -236,7 +232,7 @@ void chooseStrategy(Player* p) {
 		clearInput();
 	}
 	else {
-		// Perform the action the player chose 
+		// Perform the action the player choses 
 		switch (answ) {
 		case 1: p->setStrategy(new Human(p)); 
 				cout << "Strategy set to Human." << endl;
@@ -252,7 +248,7 @@ void chooseStrategy(Player* p) {
 	}
 }
 
-
+// Creates and assigns countries & continents to 2 players (only for A3 demo)
 void setUpGameDemo(Player* mark, Player* bob) {
 	// Create countries
 	Country* Iceland = new Country();
@@ -292,7 +288,7 @@ void setUpGameDemo(Player* mark, Player* bob) {
 	mark->addCountry(Germany);
 	bob->addCountry(Spain);
 	bob->addCountry(Italy);
-	//bob->addCountry(Iceland);
+	//bob->addCountry(Iceland); (in comments bc it is not reachable so useless for A3 demo)
 
 	// Add one continent for bob
 	Continent* Antartica = new Continent();
@@ -310,6 +306,7 @@ void setUpGameDemo(Player* mark, Player* bob) {
 
 }
 
+// Clears the user input from the console
 void clearInput() {
 	cout << "Not a valid answer." << endl;
 	cin.clear();
@@ -317,11 +314,15 @@ void clearInput() {
 	std::getline(cin, ignoreLine); //read the line till next space
 }
 
+
+// If a player has no countries left, it is eliminated from the game
+// Checked after each player's turn
 void checkPlayerEliminated(vector<Player*> * players) {
 	for (int i = 0; i < players->size(); i++) {
 		if (players->at(i)->myTerritories.size() == 0) {
 			cout << endl << "Player " << players->at(i)->name << " has been eliminated from the game. Better luck next time!" << endl;
-			players->erase(players->begin() + i);
+			delete players->at(i); // deletes memory location of pointer (player object)
+			players->erase(players->begin() + i); // removes it from the vector list of active players
 		}
 	}
 }

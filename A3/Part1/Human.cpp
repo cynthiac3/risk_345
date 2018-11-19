@@ -16,8 +16,8 @@ void Human::reinforce() {
 	int countryNB, nbOfUnits = 0;
 	char ans;
 	cout << "---------------------------------------------------------------------- \n"
-		"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
+			"----------------------------------------------------------------------" << endl;
 
 	// STEP 1: Player receives armies equals to nb of countries owned divided by 3 rounded down
 	int nbArmiesToPlace = floor(p->myTerritories.size()/ 3);
@@ -27,7 +27,6 @@ void Human::reinforce() {
 	cout << "Based on the number of countries you own, you get " << nbArmiesToPlace << " armies." << endl;
 
 	// STEP 2: Player gets a certain bonus for each continent owned
-	// bonusValue = int bonusContinents(Player* p);
 	int bonusValue = 0;
 	if (p->myContinents.size() == 0) {
 		cout << "You don't own any continents." << endl << "You get 0 bonus armies." << endl;
@@ -42,7 +41,7 @@ void Human::reinforce() {
 	}
 
 	// STEP 3: Player can exchange cards for armies
-	if (p->hand.howManyCardsInHand() > 5) {//If handOfCards is greater than 5 it forces player to exchange cards for army units
+	if (p->hand.howManyCardsInHand() > 5) { //If handOfCards is greater than 5 it forces player to exchange cards for army units
 		cout << "You have more than 5 cards in hand. You must make an exchange." << endl;
 		exchangeCards = true;
 	}
@@ -70,7 +69,6 @@ void Human::reinforce() {
 		int resultingArmies;
 		do
 		{
-			//cout << "You have more than 2 cards. You can make and exchange" << endl;
 			resultingArmies = p->hand.exchange();
 			if (resultingArmies == 0)
 				cout << "Not a valid exchange. You don't get any armies." << endl;
@@ -131,12 +129,13 @@ void Human::reinforce() {
 		cout << "You have " << nbArmiesToPlace << " left." << endl << endl;
 	}
 
+	// Display updated list of countries
 	cout << "This is the updated list of countries (and armies): " << endl;
 	p->getCountries();
 
 	cout << endl << "---------------------------------------------------------------------- \n"
-		"////////////////////// END REINFORCE PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+					"////////////////////// END REINFORCE PHASE ///////////////////////  \n"
+					"----------------------------------------------------------------------" << endl;
 
 }
 
@@ -151,8 +150,8 @@ void Human::attack() {
 	bool validCountry = false, validDice = false, attackOver = false, validMoveArmy = false, validNbr = false;
 
 	cout << "---------------------------------------------------------------------- \n"
-		"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+			"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
+			"----------------------------------------------------------------------" << endl;
 
 	// Player chooses if they want to attack or not
 	while (!attackOver) {
@@ -191,15 +190,16 @@ void Human::attack() {
 			}
 			validCountry = false;
 
-			// Player chooses on of the country's neighbor to attack
+			// Player chooses one of the country's neighbor to attack
 			cout << endl << "Here are the neighbors of " << p->myTerritories.at(countryNB)->name << ": ";
 			for (int i = 0; i < p->myTerritories.at(countryNB)->nbr.size(); i++) {
-				if (p->myTerritories.at(countryNB)->nbr.at(i)->owner != p) {
+				if (p->myTerritories.at(countryNB)->nbr.at(i)->owner != p) { // neighbor must not be owned by attacking player
 					cout << endl << "Neighbor #" << i << " : " << p->myTerritories.at(countryNB)->nbr.at(i)->name
 						<< ". Armies: " << p->myTerritories.at(countryNB)->nbr.at(i)->nbArmies;
 				}
 			}
 			cout << endl << "Note: neighbor countries of " << p->myTerritories.at(countryNB)->name << " that belong to you were omitted." << endl;
+
 			while (!validNbr) {
 				cout << "Select the neighbor of this country to attack: ";
 				cin >> nbrNB;
@@ -208,7 +208,7 @@ void Human::attack() {
 					clearInput();
 				}
 				else if (nbrNB >= p->myTerritories.at(countryNB)->nbr.size()
-					|| nbrNB < 0 || p->myTerritories.at(countryNB)->nbr.at(nbrNB)->owner == p) {
+					|| nbrNB < 0 || p->myTerritories.at(countryNB)->nbr.at(nbrNB)->owner == p) { // neighbor must not be owned by attacking player (even if not shown in list)
 					cout << "Not a valid number." << endl;
 				}
 				else {
@@ -226,8 +226,9 @@ void Human::attack() {
 			is allowed 1 to 3 dice, with the maximum number of dice being the number of armies on the attacking
 			country, minus one. The defender is allowed 1 to 2 dice, with the maximum number of dice being the
 			number of armies on the defending country.			*/
+			// Attacking country's turn to choose a nb of dice to roll
 			while (!validDice) {
-				cout << endl << "NOTE: the attacker's number of dice can only be smaller or equal \n to the number of armies on the defender's country MINUS 1." << endl
+				cout << endl << "NOTE: the attacker's number of dice can only be smaller or equal \n to the number of armies on the attacking country MINUS 1." << endl
 					<< "Attacker must choose number of dices to roll (1, 2 or 3):  " << endl;
 				cin >> dicesAttack;
 
@@ -247,10 +248,10 @@ void Human::attack() {
 			}
 			validDice = false;
 
-
+			// Defending country's turn to choose a nb of dice to roll
 			while (!validDice) {
 				
-				cout << endl << "NOTE: the defender's number of dice can only be smaller or equal \n to the number of armies on the defender's country." << endl
+				cout << endl << "NOTE: the defender's number of dice can only be smaller or equal \n to the number of armies on the defending country." << endl
 					<< "Defender chooses number of dices to roll (1 or 2): " << endl;
 				cin >> dicesDefend;
 
@@ -274,7 +275,7 @@ void Human::attack() {
 			/*The dice are rolled for each player and sorted, then compared pair-wise. For each pair starting with the
 			highest, the player with the lowest roll loses one army. If the pair is equal, the attacker loses an army. */
 			p->dice.rollDice(dicesAttack);
-			Sleep(2000);
+			Sleep(2000); // wait between rolls bc random number is based on time
 			defenderCountry->owner->getDice()->rollDice(dicesDefend);
 
 			// HIGHEST ROLL - Attacker wins
@@ -342,7 +343,6 @@ void Human::attack() {
 			}
 
 			//Display the new army totals for each country
-			cout << endl << "This is the updated list of countries (and armies): " << endl;
 			p->getCountries();
 		}
 		else if (ans == 'n' || ans == 'N') { // Player doesn't want to attack
@@ -353,8 +353,8 @@ void Human::attack() {
 		}
 	}
 	cout << endl << "---------------------------------------------------------------------- \n"
-		"////////////////////// END ATTACKING PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+					"////////////////////// END ATTACKING PHASE ///////////////////////  \n"
+					"----------------------------------------------------------------------" << endl;
 }
 
 
@@ -376,8 +376,8 @@ void Human::fortify() {
 	int numberOfFortifyingArmies;
 
 	cout << "---------------------------------------------------------------------- \n"
-		"///////////////////// BEGIN FORTIFICATION PHASE //////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+			"///////////////////// BEGIN FORTIFICATION PHASE //////////////////////  \n"
+			"----------------------------------------------------------------------" << endl;
 	while (fortificationPhaseIsHappening == true) {
 
 		/* PART 1) Ask if Player wants to fortify a country (if "NO", Player's turn is finished.)
@@ -478,18 +478,15 @@ void Human::fortify() {
 		cout << "This country belongs to: " << targetCountry->owner->name << endl << endl;
 
 		// PART 4) Move armies to country
-		// NEEDED FOR DEMO: Show that player can't take so many armies that would leave less than 1 army in Source country
-		// Display the updated number of armies in each country.
 		moveArmies(targetCountry, p->myTerritories.at(countryNB));
 
 		//Display the new army totals for each country
-		cout << endl << "This is the updated list of countries (and armies): " << endl;
 		p->getCountries();
 		break; // needed to exit Loop
 
 	} //End While Loop: fortificationPhaseIsHappening
 
 	cout << endl << "---------------------------------------------------------------------- \n"
-		"////////////////////// END FORTIFICATION PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+					"////////////////////// END FORTIFICATION PHASE ///////////////////////  \n"
+					"----------------------------------------------------------------------" << endl;
 }

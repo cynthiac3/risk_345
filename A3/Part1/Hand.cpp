@@ -19,12 +19,13 @@ Hand::Hand(Deck *deck)
 	armies = 0;
 }
 
+// Set the current deck for the game to the player's hand
 void Hand::setDeck(Deck &deck) {
 	playingDeck = &deck;
 
 }
 
-//Takes address of deck object, finds empty spot in hand and fills with card.  If no empty spots no card is accepted
+//Takes address of deck object, fills hand with cards from the deck
 void Hand::fillHand(Deck &playingDeck)
 {
 	for (size_t x = 0; x < handOfCards.size(); x++)
@@ -53,6 +54,8 @@ int Hand::howManyCardsInHand()
 	return actualNumberOfCards;
 }
 
+// Ask for user input to give 3 cards in exchange of some armies
+// The 3 cards are either all different, or all the same
 int  Hand::exchange()
 {
 	armies = 0;
@@ -96,15 +99,17 @@ int  Hand::exchange()
 
 		numberOfExchanges++; //tracks number of exchanges player has had
 	}
-	return armies;
+	return armies; // return armies to player (0 if no valid exchange)
 }
 
+// Automatically identifies if the player can make a valid card exchange
+// used when a player is a computer and not a human
 int  Hand::exchangeComputer()
 {
-	bool exchangeDif = false, exchangeSame = false;
-	vector<int> cardsToExchange;
-	int artillery = -1, infantry = -1, cavalry = -1, aNb = 0, iNb = 0, cNb = 0;
-	armies = 0; // number to return 
+	bool exchangeDif = false, exchangeSame = false; // check if a valid exchange can be made
+	vector<int> cardsToExchange; // indexes of the cards to exchange
+	int artillery = -1, infantry = -1, cavalry = -1, aNb = 0, iNb = 0, cNb = 0; // used to find the indexes
+	armies = 0; // number of armies to return 
 
 	/* OPTION 1 */
 	// Check if player owns 3 different card
@@ -112,15 +117,15 @@ int  Hand::exchangeComputer()
 	{
 		if (handOfCards[x] == Deck::Cards::Artillery) {
 			artillery = x;
-			aNb++;
+			aNb++; // stores nb of cards of type Artillery
 		}
 		else if (handOfCards[x] == Deck::Cards::Infantry) {
 			infantry = x;
-			iNb++;
+			iNb++; // stores nb of cards of type Infantry
 		}
 		else if (handOfCards[x] == Deck::Cards::Cavalry) {
 			cavalry = x;
-			cNb++;
+			cNb++; // stores nb of cards of type Cavalry
 		}
 	}
 	if (artillery != -1 && infantry != -1 && cavalry != -1) { // exchange is valid
@@ -148,7 +153,7 @@ int  Hand::exchangeComputer()
 			exchangeSame = true;
 		}
 
-		// Player can exchange 3 same cards, find them and add to vector
+		// Player can exchange 3 same cards, find 3 of that type and add their indexes to vector
 		if (exchangeSame) {
 			for (int x = 0; x < handOfCards.size(); x++) {
 				if (handOfCards[x] == typeToExchange) {
@@ -158,6 +163,7 @@ int  Hand::exchangeComputer()
 		}
 	}
 
+	// Display current hand of cards
 	cout << endl << "Player computer's hand of cards is:" << endl;
 	for (size_t x = 0; x < handOfCards.size(); x++)
 	{
@@ -180,7 +186,7 @@ int  Hand::exchangeComputer()
 		numberOfExchanges++; //tracks number of exchanges player has had
 	}
 
-	return armies;
+	return armies; // return armies to player (0 if no valid exchange)
 }
 
 // Removes null/empty cards from the player's hand
@@ -221,7 +227,6 @@ void Hand::printHand() {
 		}
 	}
 }
-
 
 //Function to convert Deck::Cards enum to string for print
 string convertCardsToString(Deck::Cards card)

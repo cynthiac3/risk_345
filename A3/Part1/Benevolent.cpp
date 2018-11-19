@@ -63,10 +63,9 @@ void Benevolent::reinforce() {
 	// STEP 4: Give armies to weakest country owned
 	cout << "Benevolent computer's weakest country is " << weakest->name << " with " << weakest->nbArmies << " armies" << endl;
 	weakest->nbArmies += nbArmiesToPlace;
-	cout << "Benevolent computer places " << nbArmiesToPlace << " armies on " << weakest->name << "." << endl;
+	cout << "Benevolent computer places " << nbArmiesToPlace << " armies on " << weakest->name << "." << endl << endl;
 
 	// Results
-	cout << endl << "This is the updated list of countries (and armies): " << endl;
 	p->getCountries();
 
 	cout << endl << "---------------------------------------------------------------------- \n"
@@ -83,14 +82,14 @@ void Benevolent::reinforce() {
 void Benevolent::attack() {
 
 	cout << "---------------------------------------------------------------------- \n"
-		"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+			"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
+			"----------------------------------------------------------------------" << endl;
 
-	cout << endl << "Benevolent computer decides not to attack." << endl;
+	cout << endl << "Benevolent computer decides not to attack." << endl << endl;
 
-	cout << endl << "---------------------------------------------------------------------- \n"
-		"////////////////////// END ATTACK PHASE ///////////////////////  \n"
-		"----------------------------------------------------------------------" << endl;
+	cout <<  "---------------------------------------------------------------------- \n"
+			 "////////////////////// END ATTACK PHASE ///////////////////////  \n"
+			 "----------------------------------------------------------------------" << endl;
 
 }
 
@@ -147,12 +146,11 @@ void Benevolent::fortify() {
 		cout << "Strongest neighbor of " << weakest->name << " is " << strongestNbr->name << " with " << strongestNbr->nbArmies << " armies." << endl;
 		// Transfer the armies from strongest neighbor to weakest country
 		int value = floor(strongestNbr->nbArmies / 2);
-		cout << "Number of armies transferred is " << strongestNbr->nbArmies << " / 2  = " << value << endl;
+		cout << "Number of armies transferred is " << strongestNbr->nbArmies << " / 2  = " << value << endl << endl;
 		strongestNbr->nbArmies -= value;
 		weakest->nbArmies += value;
 
 		//Display the new army totals for each country
-		cout << endl << "This is the updated list of countries (and armies): " << endl;
 		p->getCountries();
 	}
 

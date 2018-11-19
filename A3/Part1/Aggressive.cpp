@@ -65,10 +65,9 @@ void Aggressive::reinforce() {
 	// STEP 4: Give armies to weakest country owned
 	cout << "Aggressive computer's strongest country is " << strongest->name << " with " << strongest->nbArmies << " armies" << endl;
 	strongest->nbArmies += nbArmiesToPlace;
-	cout << "Aggressive computer places " << nbArmiesToPlace << " armies on " << strongest->name << "." << endl;
+	cout << "Aggressive computer places " << nbArmiesToPlace << " armies on " << strongest->name << "." << endl << endl;
 
 	// Results
-	cout << endl << "This is the updated list of countries (and armies): " << endl;
 	p->getCountries();
 
 	cout << endl << "---------------------------------------------------------------------- \n"
@@ -240,7 +239,6 @@ void Aggressive::attack() {
 			}
 
 			//Display the new army totals for each country
-			cout << endl << "This is the updated list of countries (and armies): " << endl;
 			p->getCountries();
 		}
 
@@ -306,12 +304,11 @@ void Aggressive::fortify() {
 
 		// Transfer the armies from strongest neighbor to weakest country
 		int value = floor(strongestNbr->nbArmies / 2);
-		cout << "Number of armies transferred is " << strongestNbr->nbArmies << " / 2  = " << value << endl;
+		cout << "Number of armies transferred is " << strongestNbr->nbArmies << " / 2  = " << value << endl << endl;
 		strongestNbr->nbArmies -= value;
 		strongest->nbArmies += value;
 
 		//Display the new army totals for each country
-		cout << endl << "This is the updated list of countries (and armies): " << endl;
 		p->getCountries();
 	}
 
