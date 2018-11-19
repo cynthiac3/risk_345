@@ -11,7 +11,6 @@ using namespace std;
 	 Player gets a number of armies to place on its countries.
 */
 void Human::reinforce() {
-	cout << "Human player's reinforce method." << endl;
 
 	bool validCountry = false, validNB = false, exchangeCards = false, validAns = false;
 	int countryNB, nbOfUnits = 0;
@@ -147,8 +146,6 @@ void Human::reinforce() {
 	and eventually control the entire map.
 */
 void Human::attack() {
-	cout << "Human player's attack method." << endl;
-
 	char ans;
 	int countryNB, nbrNB, dicesAttack, dicesDefend;
 	bool validCountry = false, validDice = false, attackOver = false, validMoveArmy = false, validNbr = false;
@@ -367,8 +364,6 @@ void Human::attack() {
 		Player may only do this ONE time (you can't fortify multiple countries).
 */
 void Human::fortify() {
-	cout << "Human player's fortify method." << endl;
-
 	// Variables borrowed from Attack()
 	int countryNB, nbrNB;
 	bool validCountry = false, validNbr = false;

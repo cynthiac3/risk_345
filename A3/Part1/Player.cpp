@@ -14,6 +14,7 @@ using namespace std;
 void setUpGameDemo(Player* mark, Player* bob);
 void clearInput();
 void chooseStrategy(Player* p);
+void checkPlayerEliminated(vector<Player*> * players);
 
 // Default constructor
 Player::Player() {
@@ -56,6 +57,12 @@ void Player::attack() {
 		Player may only do this ONE time (you can't fortify multiple countries).
 */
 void Player::fortify() {
+	strategy->fortify();
+}
+
+void Player::play() {
+	strategy->reinforce();
+	strategy->attack();
 	strategy->fortify();
 }
 
@@ -124,6 +131,7 @@ void Player::getCountries() {
 		cout << "Player doesn't own any countries.";
 	}
 	else {
+		cout << "This is the list of countries that the player currently own: " << endl;
 		for (int i = 0; i < myTerritories.size(); i++)
 			cout << "Territory #" << i << ": " << myTerritories.at(i)->name
 			<< ". Armies: " << myTerritories.at(i)->nbArmies << endl;
@@ -178,7 +186,8 @@ int main() {
 				"/////////////////////////// PLAYER " << j + 1 << " TURN ///////////////////////////  \n"
 				"----------------------------------------------------------------------" << endl
 				<< "Select an action to perform: " << endl << "1. Reinforce" << endl << "2. Attack" << endl << "3. Fortify" << endl
-				<< "----------------" << endl << "4. Roll one Dice" << endl << "5. Show hand of cards" << endl << "6. See list of countries owned" << endl << "7. Change strategy" << endl
+				<< "----------------" << endl << "4. Play!" << endl
+				<< "----------------" << endl << "5. Show hand of cards" << endl << "6. See list of countries owned" << endl << "7. Change strategy" << endl
 				<< "------------------------------------" << endl;
 			// Player enters a choice from the menu
 			cin >> ans;
@@ -194,14 +203,17 @@ int main() {
 				case 1: players.at(j)->strategy->reinforce(); break;
 				case 2: players.at(j)->strategy->attack(); break;
 				case 3: players.at(j)->strategy->fortify(); break;
-				case 4: players.at(j)->getDice()->rollDice(1); break;
+				case 4: players.at(j)->play(); break;
 				case 5: players.at(j)->getHand()->printHand(); break;
 				case 6: players.at(j)->getCountries(); break;
 				case 7: chooseStrategy(players.at(j)); break;
 				default: cout << "Invalid answer." << endl;
 				}
 			}
+
+			checkPlayerEliminated(&players);
 		} // Player turn ends
+		
 
 	} // Game ends
 
@@ -303,4 +315,13 @@ void clearInput() {
 	cin.clear();
 	std::string ignoreLine; //read the invalid input into it
 	std::getline(cin, ignoreLine); //read the line till next space
+}
+
+void checkPlayerEliminated(vector<Player*> * players) {
+	for (int i = 0; i < players->size(); i++) {
+		if (players->at(i)->myTerritories.size() == 0) {
+			cout << endl << "Player " << players->at(i)->name << " has been eliminated from the game. Better luck next time!" << endl;
+			players->erase(players->begin() + i);
+		}
+	}
 }

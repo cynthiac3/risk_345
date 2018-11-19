@@ -60,7 +60,7 @@ bool Strategy::checkValidNeighbors_Fortify(Country* attacking) {
 
 void Strategy::defenderEliminated(Player* p1, Player* p2) {
 	if (p2 != NULL) {
-		cout << "Defending player " << p2->name << " has no country left. This player is eliminated from the game and "
+		cout << endl << "Defending player " << p2->name << " has no country left. This player is eliminated from the game and "
 			<< p1->name << " receives their cards. " << endl;
 
 		// transfer cards from loser(p2) to winner(p1)
@@ -71,7 +71,7 @@ void Strategy::defenderEliminated(Player* p1, Player* p2) {
 
 	}
 	else {
-		cout << "Defending player has some countries left. Player is NOT eliminated from the game" << endl;
+		cout << endl << "Defending player has some countries left. Player is NOT eliminated from the game" << endl;
 	}
 }
 

@@ -18,7 +18,6 @@ using namespace std;
 	 Player gets a number of armies to place on its countries.
 */
 void Aggressive::reinforce() {
-	cout << "Aggressive computer player's reinforce method." << endl;
 
 	cout << "---------------------------------------------------------------------- \n"
 			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
@@ -86,7 +85,6 @@ void Aggressive::reinforce() {
 void Aggressive::attack() {
 	int dicesAttack, dicesDefend;
 	bool validDice = false;
-	cout << "Aggressive computer player's attack method." << endl;
 
 	cout << "---------------------------------------------------------------------- \n"
 		"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
@@ -259,7 +257,6 @@ void Aggressive::attack() {
 		Player may only do this ONE time (you can't fortify multiple countries).
 */
 void Aggressive::fortify() {
-	cout << "Aggressive computer player's fortify method." << endl;
 
 	cout << "---------------------------------------------------------------------- \n"
 			"///////////////////// BEGIN FORTIFICATION PHASE //////////////////////  \n"

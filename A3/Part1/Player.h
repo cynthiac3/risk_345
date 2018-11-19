@@ -52,6 +52,7 @@ public:
 	void removeContinent(Continent* continent); // add a country to the vector of owned countries
 
 	// Game methods
+	void play();
 	void reinforce();
 	void attack();
 	void fortify();

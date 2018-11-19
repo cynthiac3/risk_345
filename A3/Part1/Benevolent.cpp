@@ -16,7 +16,6 @@ using namespace std;
 	 Player gets a number of armies to place on its countries.
 */
 void Benevolent::reinforce() {
-	cout << "Benevolent computer player's reinforce method." << endl;
 
 	cout << "---------------------------------------------------------------------- \n"
 			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
@@ -82,9 +81,17 @@ void Benevolent::reinforce() {
 	and eventually control the entire map.
 */
 void Benevolent::attack() {
-	cout << "Benevolent computer player's attack method." << endl;
 
-	cout << "Benevolent computer decides not to attack." << endl;
+	cout << "---------------------------------------------------------------------- \n"
+		"////////////////////// BEGIN ATTACK PHASE ///////////////////////  \n"
+		"----------------------------------------------------------------------" << endl;
+
+	cout << endl << "Benevolent computer decides not to attack." << endl;
+
+	cout << endl << "---------------------------------------------------------------------- \n"
+		"////////////////////// END ATTACK PHASE ///////////////////////  \n"
+		"----------------------------------------------------------------------" << endl;
+
 }
 
 
@@ -94,7 +101,6 @@ void Benevolent::attack() {
 		Player may only do this ONE time (you can't fortify multiple countries).
 */
 void Benevolent::fortify() {
-	cout << "Benevolent computer player's fortify method." << endl;
 
 	cout << "---------------------------------------------------------------------- \n"
 		"///////////////////// BEGIN FORTIFICATION PHASE //////////////////////  \n"

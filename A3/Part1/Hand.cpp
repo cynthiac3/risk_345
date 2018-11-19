@@ -87,6 +87,7 @@ int  Hand::exchange()
 		handOfCards[firstCardSelected - 1] = Deck::Cards::Null; //Sets cards exchanged to null
 		handOfCards[secondCardSelected - 1] = Deck::Cards::Null;
 		handOfCards[thirdCardSelected - 1] = Deck::Cards::Null;
+		cleanUpHand();
 
 		if (numberOfExchanges < 6 || numberOfExchanges > 0) //Depending on number of exchanges selects different equation for armies offered
 			armies = (((numberOfExchanges)-1) * 2) + 6;
@@ -182,6 +183,7 @@ int  Hand::exchangeComputer()
 	return armies;
 }
 
+// Removes null/empty cards from the player's hand
 void Hand::cleanUpHand() {
 	vector<Deck::Cards>::iterator it = handOfCards.begin();
 	while (it != handOfCards.end())
@@ -207,6 +209,7 @@ void Hand::printHand() {
 		cout << "Player currently doesn't have any cards." << endl;
 	}
 	else {
+		cout << "This is the list of cards that the player currently owns: " << endl;
 		for (int i = 0; i <handOfCards.size(); i++)
 		{
 			switch (handOfCards.at(i))
