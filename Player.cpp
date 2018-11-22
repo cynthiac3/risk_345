@@ -136,6 +136,7 @@ void Player::getCountries() {
 }
 
 /*** Driver ***/
+/*
 int main() {
 	int ans; // option number the player chooses from the menu
 
@@ -146,7 +147,7 @@ int main() {
 	// Create players and set the players' hand of cards with 5 cards from the deck created
 	/*	
 		CREATING PLAYER 1
-	*/
+	
 	Player* player1 = new Player();
 	player1->setHand(&gameDeck);
 	player1->getHand()->fillHand(gameDeck);
@@ -154,9 +155,8 @@ int main() {
 	player1->setStrategy(new Human(player1));
 	player1->getHand()->setDeck(gameDeck);
 
-	/*
 		CREATING PLAYER 2
-	*/
+	
 	Player* player2 = new Player();
 	player2->setHand(&gameDeck);
 	player2->getHand()->fillHand(gameDeck);
@@ -257,6 +257,7 @@ void chooseStrategy(Player* p) {
 		}
 	}
 }
+*/
 
 // Creates and assigns countries & continents to 2 players (only for A3 demo)
 void setUpGameDemo(Player* mark, Player* bob) {
