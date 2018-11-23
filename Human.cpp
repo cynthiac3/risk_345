@@ -2,7 +2,7 @@
 #include <windows.h.>
 #include "Human.h"
 #include "Player.h"
-
+#include <math.h> 
 using namespace std;
 
 

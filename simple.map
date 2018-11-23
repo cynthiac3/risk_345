@@ -1,0 +1,23 @@
+[Map]
+author=Team17
+warn=yes
+image=_07_ Eternal Blue.bmp
+wrap=yes
+scroll=none
+
+
+
+[Continents]
+
+Europe = 2
+
+
+
+[Territories]
+
+France,1,1,Europe,Germany,Spain,Italy
+Germany,1,1,Europe,France
+Spain,1,1,Europe,France
+Italy,1,1,Europe,France
+
+

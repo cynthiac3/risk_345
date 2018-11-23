@@ -2,6 +2,7 @@
 #include "Benevolent.h"
 #include <windows.h.>
 #include "Player.h"
+#include <math.h> 
 
 using namespace std;
 
