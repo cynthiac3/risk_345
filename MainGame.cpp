@@ -95,13 +95,13 @@ int main() {
 	string tmp_name; //temporal variable to sotre a name
 	
 	
-	int order_of_play[NbPlayers];//store the order of play (each index owns a unique index(refference) to the player array)
+	vector<int> order_of_play;//store the order of play (each index owns a unique index(refference) to the player array)
 	int tmp_int=0; // temporal integer use to store a state 
 	
 		
 	srand (time(NULL)); //random input 
-	int rindex; //varialbe to store a random index 
-	int tmp_arr[NbPlayers]; // Temproal array to sotre index of palyers
+	int rindex; //variable to store a random index 
+	vector<int> tmp_arr(NbPlayers); // Temproal array to sotre index of players
 	
 	
 	for(int i = 0; i < NbPlayers; i++){
@@ -115,7 +115,7 @@ int main() {
 	// each player are assign to country randomly until all players have at least a coutry, then the process is repeted
 	//making sure that the number of country that each players gets if equal
 	for (vector<vertex*>::iterator i = tmp_nodes.begin() ; i != tmp_nodes.end(); ++i){
-		do{//check if a certain player as already gone trough thi assignment round
+		do{//check if a certain player as already gone through this assignment round
 			rindex = rand() % NbPlayers;
 		}while((tmp_arr[rindex] == 1)&& !(tmp_arr[rindex] == 0));
 		
@@ -151,7 +151,7 @@ int main() {
 			
 		}while(invalid);
 		tmp_arr[i] = rindex;
-		order_of_play[i] = rindex;
+		order_of_play.push_back(rindex);
 	}
 
 	

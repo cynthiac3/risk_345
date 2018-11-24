@@ -73,7 +73,7 @@ class Subgraph{
 		//print Subgraph
 		//void printSubG(){ cout << "\n\nSUB "; subG.printGraph();};
 		bool isConnected(){return subG.isConnected();};
-		bool isOwnBy(Player *p){ subG.isOwnBy(p);};
+		bool isOwnBy(Player *p){ return subG.isOwnBy(p);};
 	private:
 	
 		Graph subG;//graph (being a sub graph of a other)	
