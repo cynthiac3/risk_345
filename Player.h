@@ -7,6 +7,13 @@
 
 class Player;
 
+//Free functions
+void setUpGameDemo(Player* mark, Player* bob);
+void clearInput();
+void chooseStrategy(Player* p); // This method only used in the Player Driver, not main game
+void checkPlayerEliminated(vector<Player*> * players);
+
+
 //Fake vertex of the graph (only for demo)
 struct Country {
 	std::string name;
