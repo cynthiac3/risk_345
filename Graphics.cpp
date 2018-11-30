@@ -2,7 +2,7 @@
 #include "Graphics.h"
 using namespace std;
 
-void Graphics::riskLogo()
+void riskLogo()
 {
 	cout << "          " << "ooooooooo.    o8o           oooo        " << endl;
 	cout << "          " << "`888   `Y88.  `\"'           `888        " << endl;
@@ -14,7 +14,7 @@ void Graphics::riskLogo()
 }
 
 // Create specific number of empty lines (for visual spacing)
-void Graphics::empty(int lines) {
+void empty(int lines) {
 	for (int i = 0; i < lines; i++) {
 		cout << "          " << endl;
 	}
