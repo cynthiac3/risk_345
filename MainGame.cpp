@@ -87,7 +87,7 @@ void runSingleGame() {
 	
 	
 	for(int i = 0; i < NbPlayers; i++){
-		cout << "type the name of player " << i+1 << endl;
+		cout << "Enter the name of player: " << i+1 << endl;
 		cin >> tmp_name;
 		players[i]->setName(tmp_name);
 	}
@@ -137,7 +137,6 @@ void runSingleGame() {
 	}
 
 	
-	
 	map.printMap();
 	
 	View *table = new View(&map);
@@ -168,7 +167,7 @@ void runSingleGame() {
 	//in a  round-robin fashion each player place a army on territories they owns 
 	do{
 		for(int i = 0; i < NbPlayers; i++){
-			cout << players[order_of_play[i]]->getName() << " type your territoriy that you wish to place an army on: " << endl;
+			cout << players[order_of_play[i]]->getName() << " type your territory that you wish to place an army on: " << endl;
 			while(invalid){
 				cin >> tmp_name;
 			if (map.getVertex(tmp_name) == NULL){// check if the territories exist 
@@ -178,7 +177,7 @@ void runSingleGame() {
 				invalid = false;
 				
 			}else{
-				cout << "you dont own that territory, please chose again: "  << endl; //informe the player that he does own the country
+				cout << "You dont own that territory, please chose again: "  << endl; //informe the player that he does own the country
 				}
 			}
 			invalid = true;
