@@ -14,13 +14,11 @@ using namespace std;
 
 // Default constructor
 Player::Player() {
-	cout << "A player was created." << endl;
 } 
 
 // Default destructor
 Player::~Player() {
 	delete strategy;
-	cout << "Player was deleted." << endl;
 }
 
 
