@@ -111,6 +111,11 @@ void Map::steal(Player *t, Player *v){
 	Notify();
 }
 
+void Map::update(vector<Country*> allC){
+	mapG.update(allC);
+	Notify();
+}
+
 bool Map::isContOwnBy(string cont_name, Player *p){
 	int index = -1;
 	for(int i = 0; i < continents_name.size(); i++){

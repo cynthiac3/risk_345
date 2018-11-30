@@ -25,10 +25,11 @@ void Random::reinforce() {
 	cout << "---------------------------------------------------------------------- \n"
 			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
 			"----------------------------------------------------------------------" << endl;
-
+cout <<  " ------------------------   " << p->myTerritories.size() << " ------------------ " <<endl;
 	// Choose one country to reinforce at random
 	srand(time(NULL)); // Initialize random seed based on the time
 
+	
 	countryNB = rand() % (p->myTerritories.size());	// ... generate random number between 0 and nb of countries-1
 
 	// STEP 1: Player receives armies equals to nb of countries owned divided by 3 rounded down

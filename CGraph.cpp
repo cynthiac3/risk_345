@@ -36,7 +36,7 @@ vector<Country*> Graph::getCountry(){
 		tmpCountry.back()->name = (*i)->name; // set the name
 		tmpCountry.back()->owner = (*i)->owner;
 		tmpCountry.back()->nbArmies = (*i)->nbOfArmies;
-    	}
+    }
 
 	for (vector<vertex*>::iterator i = nodes.begin() ; i != nodes.end(); ++i){
 		tmp_nbr = (*i)->nbr.list_nbr;
@@ -51,6 +51,15 @@ vector<Country*> Graph::getCountry(){
 	}
 	return tmpCountry;
 }
+
+void Graph::update(vector<Country*> allC){
+	int index = 0;
+	for (vector<Country*>::iterator j = allC.begin() ; j != allC.end(); ++j){
+		nodes[index]->owner = (*j)->owner;
+		nodes[index]->nbOfArmies = (*j)->nbArmies;
+		index++;
+	}
+};
 
 //tester for the connected map (test if the map is actualy connected)
 bool Graph::isConnected(){

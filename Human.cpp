@@ -18,6 +18,7 @@ void Human::reinforce() {
 	cout << "---------------------------------------------------------------------- \n"
 			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
 			"----------------------------------------------------------------------" << endl;
+			cout << "------------------" <<  p->myTerritories.size() << "------------------" << endl;
 
 	// STEP 1: Player receives armies equals to nb of countries owned divided by 3 rounded down
 	int nbArmiesToPlace = floor(p->myTerritories.size()/ 3);

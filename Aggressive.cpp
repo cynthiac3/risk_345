@@ -23,6 +23,8 @@ void Aggressive::reinforce() {
 	cout << "---------------------------------------------------------------------- \n"
 			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
 			"----------------------------------------------------------------------" << endl;
+			
+			
 
 	/* FIND STRONGEST COUNTRY */
 	Country * strongest = p->myTerritories.at(0);
@@ -52,7 +54,7 @@ void Aggressive::reinforce() {
 		nbArmiesToPlace += bonusValue;
 		cout << "Computer gets a total of " << bonusValue << " bonus armies for a new total of " << nbArmiesToPlace << " armies." << endl;
 	}
-
+	
 	// STEP 3: Player can exchange cards for armies
 	int resultingArmies = p->hand.exchangeComputer();
 	if (resultingArmies == 0)

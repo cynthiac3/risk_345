@@ -34,7 +34,7 @@ class Map : public Subject {
 	
 		bool isOwnBy(Player *p); //return true if a player owns all territories 
 		
-		
+		void update(vector<Country*> allC);
 		void setNbArmies(vertex v, int nbOfA);	//Set the nb of army  on a territoriy
 		int getNbofArmies(vertex v);	//return the nb of army of a territory
 			

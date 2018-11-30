@@ -197,7 +197,7 @@ int main() {
 			vector<Player*> players;
 			// Create a deck for the game
 			Deck gameDeck;
-			gameDeck.fillDeck(120);
+			gameDeck.fillDeck(42);
 			// Sets up players and their types.  These are used for each game loop cycle to recreate the right amount of each strategy type
 			int NbAggressivePlayersholder = NbAgressivePlayers;
 			int NbBenevolentPlayersholder = NbBenevolentPlayers;
@@ -205,19 +205,23 @@ int main() {
 		
 			for (int i = 0; i < NbPlayers; i++) {
 				players.push_back(new Player()); // create player object
+				players.at(i)->setName(to_string(i));
 				players.at(i)->setHand(&gameDeck); // assign a hand of cards
 				players.at(i)->getHand()->fillHand(gameDeck);
 				players.at(i)->getHand()->setDeck(gameDeck);
 				//Sets right amount of strategy types selected by user for each player object
-				if (NbAgressivePlayers != 0) {
+				if (NbAggressivePlayersholder != 0) {
 					players.at(i)->setStrategy(new Aggressive(players.at(i)));
 					NbAggressivePlayersholder--;
+					cout << "AGRESSIVE" << endl;
 				}
-				else if (NbBenevolentPlayers != 0 & NbAgressivePlayers == 0) {
+				else if (NbBenevolentPlayersholder != 0 & NbAggressivePlayersholder == 0) {
 					players.at(i)->setStrategy(new Benevolent(players.at(i)));
 					NbBenevolentPlayersholder--;
+					cout << "Benevolent" << endl;
 				}
 				else {
+					cout << "" << endl;
 					players.at(i)->setStrategy(new Cheater(players.at(i)));
 					NbCheaterPlayersholder--;
 				}
@@ -255,8 +259,9 @@ int main() {
 				do {//check if a certain player as already gone through this assignment round
 					rindex = rand() % NbPlayers;
 				} while ((tmp_arr[rindex] == 1) && !(tmp_arr[rindex] == 0));
-
-
+			
+				maps.at(mapNumber).setNbArmies((**i), 1);
+				
 				maps.at(mapNumber).setOwner((**i), players[rindex]); //set the owner of the current territory 
 				tmp_arr[rindex] = 1; //instruct that the player x a pass is turn in that round
 				tmp_int++; //increment the temporal varial use to check if all player have pass, meaning that the current round is over
@@ -320,7 +325,8 @@ int main() {
 
 			vector<Country*> allC = maps.at(mapNumber).getCountry();
 
-
+			maps.at(mapNumber).printMap();
+			
 			for (vector<Country*>::iterator i = allC.begin(); i != allC.end(); ++i) {
 				(*i)->owner->addCountry(*i);
 			}
@@ -334,9 +340,15 @@ int main() {
 
 				// Each player has a turn
 				for (int j = 0; j < players.size(); j++) {
-
-					players.at(j)->play();
-					cout << endl;
+					
+					checkPlayersEliminated(&players);
+					if(players.size() == 1){
+						gameOver = true;
+					}else{
+						players.at(j)->play();
+						cout << endl;
+						maps.at(mapNumber).update(allC);
+					}
 				}
 				//loop to check whether the a player has lost all territories
 				checkPlayersEliminated(&players);
@@ -344,7 +356,7 @@ int main() {
 					gameOver = true;
 				numberOfTurnsDuplicate--; 
 			}
-			
+			maps.at(mapNumber).printMap();
 			//Sets winners strategy type in proper cell of 2d vector.
 			if (players.size() == 1) {
 				winners.at(mapNumber).at(gameNumber) = playerTypes.at(0);

@@ -119,7 +119,7 @@ int main() {
 			rindex = rand() % NbPlayers;
 		}while((tmp_arr[rindex] == 1)&& !(tmp_arr[rindex] == 0));
 		
-		
+		map.setNbArmies((**i), 1);
 		map.setOwner((**i), players[rindex]); //set the owner of the current territory 
 		tmp_arr[rindex] = 1; //instruct that the player x a pass is turn in that round
 		tmp_int++; //increment the temporal varial use to check if all player have pass, meaning that the current round is over
@@ -229,6 +229,7 @@ int main() {
 			players.at(j)->play();
 
 			cout << endl;
+			map.update(allC);
 			system("PAUSE");
 		}
 	
