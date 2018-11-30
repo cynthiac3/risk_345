@@ -1,8 +1,7 @@
-#include "player.h"
 #include <iostream>
 #include <cmath>
 #include <windows.h.>
-#include "player.h"
+//#include "Player.h" // already included in Header
 #include "Strategy.h"
 #include "Human.h"
 #include "Aggressive.h"
@@ -17,20 +16,17 @@
 #include ".\Map.h"
 
 #include <string>
-#include <vector>
+//#include <vector> // already included in Header
 #include <algorithm> 
 
 #include <stdlib.h>
 #include <time.h>
+#include "MainGameTournament.h"
 
 
 using namespace std;
 
-// free functions declaration
-void clearInputs();
-void checkPlayersEliminated(vector<Player*> * players);
-
-int main() {
+void runTournament() {
 
 	/***********************************************  LOAD MAP **********************************************/
 	//Creates as many maps as player wants and creates vector of nodes for each
@@ -341,7 +337,7 @@ int main() {
 				// Each player has a turn
 				for (int j = 0; j < players.size(); j++) {
 					
-					checkPlayersEliminated(&players);
+					checkPlayersEliminatedTournament(&players);
 					if(players.size() == 1){
 						gameOver = true;
 					}else{
@@ -351,7 +347,7 @@ int main() {
 					}
 				}
 				//loop to check whether the a player has lost all territories
-				checkPlayersEliminated(&players);
+				checkPlayersEliminatedTournament(&players);
 			    if(players.size() == 1)
 					gameOver = true;
 				numberOfTurnsDuplicate--; 
@@ -392,25 +388,23 @@ int main() {
 
 	}
 	system("PAUSE");
-	return 0;
 }
 
 
 
 
-
-
 // Clears the user input from the console
-void clearInputs() {
+void clearInputsTournament() {
 	cout << "Not a valid answer." << endl;
 	cin.clear();
 	std::string ignoreLine; //read the invalid input into it
 	std::getline(cin, ignoreLine); //read the line till next space
 }
 
+
 // If a player has no countries left, it is eliminated from the game
 // Checked after each player's turn
-void checkPlayersEliminated(vector<Player*> * players) {
+void checkPlayersEliminatedTournament(vector<Player*> * players) {
 	for (int i = 0; i < players->size(); i++) {
 		if (players->at(i)->myTerritories.size() == 0) {
 			cout << endl << "Player " << players->at(i)->name << " has been eliminated from the game. Better luck next time!" << endl;
