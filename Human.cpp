@@ -18,7 +18,6 @@ void Human::reinforce() {
 	cout << "---------------------------------------------------------------------- \n"
 			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
 			"----------------------------------------------------------------------" << endl;
-			cout << "------------------" <<  p->myTerritories.size() << "------------------" << endl;
 
 	// STEP 1: Player receives armies equals to nb of countries owned divided by 3 rounded down
 	int nbArmiesToPlace = floor(p->myTerritories.size()/ 3);
@@ -43,7 +42,7 @@ void Human::reinforce() {
 
 	// STEP 3: Player can exchange cards for armies
 	if (p->hand.howManyCardsInHand() > 5) { //If handOfCards is greater than 5 it forces player to exchange cards for army units
-		cout << "You have more than 5 cards in hand. You must make an exchange." << endl;
+		cout << "You have more than 5 cards in hand. You must make at least one exchange." << endl;
 		exchangeCards = true;
 	}
 	else {
@@ -90,7 +89,7 @@ void Human::reinforce() {
 		p->getCountries();
 		// Enter a valid country
 		while (!validCountry) {
-			cout << "Please select which of your countries you would like to place your armies on: " << endl;
+			cout << endl << "Please select which of your countries you would like to place your armies on: " << endl;
 			cin >> countryNB;
 
 			if (cin.fail()) {
@@ -161,6 +160,19 @@ void Human::attack() {
 		cin >> ans;
 		cout << endl;
 
+		// Verifies if player has at least one country they can attack from
+		bool canAttack=false;
+		for (int i = 0; i < p->myTerritories.size(); i++) {
+			if (checkValidNeighbors_Attack(p->myTerritories.at(i)) && p->myTerritories.at(i)->nbArmies >= 2) {
+				canAttack = true;
+				break;
+			}
+		}
+		if (!canAttack) {
+			cout << endl << "You currently do not have a country that can attack one of its neighbor." << endl;
+			return;
+		}
+
 		if (ans == 'y' || ans == 'Y') {
 
 			cout << endl << "ATTACK TURN #" << turn << ":" << endl
@@ -204,7 +216,7 @@ void Human::attack() {
 						<< ". Armies: " << p->myTerritories.at(countryNB)->nbr.at(i)->nbArmies;
 				}
 			}
-			cout << endl << "Note: neighbor countries of " << p->myTerritories.at(countryNB)->name << " that belong to you were omitted." << endl;
+			cout << endl << endl << "Note: neighbor countries of " << p->myTerritories.at(countryNB)->name << " that belong to you were omitted." << endl;
 
 			while (!validNbr) {
 				cout << "Select the neighbor of this country to attack: ";
@@ -231,10 +243,11 @@ void Human::attack() {
 			/*The attacker and defender players choose the number of dice to roll for their attack/defense. The attacker
 			is allowed 1 to 3 dice, with the maximum number of dice being the number of armies on the attacking
 			country, minus one. The defender is allowed 1 to 2 dice, with the maximum number of dice being the
-			number of armies on the defending country.			*/
+			number of armies on the defending country.
+			*/
 			// Attacking country's turn to choose a nb of dice to roll
 			while (!validDice) {
-				cout << endl << "NOTE: the attacker's number of dice can only be smaller or equal \n to the number of armies on the attacking country MINUS 1." << endl
+				cout << endl << endl << "NOTE: the attacker's number of dice can only be smaller or equal \n to the number of armies on the attacking country MINUS 1." << endl
 					<< "Attacker must choose number of dices to roll (1, 2 or 3):  " << endl;
 				cin >> dicesAttack;
 
@@ -258,7 +271,7 @@ void Human::attack() {
 			if (defenderCountry->owner->strategy->isHuman()) { // Owner of defendent country is a HUMAN
 				while (!validDice) {
 
-					cout << endl << "NOTE: the defender's number of dice can only be smaller or equal \n to the number of armies on the defender's country." << endl
+					cout << endl << endl << "NOTE: the defender's number of dice can only be smaller or equal \n to the number of armies on the defender's country." << endl
 						<< "Defender chooses number of dices to roll (1 or 2): " << endl;
 					cin >> dicesDefend;
 
