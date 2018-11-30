@@ -18,6 +18,7 @@ using namespace std;
 	
 
 //driver for the map
+/*
 int main(){
 	//creats a map 
 	Map map;
@@ -207,7 +208,7 @@ int main(){
 	delete table;
 }
 	
-	
+	*/
 
 
 

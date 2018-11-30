@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include "MainGame.h"
+#include "Map.h"
+#include "Human.h"
+#include "View.h"
 
 using namespace std;
 
