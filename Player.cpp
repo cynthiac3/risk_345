@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <windows.h.>
-#include "player.h"
+#include "Player.h"
 #include "Strategy.h"
 #include "Human.h"
 #include "Aggressive.h"
@@ -11,12 +11,6 @@
 
 
 using namespace std;
-
-// Declare free functions
-void setUpGameDemo(Player* mark, Player* bob);
-void clearInput();
-void chooseStrategy(Player* p);
-void checkPlayerEliminated(vector<Player*> * players);
 
 // Default constructor
 Player::Player() {
