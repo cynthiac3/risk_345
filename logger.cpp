@@ -38,21 +38,25 @@ void pause(int dur){
 	while(temp > time(NULL));
 }
 
-int main(){
-	system("Echo players world domination view > log.txt");
-        system("type log.txt");
+// MAIN HAS BEEN COMMENTED OUT. 
+// THIS CODE IS ONLY HERE SO YOU CAN SEE HOW LOGGER.EXE WORKS.
+// Logger.exe is what generates the 2nd Statistics window
 
-	string lastHash = hashfile("log.txt");
-	string curentHash;
-	do{
-		pause(1);
-		curentHash = hashfile("log.txt");
-		if(curentHash.compare(lastHash) != 0){
-			system("cls");
-			system("type log.txt");
-			lastHash = curentHash;
-		}
-	}while(1);
-}	
+//int main(){
+//	system("Echo players world domination view > log.txt");
+//        system("type log.txt");
+//
+//	string lastHash = hashfile("log.txt");
+//	string curentHash;
+//	do{
+//		pause(1);
+//		curentHash = hashfile("log.txt");
+//		if(curentHash.compare(lastHash) != 0){
+//			system("cls");
+//			system("type log.txt");
+//			lastHash = curentHash;
+//		}
+//	}while(1);
+//}		
 
 
