@@ -1,11 +1,8 @@
 #pragma once
+#include <vector>
+#include "Player.h"
 
-class MainGameTournament {
-
-public:
-
-	//The following methods should be in the header
-	//void run();
-	//void clearInputs();
-	//void checkPlayersEliminated(vector<Player*> * players); // This line here causes some problems if it's in the header because of <vector>
-};
+// free functions declaration
+void runTournament();
+void clearInputsTournament();
+void checkPlayersEliminatedTournament(vector<Player*> * players);
