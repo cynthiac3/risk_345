@@ -26,22 +26,53 @@
 
 using namespace std;
 
-void runTournament() {
+//void runTournament()
+
+int main() {
+
+
 
 	/***********************************************  LOAD MAP **********************************************/
-	//Creates as many maps as player wants and creates vector of nodes for each
+	//Creates as many maps as player wants 
 	int NbMaps;
-	cout << "How many maps would you like to play on?" << endl;
-	cin >> NbMaps;
+	bool validNB = false;
+
+	while (!validNB) {
+		cout << "How many maps would you like to play on? (1 to 5)" << endl;
+		cin >> NbMaps;
+
+		// Type checking the input
+		if (cin.fail())
+		{
+			validNB = false;
+			cout << "You did not input a number." << endl;
+			cin.clear();
+			std::string ignoreLine; //read the invalid input into it
+			std::getline(cin, ignoreLine); //read the line till next space
+		}
+		else {
+			if (NbMaps >= 1 && NbMaps <= 5) {
+				validNB = true;
+			}
+			else {
+				validNB = false;
+				cout << "Number of player must be 2,3 or 4" << endl;
+			}
+		}
+	}
+	cin.clear();
+	validNB = false;  //reset bool that will be used for other while loop selection processes
+
+	//Creates  vector of node for each map chosen
 	vector<Map> maps(NbMaps);
 	vector < vector<vertex*>> tmp_nodesVector(NbMaps);
 	for (size_t x = 0; x < maps.size(); x++)
 		maps.at(x);
 	for (size_t x = 0; x < maps.size(); x++)
 		tmp_nodesVector.at(x) = maps.at(x).getNodes();
-
-
 	bool invalid = true; // boolean use for validation
+
+
 
 
 	/***********************************************   CREATE PLAYERS **********************************************/
@@ -49,8 +80,6 @@ void runTournament() {
 	// Input the number of players
 	//vector<Player*> players;
 	int NbPlayers;
-	bool validNB = false;
-
 
 	while (!validNB) {
 		cout << "How many players? (2, 3 or 4)" << endl;
@@ -85,6 +114,7 @@ void runTournament() {
 	int NbAgressivePlayers = 0;
 	int NbCheaterPlayers = 0;
 	int NbBenevolentPlayers = 0;
+	int NbRandomPlayers = 0;
 
 	while (playerTypeAmount>0) {
 		cout << endl << "You have " << playerTypeAmount << " player types to choose." << endl;
@@ -119,6 +149,16 @@ void runTournament() {
 			if (playerTypeAmount == 0)
 				break;
 		}
+		if (NbRandomPlayers == 0) {
+			cout << "Enter 1 if you want a Random player..." << endl;
+			cin >> NbRandomPlayers;
+			if (NbRandomPlayers == 1)
+				playerTypeAmount--;
+			else
+				NbRandomPlayers = 0;
+			if (playerTypeAmount == 0)
+				break;
+		}
 	}
 
 	vector<string>playerTypes;
@@ -130,6 +170,9 @@ void runTournament() {
 	
 	for (int x = 0; x < NbBenevolentPlayers; x++)
 		playerTypes.push_back("Benevolent");
+
+	for (int x = 0; x < NbRandomPlayers; x++)
+		playerTypes.push_back("Random");
 
 
 	/******************************************************   ASSIGN NUMBER OF TURNS  ************************************************************/
@@ -209,7 +252,8 @@ void runTournament() {
 			int NbAggressivePlayersholder = NbAgressivePlayers;
 			int NbBenevolentPlayersholder = NbBenevolentPlayers;
 			int NbCheaterPlayersholder = NbCheaterPlayers;
-		
+			int NbRandomPlayersholder = NbRandomPlayers;
+
 			for (int i = 0; i < NbPlayers; i++) {
 				players.push_back(new Player()); // create player object
 				players.at(i)->setHand(&gameDeck); // assign a hand of cards
@@ -229,11 +273,18 @@ void runTournament() {
 					players.at(i)->setName("Benevolent");
 					cout << "Benevolent" << endl;
 				}
+				else if (NbRandomPlayers != 0 & NbAggressivePlayersholder == 0) {
+					players.at(i)->setStrategy(new Random(players.at(i)));
+					NbRandomPlayersholder--;
+					players.at(i)->setName("Random");
+					cout << "Random" << endl;
+				}
 				else {
 					cout << "" << endl;
 					players.at(i)->setStrategy(new Cheater(players.at(i)));
 					NbCheaterPlayersholder--;
 					players.at(i)->setName("Cheater");
+					cout << "Cheater" << endl;
 				}
 			}
 
@@ -376,6 +427,23 @@ void runTournament() {
 	}
 	
 	cout << endl << endl<< "FINAL RESULT OF THE TOURNAMENT:" << endl;
+
+	int NbMapsHolder = NbMaps;
+	int NbOfPlayersHolder = NbPlayers;
+
+	cout << "M:  ";
+	for (size_t x = 0; x < NbMapsHolder; x++) {
+		cout << "Map " << x+1 << ", ";
+	 }
+	cout << "\nP:  ";
+	for (size_t x = 0; x < NbOfPlayersHolder; x++) {
+		cout << playerTypes.at(x) << ", ";
+	}
+	cout << "\nG:  "<< numberOfGames << endl;
+	cout << "D:  " << numberOfTurns<<endl;
+
+
+
 	//loop that will create table of maps and games
 	cout <<"\n"<< "          ";
 	for (size_t x = 0; x < numberOfGames; x++)
@@ -386,11 +454,11 @@ void runTournament() {
 		cout << "Map " << +x + 1<<"     ";
 		for (size_t y = 0; y < numberOfGames; y++)
 			if(winners.at(x).at(y).compare("Draw") == 0)
-			cout << winners.at(x).at(y)<<"        ";
+			cout << winners.at(x).at(y)<<"       ";
 			else if((winners.at(x).at(y).compare("Cheater") == 0))
-				cout << winners.at(x).at(y) << "     ";
+				cout << winners.at(x).at(y) << "    ";
 			else if ((winners.at(x).at(y).compare("Random") == 0))
-				cout << winners.at(x).at(y) << "      ";
+				cout << winners.at(x).at(y) << "     ";
 			else
 				cout << winners.at(x).at(y) << "   ";
 		cout << "" << endl;
@@ -398,6 +466,7 @@ void runTournament() {
 	}
 	cout << endl;
 	system("PAUSE");
+	return 0;
 }
 
 
@@ -421,5 +490,7 @@ void checkPlayersEliminatedTournament(vector<Player*> * players) {
 		}
 	}
 }
+
+
 
 
