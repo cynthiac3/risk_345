@@ -1,35 +1,14 @@
-#include "player.h"
-#include <iostream>
-#include <cmath>
-#include <windows.h.>
-#include "player.h"
-#include "Strategy.h"
-#include "Human.h"
-#include "Aggressive.h"
-#include "Benevolent.h"
-#include "Random.h"
-#include "Cheater.h"
-
-#include ".\Deck.h"
-
-#include "View.h"
-
-#include ".\Map.h"
-
-#include <string>
-#include <vector>
+//#include <vector> // already included in Header
 #include <algorithm> 
 
 #include <stdlib.h>
 #include <time.h>
+#include "MainGame.h"
 
 using namespace std;
 
-// free functions declaration
-void clearInputs();
-void checkPlayersEliminated(vector<Player*> * players);
 
-int main() {
+void runSingleGame() {
 
 	/***********************************************  LOAD MAP **********************************************/
 	//creats a map 
@@ -244,9 +223,6 @@ int main() {
 		delete players.at(i);
 	}
 
-	
-	return 0;
-
 }
 
 // Clears the user input from the console
@@ -268,5 +244,4 @@ void checkPlayersEliminated(vector<Player*> * players) {
 		}
 	}
 }
-
 
