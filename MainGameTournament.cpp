@@ -8,6 +8,7 @@
 #include "Benevolent.h"
 #include "Random.h"
 #include "Cheater.h"
+#include "Graphics.h"
 
 #include ".\Deck.h"
 
@@ -235,11 +236,39 @@ void runTournament(){
 
 
 	//*************************************************************FOR EACH MAP*******************************************************//
+	int currentMap = 1; // used to display which map is currently being played
+	
 	//Beginning of loop that will run through all maps selected for however many games were selected for each map
 	for (size_t mapNumber = 0; mapNumber < NbMaps; mapNumber++) //for each map loop
 	{
+		int currentGame = 1; // keeps track of current game, resets to 1 at start of new map
+
 		for (size_t gameNumber = 0; gameNumber < numberOfGames; gameNumber++) //for each game loop
 		{
+			//Display current Map Number
+			empty(5); mapBig(); empty(2);
+			switch (currentMap) {
+			case 1: bigOne(); break;
+			case 2: bigTwo(); break;
+			case 3: bigThree(); break;
+			case 4: bigFour(); break;
+			case 5: bigFive(); break;
+			default: empty(10);  cout << "  " << endl; empty(10);
+			}
+			Sleep(500); // PAUSES GAME FOR HALF A SECOND so you can see how far the game is
+
+			//Display current Game Number
+			empty(5);  bigGame(); empty(2);
+			switch (currentGame) {
+			case 1: bigOne(); break;
+			case 2: bigTwo(); break;
+			case 3: bigThree(); break;
+			case 4: bigFour(); break;
+			case 5: bigFive(); break;
+			default: empty(10);  cout << " NEW GAME BEGINNING. " << endl; empty(10);
+			}
+			Sleep(500); // PAUSES GAME FOR HALF A SECOND so you can see how far the game is
+
 			vector<Player*> players;
 			// Create a deck for the game
 			Deck gameDeck;
@@ -419,7 +448,11 @@ void runTournament(){
 			for (int i = 0; i < players.size(); i++) {
 				delete players.at(i);
 			}
+
+			currentGame++; // to display current game
 		}
+
+		currentMap++; // to display currentMap
 	}
 	
 	cout << endl << endl<< "FINAL RESULT OF THE TOURNAMENT:" << endl;
@@ -485,6 +518,5 @@ void checkPlayersEliminatedTournament(vector<Player*> * players) {
 		}
 	}
 }
-
 
 
