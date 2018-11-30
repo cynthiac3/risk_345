@@ -1,8 +1,5 @@
 #pragma once
 
-class Graphics {
-
-public:
-	void riskLogo();
-	void empty(int lines);
-};
+//free functions
+void riskLogo();
+void empty(int lines);
