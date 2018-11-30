@@ -53,7 +53,7 @@ void runTournament() {
 
 
 	while (!validNB) {
-		cout << "How many players?" << endl;
+		cout << "How many players? (2, 3 or 4)" << endl;
 		cin >> NbPlayers;
 
 		// Type checking the input
@@ -86,22 +86,39 @@ void runTournament() {
 	int NbCheaterPlayers = 0;
 	int NbBenevolentPlayers = 0;
 
-	while (!validNB) {
-		cout << "How many aggressive players do you want?" << endl;
-		cin >> NbAgressivePlayers;
-		playerTypeAmount -= NbAgressivePlayers;
-		if (playerTypeAmount == 0)
-			break;
-		cout << "How many cheater players do you want?" << endl;
-		cin >> NbCheaterPlayers;
-		playerTypeAmount -= NbCheaterPlayers;
-		if (playerTypeAmount == 0)
-			break;
-		cout << "How many benevolent players do you want?" << endl;
-		cin >> NbBenevolentPlayers;
-		playerTypeAmount -= NbBenevolentPlayers;
-		if (playerTypeAmount == 0)
-			break;
+	while (playerTypeAmount>0) {
+		cout << endl << "You have " << playerTypeAmount << " player types to choose." << endl;
+
+		if (NbAgressivePlayers == 0) {
+			cout << "Enter 1 if you want an aggressive player..." << endl;
+			cin >> NbAgressivePlayers;
+			if (NbAgressivePlayers == 1)
+				playerTypeAmount--;
+			else
+				NbAgressivePlayers = 0;
+			if (playerTypeAmount == 0)
+				break;
+		}
+		if (NbCheaterPlayers == 0) {
+			cout << "Enter 1 if you want an cheater player..." << endl;
+			cin >> NbCheaterPlayers;
+			if (NbCheaterPlayers == 1)
+				playerTypeAmount--;
+			else
+				NbCheaterPlayers = 0;
+			if (playerTypeAmount == 0)
+				break;
+		}
+		if (NbBenevolentPlayers==0) {
+			cout << "Enter 1 if you want an benevolent player..." << endl;
+			cin >> NbBenevolentPlayers;
+			if (NbBenevolentPlayers == 1)
+				playerTypeAmount--;
+			else
+				NbBenevolentPlayers = 0;
+			if (playerTypeAmount == 0)
+				break;
+		}
 	}
 
 	vector<string>playerTypes;
@@ -115,14 +132,12 @@ void runTournament() {
 		playerTypes.push_back("Benevolent");
 
 
-
-
 	/******************************************************   ASSIGN NUMBER OF TURNS  ************************************************************/
 
 	int numberOfTurns; 
 
 	while (!validNB) {
-		cout << "How many turns should each player be given>  (Must be between 3 and 50)" << endl;
+		cout << "How many turns should each player be given?  (Must be between 3 and 50)" << endl;
 		cin >> numberOfTurns;
 
 		// Type checking the input
@@ -184,12 +199,8 @@ void runTournament() {
 	//Beginning of loop that will run through all maps selected for however many games were selected for each map
 	for (size_t mapNumber = 0; mapNumber < NbMaps; mapNumber++) //for each map loop
 	{
-		for(int x = 0; x <40; x++)
-		cout << "MAPSSSSSSSSSSSSSSSSSSS" << endl;
 		for (size_t gameNumber = 0; gameNumber < numberOfGames; gameNumber++) //for each game loop
 		{
-			for (int x = 0; x < 40; x++)
-				cout << "GAMEEEEEEEEEEEEEEEEEEEEE"<< endl;
 			vector<Player*> players;
 			// Create a deck for the game
 			Deck gameDeck;
@@ -201,29 +212,30 @@ void runTournament() {
 		
 			for (int i = 0; i < NbPlayers; i++) {
 				players.push_back(new Player()); // create player object
-				players.at(i)->setName(to_string(i));
 				players.at(i)->setHand(&gameDeck); // assign a hand of cards
 				players.at(i)->getHand()->fillHand(gameDeck);
 				players.at(i)->getHand()->setDeck(gameDeck);
+
 				//Sets right amount of strategy types selected by user for each player object
 				if (NbAggressivePlayersholder != 0) {
 					players.at(i)->setStrategy(new Aggressive(players.at(i)));
 					NbAggressivePlayersholder--;
+					players.at(i)->setName("Aggressive");
 					cout << "AGRESSIVE" << endl;
 				}
 				else if (NbBenevolentPlayersholder != 0 & NbAggressivePlayersholder == 0) {
 					players.at(i)->setStrategy(new Benevolent(players.at(i)));
 					NbBenevolentPlayersholder--;
+					players.at(i)->setName("Benevolent");
 					cout << "Benevolent" << endl;
 				}
 				else {
 					cout << "" << endl;
 					players.at(i)->setStrategy(new Cheater(players.at(i)));
 					NbCheaterPlayersholder--;
+					players.at(i)->setName("Cheater");
 				}
 			}
-
-
 
 
 			/***********************************************  ASSIGN COUNTRIES & ARMIES TO PLAYERS **********************************************/
@@ -233,9 +245,6 @@ void runTournament() {
 
 			// TODO: add a menu to select game mode
 
-
-
-
 			vector<int> order_of_play;//store the order of play (each index owns a unique index(refference) to the player array)
 			int tmp_int = 0; // temporal integer use to store a state 
 
@@ -243,9 +252,6 @@ void runTournament() {
 			srand(time(NULL)); //random input 
 			int rindex; //variable to store a random index 
 			vector<int> tmp_arr(NbPlayers); // Temproal array to sotre index of players
-
-
-
 
 
 			//assign randomly contries to player in a round-robin fashion for the players
@@ -268,8 +274,6 @@ void runTournament() {
 					tmp_int = 0;
 				}
 			}
-
-
 
 
 			//generate a random order_of_play 	
@@ -336,7 +340,10 @@ void runTournament() {
 
 				// Each player has a turn
 				for (int j = 0; j < players.size(); j++) {
-					
+					cout << "---------------------------------------------------------------------- \n"
+						"/////////////////////////// PLAYER " << j + 1 << " TURN ///////////////////////////  \n"
+						"----------------------------------------------------------------------" << endl;
+
 					checkPlayersEliminatedTournament(&players);
 					if(players.size() == 1){
 						gameOver = true;
@@ -355,11 +362,11 @@ void runTournament() {
 			maps.at(mapNumber).printMap();
 			//Sets winners strategy type in proper cell of 2d vector.
 			if (players.size() == 1) {
-				winners.at(mapNumber).at(gameNumber) = playerTypes.at(0);
+				winners.at(mapNumber).at(gameNumber) = players.at(0)->getName();
 				gameOver = true;
 			}
 			else
-				winners.at(mapNumber).at(gameNumber) = "draw";
+				winners.at(mapNumber).at(gameNumber) = "Draw";
 			
 			// Destory objects to prevent memory leaks
 			for (int i = 0; i < players.size(); i++) {
@@ -368,7 +375,7 @@ void runTournament() {
 		}
 	}
 	
-
+	cout << endl << endl<< "FINAL RESULT OF THE TOURNAMENT:" << endl;
 	//loop that will create table of maps and games
 	cout <<"\n"<< "          ";
 	for (size_t x = 0; x < numberOfGames; x++)
@@ -378,19 +385,20 @@ void runTournament() {
 	for (size_t x = 0; x < NbMaps; x++) {
 		cout << "Map " << +x + 1<<"     ";
 		for (size_t y = 0; y < numberOfGames; y++)
-			if(winners.at(x).at(y).compare("draw") == 0)
+			if(winners.at(x).at(y).compare("Draw") == 0)
 			cout << winners.at(x).at(y)<<"        ";
-			else if((winners.at(x).at(y).compare("cheater") == 0))
+			else if((winners.at(x).at(y).compare("Cheater") == 0))
 				cout << winners.at(x).at(y) << "     ";
+			else if ((winners.at(x).at(y).compare("Random") == 0))
+				cout << winners.at(x).at(y) << "      ";
 			else
 				cout << winners.at(x).at(y) << "   ";
 		cout << "" << endl;
 
 	}
+	cout << endl;
 	system("PAUSE");
 }
-
-
 
 
 // Clears the user input from the console
