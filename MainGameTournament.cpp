@@ -26,11 +26,7 @@
 
 using namespace std;
 
-//void runTournament()
-
-int main() {
-
-
+void runTournament(){
 
 	/***********************************************  LOAD MAP **********************************************/
 	//Creates as many maps as player wants 
@@ -466,7 +462,6 @@ int main() {
 	}
 	cout << endl;
 	system("PAUSE");
-	return 0;
 }
 
 
