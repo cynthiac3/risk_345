@@ -64,6 +64,12 @@ int  Hand::exchange()
 	{
 		cout << x + 1 << ". " << convertCardsToString(handOfCards[x]) << endl;
 	}
+
+	if (handOfCards.size() < 3) {
+		cout << "Sorry, but you do not have enough cards to make an exchange." <<endl;
+		return armies;
+	}
+
 	int firstCardSelected = 0;
 	int secondCardSelected = 0;
 	int thirdCardSelected = 0;
