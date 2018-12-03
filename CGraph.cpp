@@ -23,7 +23,7 @@ Graph::Graph(vector<Territory> myT){
 		nodes.push_back(new vertex());// creats a new vertex
 		nodes.back()->name = i->getName(); // set the name
 		nodes.back()->nbr.list_nbr = i->getNbr();// set its neighbours
-        }
+    }
 }
 
 vector<Country*> Graph::getCountry(){
@@ -211,6 +211,23 @@ void Graph::steal(Player *t,Player *v){
 	}
 }
 
+
+Player* Subgraph::getOwner(Graph * map){
+	vector<vertex*> n = subG.getNodes();
+	Player* tmp_owner = map->getOwner(*map->getVertex((*n.begin())->name));
+	bool isown = true;
+
+
+	for (vector<vertex*>::iterator i = n.begin() ; i != n.end(); ++i){
+		if(map->getOwner(*map->getVertex((*i)->name)) != tmp_owner) isown = false;
+	}
+	
+	if(isown){
+		return tmp_owner;
+	}else{
+		return NULL;
+	}
+}
 
 //creates a sub graph. takes in the vector of territory and the continent for which the subgraph is being created 
 Subgraph::Subgraph(vector<Territory> myT, _Continent myC){

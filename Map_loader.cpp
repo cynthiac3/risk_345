@@ -16,7 +16,33 @@ using namespace std;
 //Prompt for the map file to load
 string Map_loader::choose_file(){
 	string str;
-	cout << "Please enter the name of the map file in the current directory:" << endl;
+	cout << "Please choose a map:\n1. EB\n2. Simple\n3. Asia\n4. Africa\n5. World" << endl;
+	while(1){
+		cin >> str;
+		switch(stoi(str)){
+			case  1 :
+				return "EB.map";
+			break;
+			case  2 :
+				return "Simple.map";
+			break;
+			case  3 :
+				return "Asia.map";
+			break;
+			case  4 :
+				return "Africa.map";
+			break;
+			case  5 :
+				return "World.map";
+			break;
+			default:
+				cout << "invalide map"<<endl; 
+			break;
+			
+		}
+		
+	}
+	
 	cin >> str;
 	return str;	
 }

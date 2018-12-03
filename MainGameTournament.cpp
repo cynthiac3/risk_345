@@ -290,7 +290,7 @@ void runTournament(){
 					players.at(i)->setStrategy(new Aggressive(players.at(i)));
 					NbAggressivePlayersholder--;
 					players.at(i)->setName("Aggressive");
-					cout << "AGRESSIVE" << endl;
+					cout << "Aggressive" << endl;
 				}
 				else if (NbBenevolentPlayersholder != 0 & NbAggressivePlayersholder == 0) {
 					players.at(i)->setStrategy(new Benevolent(players.at(i)));
@@ -298,21 +298,20 @@ void runTournament(){
 					players.at(i)->setName("Benevolent");
 					cout << "Benevolent" << endl;
 				}
-				else if (NbRandomPlayers != 0 & NbAggressivePlayersholder == 0) {
+				else if (NbRandomPlayersholder != 0 & NbAggressivePlayersholder == 0) {
 					players.at(i)->setStrategy(new Random(players.at(i)));
 					NbRandomPlayersholder--;
 					players.at(i)->setName("Random");
 					cout << "Random" << endl;
 				}
 				else {
-					cout << "" << endl;
 					players.at(i)->setStrategy(new Cheater(players.at(i)));
 					NbCheaterPlayersholder--;
 					players.at(i)->setName("Cheater");
 					cout << "Cheater" << endl;
 				}
 			}
-
+			
 
 			/***********************************************  ASSIGN COUNTRIES & ARMIES TO PLAYERS **********************************************/
 			// Calculate the number of armies for each players (depends on nb of players)
@@ -407,30 +406,74 @@ void runTournament(){
 				(*i)->owner->addCountry(*i);
 			}
 
-
+			
+			
+			vector<Continent*> conti = maps.at(mapNumber).getContinent();
+		
+			if (conti.size() != 0 ){
+				for (int j = 0; j < players.size(); j++) {
+						players.at(j)->myContinents.clear();
+				}
+				for (vector<Continent*>::iterator i = conti.begin(); i != conti.end(); ++i) {
+					(*i)->owner->addContinent(*i);
+				}
+			}
+			
+			
 
 			/***********************************************   MAIN GAME LOOP **********************************************/
+			View *table = new View(&maps.at(mapNumber));
 			int numberOfTurnsDuplicate = numberOfTurns; //Holds the amount of turns per game chosen by user
 			bool gameOver = false;
 			while (!gameOver && numberOfTurnsDuplicate != 0) { //loop terminates if a player wins or number of turns is reached
 
+			
 				// Each player has a turn
+				maps.at(mapNumber).update(allC);
 				for (int j = 0; j < players.size(); j++) {
 					cout << "---------------------------------------------------------------------- \n"
-						"/////////////////////////// PLAYER " << j + 1 << " TURN ///////////////////////////  \n"
+						"/////////////////////////// PLAYER " << players.at(j)->getName() << " TURN ///////////////////////////  \n"
 						"----------------------------------------------------------------------" << endl;
-
+				
+						
+					
 					checkPlayersEliminatedTournament(&players);
 					if(players.size() == 1){
 						gameOver = true;
 					}else{
-						players.at(j)->play();
+						players.at(order_of_play[j])->play();
 						cout << endl;
 						maps.at(mapNumber).update(allC);
+						
+						for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
+							delete(*z);
+						}
+						
+						conti = maps.at(mapNumber).getContinent();
+			
+						if (conti.size() != 0 ){
+							for (int k = 0; k < players.size(); k++) {
+								players.at(k)->myContinents.clear();
+							}
+							for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
+								(*z)->owner->addContinent(*z);
+							}
+						}else{
+							for (int k = 0; k < players.size(); k++) {
+								players.at(k)->myContinents.clear();
+							}
+						}
+		
 					}
+					checkPlayersEliminatedTournament(&players);
 				}
+				
+				for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
+					delete(*z);
+				}
+				
 				//loop to check whether the a player has lost all territories
-				checkPlayersEliminatedTournament(&players);
+				
 			    if(players.size() == 1)
 					gameOver = true;
 				numberOfTurnsDuplicate--; 
@@ -450,9 +493,11 @@ void runTournament(){
 			}
 
 			currentGame++; // to display current game
+			delete table;
 		}
 
 		currentMap++; // to display currentMap
+		
 	}
 	
 	cout << endl << endl<< "FINAL RESULT OF THE TOURNAMENT:" << endl;

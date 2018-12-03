@@ -70,6 +70,7 @@ class Graph{
 class Subgraph{
 	public:
 		//constructor
+		Player* getOwner(Graph * map);
 		Subgraph(vector<Territory> myT, _Continent myC);
 		//print Subgraph
 		//void printSubG(){ cout << "\n\nSUB "; subG.printGraph();};

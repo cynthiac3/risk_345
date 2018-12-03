@@ -25,6 +25,7 @@ struct Country {
 
 //Fake subgraph of the graph (only for demo)
 struct Continent {
+	Player* owner;
 	std::string name;
 	int bonus;
 };

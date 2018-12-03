@@ -8,3 +8,7 @@ g++ -std=c++11 Dice.cpp Subject.cpp Observer.cpp Deck.cpp Hand.cpp Strategy.cpp 
 
 g++ -std=c++11 Dice.cpp Subject.cpp Observer.cpp Deck.cpp Hand.cpp Strategy.cpp Random.cpp Aggressive.cpp Cheater.cpp Benevolent.cpp Human.cpp Player.cpp Map_CPNT.cpp CGraph.cpp Map_loader.cpp Map.cpp View.cpp MainGame.cpp -o MG
 g++ -std=c++11 Dice.cpp Subject.cpp Observer.cpp Deck.cpp Hand.cpp Strategy.cpp Random.cpp Aggressive.cpp Cheater.cpp Benevolent.cpp Human.cpp Player.cpp Map_CPNT.cpp CGraph.cpp Map_loader.cpp Map.cpp View.cpp MainGameTournament.cpp -o MGM
+
+
+///////compile game
+g++ -std=c++11 Dice.cpp Subject.cpp Observer.cpp Deck.cpp Hand.cpp Strategy.cpp Random.cpp Aggressive.cpp Cheater.cpp Benevolent.cpp Human.cpp Player.cpp Map_CPNT.cpp CGraph.cpp Map_loader.cpp Map.cpp View.cpp Graphics.cpp MainGameTournament.cpp MainGame.cpp MainDriver.cpp -o GAME

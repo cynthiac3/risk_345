@@ -43,6 +43,7 @@ Map::Map(){
 	//make the continent subgraph
 	for (vector<_Continent>::iterator i = m.myContinents.begin() ; i != m.myContinents.end(); ++i){
 		continents_name.push_back((*i).getName());
+		continents_bonus.push_back(stoi((*i).getBonus()));
 		continents.push_back(Subgraph(m.myTerritories, (*i)));
 	}
 	
@@ -61,6 +62,26 @@ void Map::printMap(){
 
 vector<Country*> Map::getCountry(){
 	return mapG.getCountry();
+}
+
+vector<Continent*> Map::getContinent(){
+	vector<Continent*> tmpC;
+	Player *ptr_p;
+	int j = 0;	
+	for (vector<Subgraph>::iterator i = continents.begin() ; i != continents.end(); ++i){
+		
+		ptr_p = i->getOwner(&mapG);
+		
+			
+		if(ptr_p != NULL){
+			tmpC.push_back(new Continent());
+			tmpC.back()->owner = ptr_p;
+			tmpC.back()->name = continents_name[j];
+			tmpC.back()->bonus = continents_bonus[j];
+		}
+		j++;
+	}
+	return tmpC;
 }
 
 //return true if a player owns all territories 

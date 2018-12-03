@@ -52,6 +52,7 @@ class Map : public Subject {
 		void steal(Player *t,Player *v);
 		
 		vector<Country*> getCountry();
+		vector<Continent*> getContinent();
 		
 		int getNbOfT(){ return mapG.getNbOfNode();}
 		vector<string> getContName(){return continents_name;};
@@ -61,5 +62,6 @@ class Map : public Subject {
 		Graph mapG;
 		vector<Subgraph> continents;
 		vector<string> continents_name;
+		vector<int> continents_bonus;
 };
 

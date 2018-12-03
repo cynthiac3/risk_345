@@ -25,7 +25,7 @@ void Random::reinforce() {
 	cout << "---------------------------------------------------------------------- \n"
 			"////////////////////// BEGIN REINFORCE PHASE ///////////////////////  \n"
 			"----------------------------------------------------------------------" << endl;
-cout <<  " ------------------------   " << p->myTerritories.size() << " ------------------ " <<endl;
+
 	// Choose one country to reinforce at random
 	srand(time(NULL)); // Initialize random seed based on the time
 
