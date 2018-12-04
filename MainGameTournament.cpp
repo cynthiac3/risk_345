@@ -422,7 +422,7 @@ void runTournament(){
 			
 
 			/***********************************************   MAIN GAME LOOP **********************************************/
-			View *table = new View(&maps.at(mapNumber));
+			//View *table = new View(&maps.at(mapNumber));
 			int numberOfTurnsDuplicate = numberOfTurns; //Holds the amount of turns per game chosen by user
 			bool gameOver = false;
 			while (!gameOver && numberOfTurnsDuplicate != 0) { //loop terminates if a player wins or number of turns is reached
@@ -483,6 +483,7 @@ void runTournament(){
 					gameOver = true;
 				numberOfTurnsDuplicate--; 
 			}
+			maps.at(mapNumber).update(allC);
 			maps.at(mapNumber).printMap();
 			//Sets winners strategy type in proper cell of 2d vector.
 			if (players.size() == 1) {
@@ -498,7 +499,7 @@ void runTournament(){
 			}
 
 			currentGame++; // to display current game
-			delete table;
+			//delete table;
 		}
 
 		currentMap++; // to display currentMap
