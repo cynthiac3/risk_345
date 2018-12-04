@@ -453,6 +453,7 @@ void runTournament(){
 							for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
 								delete(*z);
 							}
+							conti.clear();
 							
 							conti = maps.at(mapNumber).getContinent();
 				
