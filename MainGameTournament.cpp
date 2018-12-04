@@ -441,29 +441,34 @@ void runTournament(){
 					if(players.size() == 1){
 						gameOver = true;
 					}else{
-						players.at(order_of_play[j])->play();
+						players.at(j)->play();
 						cout << endl;
-						maps.at(mapNumber).update(allC);
-						
-						for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
-							delete(*z);
-						}
-						
-						conti = maps.at(mapNumber).getContinent();
-			
-						if (conti.size() != 0 ){
-							for (int k = 0; k < players.size(); k++) {
-								players.at(k)->myContinents.clear();
-							}
-							for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
-								(*z)->owner->addContinent(*z);
-							}
+						checkPlayersEliminatedTournament(&players);
+						if(players.size() == 1){
+							gameOver = true;
 						}else{
-							for (int k = 0; k < players.size(); k++) {
-								players.at(k)->myContinents.clear();
+						
+							maps.at(mapNumber).update(allC);
+							
+							for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
+								delete(*z);
+							}
+							
+							conti = maps.at(mapNumber).getContinent();
+				
+							if (conti.size() != 0 ){
+								for (int k = 0; k < players.size(); k++) {
+									players.at(k)->myContinents.clear();
+								}
+								for (vector<Continent*>::iterator z = conti.begin(); z != conti.end(); ++z) {
+									(*z)->owner->addContinent(*z);
+								}
+							}else{
+								for (int k = 0; k < players.size(); k++) {
+									players.at(k)->myContinents.clear();
+								}
 							}
 						}
-		
 					}
 					checkPlayersEliminatedTournament(&players);
 				}
@@ -560,6 +565,7 @@ void checkPlayersEliminatedTournament(vector<Player*> * players) {
 			cout << endl << "Player " << players->at(i)->name << " has been eliminated from the game. Better luck next time!" << endl;
 			delete players->at(i); // deletes memory location of pointer (player object)
 			players->erase(players->begin() + i); // removes it from the vector list of active players
+			i--;
 		}
 	}
 }
