@@ -51,15 +51,21 @@ void Deck::fillDeck(int numberOfCountries)
 
 
 
+
 Deck::Cards Deck::draw(vector<Deck::Cards> &gameDeck) //takes address of deck of cards
 {
-	Cards x = gameDeck[gameDeck.size() - 1]; //draws last card in list
-	gameDeck.erase(gameDeck.end() - 1);  //deletes card
+	if (gameDeck.size() < 2) { //This check is needed for when the game runs out of cards
+		return Cards::Infantry; // i.e., "When no cards left in deck, just give player an Infantry Card"
+	}
+	else {
+		Cards x = gameDeck[gameDeck.size() - 1]; //draws last card in list
+		gameDeck.erase(gameDeck.end() - 1);  //deletes card
 
-	if (x == Cards::Infantry)  //returns the enum equivalent of card
-		return Cards::Infantry;
-	else if (x == Cards::Cavalry)
-		return Cards::Cavalry;
-	else
-		return  Cards::Artillery;
+		if (x == Cards::Infantry)  //returns the enum equivalent of card
+			return Cards::Infantry;
+		else if (x == Cards::Cavalry)
+			return Cards::Cavalry;
+		else
+			return  Cards::Artillery;
+	}
 }
